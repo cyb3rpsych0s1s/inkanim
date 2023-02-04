@@ -92,3 +92,42 @@ pub enum Target {
     WithHandleId(InkWrapper<InkAnimSequenceTargetInfo>),
     WithoutHandleId(BlankInkAnimSequenceTargetInfo),
 }
+
+impl InkAnimSequence {
+    pub fn get_path_indexes_matching(&self, searched: Vec<usize>) -> Vec<PathSummary> {
+        let count = searched.len();
+        let last = count - 1;
+        let mut out = vec![];
+        for (target_index, target) in self.targets.iter().enumerate() {
+            match target {
+                Target::WithHandleId(ref handle) => {
+                    let ref path = handle.data.path;
+                    'inner: for (i, path_index) in searched.iter().enumerate() {
+                        if path_index != &path[i] {
+                            break 'inner;
+                        }
+                        if i == last {
+                            let summary = PathSummary {
+                                HandleId: handle.handle_id,
+                                Index: target_index,
+                                Path: path.clone(),
+                            };
+                            out.push(summary);
+                            break 'inner;
+                        }
+                    }
+                }
+                _ => continue,
+            }
+        }
+        return out;
+    }
+}
+
+#[allow(dead_code, non_snake_case)]
+#[derive(Debug)]
+pub struct PathSummary {
+    HandleId: u32,
+    Index: usize,
+    Path: Vec<usize>,
+}
