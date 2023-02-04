@@ -1,25 +1,42 @@
 use std::path::PathBuf;
 
-use inkanim::InkAnimAnimationLibraryResource;
+use ink::InkAnimAnimationLibraryResource;
 
-mod inkanim;
+use crate::ink::inkWidgetLibraryResource;
+
+mod ink;
 
 fn main() {
-    let content = std::fs::read_to_string(PathBuf::from(
+    let anim_json_export = std::fs::read_to_string(PathBuf::from(
         "./rootconnecttosandrarescue.json".to_string(),
     ))
-    .expect("file");
+    .expect(".inkanim");
+    let widget_json_export = std::fs::read_to_string(PathBuf::from(
+        "./inkwidget_rootconnecttosandrarescue.json".to_string(),
+    ))
+    .expect(".inkwidget");
 
-    let resource = serde_json::from_str::<InkAnimAnimationLibraryResource>(&content).unwrap();
-    // println!("{resource:#?}");
-    let matches = resource.sequences[0]
-        .data
-        .get_path_indexes_matching(vec![1, 3, 0, 0, 9]);
     // 1 3 0 0 is Booting_Screen
     // 1 3 0 0 12 is rectangles_Beauty
-    println!("{matches:#?}");
-    println!(
-        "found {} target(s) at this path or nested below",
-        matches.len()
-    );
+    let path = vec![1, 3, 0, 0, 9];
+    let anim = serde_json::from_str::<InkAnimAnimationLibraryResource>(&anim_json_export).unwrap();
+    let widget = serde_json::from_str::<inkWidgetLibraryResource>(&widget_json_export).unwrap();
+    // println!("{anim:#?}");
+    let matches = anim.sequences[0].data.get_path_indexes_matching(&path);
+    // println!("{matches:#?}");
+    // println!(
+    //     "found {} target(s) at this path or nested below",
+    //     matches.len()
+    // );
+    // println!("{widget:#?}");
+    let names = widget
+        .library_items
+        .get(0)
+        .unwrap()
+        .package
+        .file
+        .data
+        .root_chunk
+        .get_path_names(&path);
+    println!("names found in path {:#?}\n{:#?}", path, names);
 }
