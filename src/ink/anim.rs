@@ -6,7 +6,7 @@ use serde::{
 };
 use serde_aux::prelude::*;
 
-use super::InkWrapper;
+use super::{HandleId, InkWrapper};
 
 fn deserialize_vector2_from_anything<'de, D>(deserializer: D) -> Result<Range, D::Error>
 where
@@ -74,10 +74,7 @@ where
         where
             E: de::Error,
         {
-            Ok(Range::Position(Vector2 {
-                x: v as f32,
-                y: v as f32,
-            }))
+            Ok(Range::Percent(v as f32))
         }
 
         fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
@@ -98,7 +95,7 @@ where
         where
             E: de::Error,
         {
-            Ok(Range::Position(Vector2 { x: v, y: v }))
+            Ok(Range::Percent(v))
         }
 
         fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
@@ -205,6 +202,7 @@ impl std::fmt::Display for HDRColor {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Range {
+    Percent(f32),
     Position(Vector2),
     Color(HDRColor),
 }
@@ -214,6 +212,7 @@ impl std::fmt::Display for Range {
         match self {
             Range::Position(position) => write!(f, "{position}"),
             Range::Color(color) => write!(f, "{color}"),
+            Range::Percent(percent) => write!(f, "{percent}"),
         }
     }
 }
@@ -241,7 +240,7 @@ impl std::fmt::Display for Interpolator {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{} => {}     starts at {}, until {} (duration: {}, relative: {})",
+            "{} => {} starts at {}, until {} (duration: {}, relative: {})",
             self.start_value,
             self.end_value,
             self.start_delay,
@@ -373,7 +372,7 @@ impl InkAnimSequence {
 #[allow(dead_code, non_snake_case)]
 #[derive(Debug)]
 pub struct PathSummary {
-    HandleId: u32,
+    HandleId: HandleId,
     Index: usize,
     Path: Vec<usize>,
 }

@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
-use super::InkWrapper;
+use super::{HandleId, InkWrapper};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Flags {
@@ -199,7 +199,7 @@ impl Leaves for inkCanvasWidget {
 #[allow(non_snake_case)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WidgetSummary {
-    pub HandleId: u32,
+    pub HandleId: HandleId,
     pub Name: String,
     // pub Path: Vec<usize>,
 }
