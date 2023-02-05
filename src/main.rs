@@ -1,8 +1,10 @@
+#![allow(dead_code, unused_variables)]
+
 use std::path::PathBuf;
 
 use ink::InkAnimAnimationLibraryResource;
 
-use crate::ink::inkWidgetLibraryResource;
+use crate::ink::{inkWidgetLibraryResource, InkAnimDefinition, InkWrapper};
 
 mod ink;
 
@@ -20,7 +22,13 @@ fn main() {
     let path = vec![1, 3, 0, 0, 9];
     let anim = serde_json::from_str::<InkAnimAnimationLibraryResource>(&anim_json_export).unwrap();
     let widget = serde_json::from_str::<inkWidgetLibraryResource>(&widget_json_export).unwrap();
-    // println!("{anim:#?}");
+    println!(
+        "{:#?}",
+        anim.sequences
+            .iter()
+            .map(|x| x.data.definitions.clone())
+            .collect::<Vec<Vec<InkWrapper<InkAnimDefinition>>>>()
+    );
     let matches = anim.sequences[0].data.get_path_indexes_matching(&path);
     // println!("{matches:#?}");
     // println!(
