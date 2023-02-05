@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use ink::InkAnimAnimationLibraryResource;
 
-use crate::ink::{inkWidgetLibraryResource, InkAnimDefinition, InkWrapper};
+use crate::ink::inkWidgetLibraryResource;
 
 mod ink;
 
@@ -23,11 +23,20 @@ fn main() {
     let anim = serde_json::from_str::<InkAnimAnimationLibraryResource>(&anim_json_export).unwrap();
     let widget = serde_json::from_str::<inkWidgetLibraryResource>(&widget_json_export).unwrap();
     println!(
-        "{:#?}",
+        "{}",
         anim.sequences
             .iter()
-            .map(|x| x.data.definitions.clone())
-            .collect::<Vec<Vec<InkWrapper<InkAnimDefinition>>>>()
+            .map(|x| format!(
+                "{}",
+                x.data
+                    .definitions
+                    .iter()
+                    .map(|x| format!("{x}"))
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            ))
+            .collect::<Vec<String>>()
+            .join("\n\n")
     );
     let matches = anim.sequences[0].data.get_path_indexes_matching(&path);
     // println!("{matches:#?}");

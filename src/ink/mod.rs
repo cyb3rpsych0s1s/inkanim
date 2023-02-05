@@ -14,3 +14,12 @@ pub struct InkWrapper<T> {
     pub handle_id: u32,
     pub data: T,
 }
+
+impl<T> std::fmt::Display for InkWrapper<T>
+where
+    T: std::fmt::Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} (HandleId: {})", self.data, self.handle_id)
+    }
+}
