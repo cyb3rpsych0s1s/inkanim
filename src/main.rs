@@ -27,7 +27,8 @@ fn main() {
         anim.sequences
             .iter()
             .map(|x| format!(
-                "{}",
+                "{} {}",
+                x.data.name,
                 x.data
                     .definitions
                     .iter()

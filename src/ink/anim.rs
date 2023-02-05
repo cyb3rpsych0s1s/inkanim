@@ -353,6 +353,7 @@ impl InkAnimSequence {
                         }
                         if i == last {
                             let summary = PathSummary {
+                                Name: self.name.clone(),
                                 HandleId: handle.handle_id,
                                 Index: target_index,
                                 Path: path.clone(),
@@ -372,6 +373,7 @@ impl InkAnimSequence {
 #[allow(dead_code, non_snake_case)]
 #[derive(Debug)]
 pub struct PathSummary {
+    Name: String,
     HandleId: HandleId,
     Index: usize,
     Path: Vec<usize>,
