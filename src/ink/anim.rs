@@ -13,43 +13,49 @@ pub struct InkAnimSequenceTargetInfo {
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct inkanimScaleInterpolator_Data {}
-
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct inkanimTranslationInterpolator_Data {}
-
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct inkanimTransparencyInterpolator_Data {}
-
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct inkanimSizeInterpolator_Data {}
-
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct inkanimColorInterpolator_Data {}
-
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct inkanimTextValueProgressInterpolator_Data {}
-
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
+pub struct inkanimScaleInterpolator {}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+#[serde(tag = "$type")]
+pub struct inkanimTranslationInterpolator {}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+#[serde(tag = "$type")]
+pub struct inkanimTransparencyInterpolator {}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+#[serde(tag = "$type")]
+pub struct inkanimSizeInterpolator {}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+#[serde(tag = "$type")]
+pub struct inkanimColorInterpolator {}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+#[serde(tag = "$type")]
+pub struct inkanimTextValueProgressInterpolator {}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum InkAnimInterpolator {
-    inkanimScaleInterpolator(inkanimScaleInterpolator_Data),
-    inkanimTranslationInterpolator(inkanimTranslationInterpolator_Data),
-    inkanimTransparencyInterpolator(inkanimTransparencyInterpolator_Data),
-    inkanimSizeInterpolator(inkanimSizeInterpolator_Data),
-    inkanimColorInterpolator(inkanimColorInterpolator_Data),
-    inkanimTextValueProgressInterpolator(inkanimTextValueProgressInterpolator_Data),
+    Scale(inkanimScaleInterpolator),
+    Translation(inkanimTranslationInterpolator),
+    Transparency(inkanimTransparencyInterpolator),
+    Size(inkanimSizeInterpolator),
+    Color(inkanimColorInterpolator),
+    TextValueProgress(inkanimTextValueProgressInterpolator),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

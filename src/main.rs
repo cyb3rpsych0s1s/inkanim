@@ -7,12 +7,11 @@ use crate::ink::inkWidgetLibraryResource;
 mod ink;
 
 fn main() {
-    let anim_json_export = std::fs::read_to_string(PathBuf::from(
-        "./rootconnecttosandrarescue.json".to_string(),
-    ))
-    .expect(".inkanim");
+    let anim_json_export =
+        std::fs::read_to_string(PathBuf::from("./inkanim_connect_to_girl.json".to_string()))
+            .expect(".inkanim");
     let widget_json_export = std::fs::read_to_string(PathBuf::from(
-        "./inkwidget_rootconnecttosandrarescue.json".to_string(),
+        "./inkwidget_connect_to_girl.json".to_string(),
     ))
     .expect(".inkwidget");
 
