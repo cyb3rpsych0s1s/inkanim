@@ -5,11 +5,6 @@ use serde::{
     Deserialize, Serialize,
 };
 use serde_aux::prelude::*;
-use term_table::{
-    row::Row,
-    table_cell::{Alignment, TableCell},
-    Table, TableStyle,
-};
 
 use crate::args::{Fade, InkAnimInterpolatorType};
 
@@ -392,6 +387,18 @@ impl InkAnimInterpolator {
             }
         }
     }
+    pub fn duration(&self) -> f32 {
+        match self {
+            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+                interpolator.duration
+            }
+        }
+    }
 }
 
 impl PartialEq<InkAnimInterpolatorType> for InkAnimInterpolator {
@@ -488,78 +495,6 @@ pub struct InkAnimSequence {
 pub struct InkAnimAnimationLibraryResource {
     pub cooking_platform: String,
     pub sequences: Vec<InkWrapper<InkAnimSequence>>,
-}
-
-impl<'a> From<InkAnimAnimationLibraryResource> for Vec<Table<'a>> {
-    fn from(value: InkAnimAnimationLibraryResource) -> Self {
-        let mut tables: Vec<Table> = Vec::with_capacity(value.sequences.len());
-        let mut table: Table;
-        let mut row: Row;
-        for sequence in value.sequences {
-            table = Table::new();
-            table.style = TableStyle::extended();
-            table.add_row(Row::new(vec![
-                TableCell::new_with_alignment(sequence.data.name.clone(), 2, Alignment::Center),
-                TableCell::new_with_alignment("index", 1, Alignment::Center),
-                TableCell::new_with_alignment("kind", 1, Alignment::Center),
-                TableCell::new_with_alignment("starts at", 1, Alignment::Center),
-                TableCell::new_with_alignment("ends at", 1, Alignment::Center),
-                TableCell::new_with_alignment("direction", 1, Alignment::Center),
-                TableCell::new_with_alignment("effect", 1, Alignment::Center),
-            ]));
-            for (idx_definition, definition) in sequence.data.definitions.into_iter().enumerate() {
-                for (idx_interpolator, interpolator) in
-                    definition.data.interpolators.into_iter().enumerate()
-                {
-                    if idx_interpolator == 0 {
-                        row = Row::new(vec![
-                            TableCell::new(idx_definition),
-                            TableCell::new(definition.handle_id),
-                        ]);
-                    } else {
-                        row = Row::new(vec![TableCell::new_with_col_span("", 2)]);
-                    }
-                    row.cells.push(TableCell::new_with_alignment(
-                        idx_interpolator,
-                        1,
-                        Alignment::Center,
-                    ));
-                    row.cells.push(TableCell::new_with_alignment(
-                        interpolator.data.as_emoji(),
-                        1,
-                        Alignment::Center,
-                    ));
-                    row.cells.push(TableCell::new_with_alignment(
-                        interpolator.data.starts(),
-                        1,
-                        Alignment::Center,
-                    ));
-                    row.cells.push(TableCell::new_with_alignment(
-                        interpolator.data.ends(),
-                        1,
-                        Alignment::Center,
-                    ));
-                    row.cells.push(TableCell::new_with_alignment(
-                        format!("{}", interpolator.data.direction(),),
-                        1,
-                        Alignment::Center,
-                    ));
-                    row.cells.push(TableCell::new_with_alignment(
-                        format!(
-                            "{}.{}",
-                            interpolator.data.r#type(),
-                            interpolator.data.mode()
-                        ),
-                        1,
-                        Alignment::Right,
-                    ));
-                    table.add_row(row.clone());
-                }
-            }
-            tables.push(table);
-        }
-        tables
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -12,12 +12,21 @@ use std::path::PathBuf;
 
 use clap::Parser;
 use ink::inkWidgetLibraryResource;
-use term_table::Table;
+use term_table::{
+    row::Row,
+    table_cell::{Alignment, TableCell},
+    Table, TableStyle,
+};
 
 use crate::{args::CLI, ink::InkAnimAnimationLibraryResource};
 
 mod args;
 mod ink;
+
+pub struct DualResources {
+    pub widget: inkWidgetLibraryResource,
+    pub anim: InkAnimAnimationLibraryResource,
+}
 
 fn main() {
     let args = CLI::parse();
@@ -42,7 +51,10 @@ fn main() {
         std::fs::read_to_string(PathBuf::from(anim_json_path)).expect(".inkanim");
 
     let widget = serde_json::from_str::<inkWidgetLibraryResource>(&widget_json_export).unwrap();
+    // println!("{widget:#?}");
+
     let anim = serde_json::from_str::<InkAnimAnimationLibraryResource>(&anim_json_export).unwrap();
+    let duo = DualResources { widget, anim };
 
     let filter_by_path = args.path.and_then(|x| {
         Some(
@@ -53,7 +65,7 @@ fn main() {
     });
     let filter_by_type = args.r#type;
 
-    let tables: Vec<Table> = anim.into();
+    let tables: Vec<Table> = duo.into();
     println!(
         "{}",
         tables
@@ -119,4 +131,116 @@ fn main() {
     //     .root_chunk
     //     .get_path_names(&path);
     // println!("names found in path {:#?}\n{:#?}", path, names);
+}
+
+impl<'a> From<DualResources> for Vec<Table<'a>> {
+    fn from(value: DualResources) -> Self {
+        let DualResources { widget, anim } = value;
+        if anim.sequences.len() != widget.library_items.len() {
+            panic!("widget and anim lengths must match")
+        }
+        let mut tables: Vec<Table> = Vec::with_capacity(anim.sequences.len());
+        let mut table: Table;
+        let mut row: Row;
+        // let target: T;
+        for sequence in anim.sequences {
+            table = Table::new();
+            table.style = TableStyle::rounded();
+            table.add_row(Row::new(vec![
+                TableCell::new_with_alignment(sequence.data.name.clone(), 2, Alignment::Center),
+                TableCell::new_with_alignment("index", 1, Alignment::Center),
+                TableCell::new_with_alignment("kind", 1, Alignment::Center),
+                TableCell::new_with_alignment("time", 4, Alignment::Center),
+                TableCell::new_with_alignment("direction", 1, Alignment::Center),
+                TableCell::new_with_alignment("effect", 1, Alignment::Center),
+            ]));
+            for (idx_definition, definition) in
+                sequence.data.definitions.into_iter().take(10).enumerate()
+            {
+                let target = sequence
+                    .data
+                    .targets
+                    .get(idx_definition)
+                    .expect("each anim definition should have a corresponding widget target");
+                let infos = match target {
+                    ink::Target::WithHandleId(infos) => Some(infos.clone().data.path),
+                    ink::Target::WithoutHandleId(_) => None,
+                };
+
+                let fqcn = infos.and_then(|x| {
+                    widget
+                        .library_items
+                        .get(0)
+                        .expect("Root")
+                        .package
+                        .file
+                        .data
+                        .root_chunk
+                        .get_path_names(&x)
+                });
+
+                row = Row::new(vec![
+                    TableCell::new(idx_definition),
+                    TableCell::new(definition.handle_id),
+                    TableCell::new_with_alignment(
+                        fqcn.and_then(|x| Some(x.join(" . ")))
+                            .unwrap_or("".to_string()),
+                        8,
+                        Alignment::Left,
+                    ),
+                ]);
+                table.add_row(row);
+
+                for (idx_interpolator, interpolator) in
+                    definition.data.interpolators.into_iter().enumerate()
+                {
+                    row = Row::new(vec![TableCell::new_with_col_span("", 2)]);
+                    row.has_separator = idx_interpolator == 0;
+                    row.cells.push(TableCell::new_with_alignment(
+                        idx_interpolator,
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        interpolator.data.as_emoji(),
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        interpolator.data.starts(),
+                        1,
+                        Alignment::Left,
+                    ));
+                    row.cells.push(TableCell::new_with_col_span("=>", 1));
+                    row.cells.push(TableCell::new_with_alignment(
+                        interpolator.data.ends(),
+                        1,
+                        Alignment::Left,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        format!("({})", interpolator.data.duration(),),
+                        1,
+                        Alignment::Left,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        format!("{}", interpolator.data.direction(),),
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        format!(
+                            "{}.{}",
+                            interpolator.data.r#type(),
+                            interpolator.data.mode()
+                        ),
+                        1,
+                        Alignment::Right,
+                    ));
+                    table.add_row(row.clone());
+                }
+            }
+            tables.push(table);
+        }
+        tables
+    }
 }
