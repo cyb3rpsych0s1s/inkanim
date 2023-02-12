@@ -6,6 +6,8 @@ use serde::{
 };
 use serde_aux::prelude::*;
 
+use crate::args::{Fade, InkAnimInterpolatorType};
+
 use super::{HandleId, InkWrapper};
 
 fn deserialize_vector2_from_anything<'de, D>(deserializer: D) -> Result<Range, D::Error>
@@ -164,7 +166,7 @@ pub struct InkAnimSequenceTargetInfo {
     pub path: Vec<usize>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
 #[serde(tag = "$type")]
 #[serde(rename_all = "PascalCase")]
 pub struct Vector2 {
@@ -178,7 +180,7 @@ impl std::fmt::Display for Vector2 {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
 #[serde(tag = "$type")]
 #[serde(rename_all = "PascalCase")]
 pub struct HDRColor {
@@ -199,7 +201,7 @@ impl std::fmt::Display for HDRColor {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
 #[serde(untagged)]
 pub enum Range {
     Percent(f32),
@@ -263,6 +265,41 @@ pub enum InkAnimInterpolator {
     inkanimTextValueProgressInterpolator(Interpolator),
 }
 
+impl PartialEq<InkAnimInterpolatorType> for InkAnimInterpolator {
+    fn eq(&self, other: &InkAnimInterpolatorType) -> bool {
+        match self {
+            Self::inkanimScaleInterpolator(_) if other == &InkAnimInterpolatorType::Scale => true,
+            Self::inkanimTranslationInterpolator(_)
+                if other == &InkAnimInterpolatorType::Translation =>
+            {
+                true
+            }
+            Self::inkanimTransparencyInterpolator(ref interpolator) => match other {
+                InkAnimInterpolatorType::Transparency(None) => true,
+                InkAnimInterpolatorType::Transparency(Some(Fade::In))
+                    if interpolator.start_value < interpolator.end_value =>
+                {
+                    true
+                }
+                InkAnimInterpolatorType::Transparency(Some(Fade::Out))
+                    if interpolator.start_value > interpolator.end_value =>
+                {
+                    true
+                }
+                _ => false,
+            },
+            Self::inkanimSizeInterpolator(_) if other == &InkAnimInterpolatorType::Size => true,
+            Self::inkanimColorInterpolator(_) if other == &InkAnimInterpolatorType::Color => true,
+            Self::inkanimTextValueProgressInterpolator(_)
+                if other == &InkAnimInterpolatorType::TextValueProgress =>
+            {
+                true
+            }
+            _ => false,
+        }
+    }
+}
+
 impl std::fmt::Display for InkAnimInterpolator {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -282,7 +319,7 @@ impl std::fmt::Display for InkAnimInterpolator {
                 write!(f, "{} {}", "🎨", interpolator)
             }
             InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
-                write!(f, "{} {}", "🈺", interpolator)
+                write!(f, "{} {:#?}", "🈺", interpolator)
             }
         }
     }
@@ -367,6 +404,20 @@ impl InkAnimSequence {
             }
         }
         return out;
+    }
+    pub fn get_interpolators_matching(
+        &self,
+        filter: &InkAnimInterpolatorType,
+    ) -> Vec<InkWrapper<InkAnimInterpolator>> {
+        self.definitions
+            .get(0)
+            .expect("at least one ink anim definition")
+            .data
+            .interpolators
+            .clone()
+            .into_iter()
+            .filter(|x| x.data == *filter)
+            .collect()
     }
 }
 
