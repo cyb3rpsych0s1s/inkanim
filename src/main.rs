@@ -12,7 +12,7 @@ use std::path::PathBuf;
 
 use args::InkAnimInterpolatorType;
 use clap::Parser;
-use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper};
+use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper, SameOrNested};
 use term_table::{
     row::Row,
     table_cell::{Alignment, TableCell},
@@ -66,7 +66,7 @@ fn main() {
 
     let filter_by_path = args.path.and_then(|x| {
         Some(
-            x.split_whitespace()
+            x.split('.')
                 .map(|x| x.parse::<usize>().expect("digit"))
                 .collect::<Vec<_>>(),
         )
@@ -155,7 +155,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
             anim,
             filter_by_type,
             show_path_names,
-            ..
+            filter_by_path,
         } = value;
         if anim.sequences.len() != widget.library_items.len() {
             panic!("widget and anim lengths must match")
@@ -218,6 +218,15 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                     ink::Target::WithHandleId(infos) => Some(infos.clone().data.path),
                     ink::Target::WithoutHandleId(_) => None,
                 };
+                if let Some(ref filter) = filter_by_path {
+                    if infos
+                        .as_ref()
+                        .map(|x| !x.same_or_nested(filter))
+                        .unwrap_or(true)
+                    {
+                        continue;
+                    }
+                }
 
                 if show_path_names {
                     let fqcn = infos.clone().and_then(|x| {
