@@ -5,6 +5,11 @@ use serde::{
     Deserialize, Serialize,
 };
 use serde_aux::prelude::*;
+use term_table::{
+    row::Row,
+    table_cell::{Alignment, TableCell},
+    Table, TableStyle,
+};
 
 use crate::args::{Fade, InkAnimInterpolatorType};
 
@@ -131,21 +136,49 @@ where
     deserializer.deserialize_any(RangeVisitor)
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Direction {
     To = 0,
     From = 1,
     FromTo = 2,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+impl std::fmt::Display for Direction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::To => "To",
+                Self::From => "From",
+                Self::FromTo => "FromTo",
+            }
+        )
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Mode {
     EasyIn = 0,
     EasyOut = 1,
     EasyInOut = 2,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+impl std::fmt::Display for Mode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::EasyIn => "EasyIn",
+                Self::EasyOut => "EasyOut",
+                Self::EasyInOut => "EasyInOut",
+            }
+        )
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Type {
     Linear = 0,
     Quadratic = 1,
@@ -157,6 +190,27 @@ pub enum Type {
     Elastic = 7,
     Circular = 8,
     Back = 9,
+}
+
+impl std::fmt::Display for Type {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::Linear => "Linear",
+                Self::Quadratic => "Quadratic",
+                Self::Qubic => "Qubic",
+                Self::Quartic => "Quartic",
+                Self::Quintic => "Quintic",
+                Self::Sinusoidal => "Sinusoidal",
+                Self::Exponential => "Exponential",
+                Self::Elastic => "Elastic",
+                Self::Circular => "Circular",
+                Self::Back => "Back",
+            }
+        )
+    }
 }
 
 #[allow(non_camel_case_types)]
@@ -265,6 +319,81 @@ pub enum InkAnimInterpolator {
     inkanimTextValueProgressInterpolator(Interpolator),
 }
 
+impl InkAnimInterpolator {
+    pub fn as_emoji(&self) -> &str {
+        match self {
+            InkAnimInterpolator::inkanimScaleInterpolator(interpolator) => "scale",
+            InkAnimInterpolator::inkanimTranslationInterpolator(interpolator) => "translation",
+            InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator) => "transparency",
+            InkAnimInterpolator::inkanimSizeInterpolator(interpolator) => "size",
+            InkAnimInterpolator::inkanimColorInterpolator(interpolator) => "color",
+            InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+                "text value progress"
+            }
+        }
+    }
+    pub fn starts(&self) -> f32 {
+        match self {
+            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+                interpolator.start_delay
+            }
+        }
+    }
+    pub fn ends(&self) -> f32 {
+        match self {
+            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+                self.starts() + interpolator.duration
+            }
+        }
+    }
+    pub fn direction(&self) -> Direction {
+        match self {
+            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+                interpolator.interpolation_direction
+            }
+        }
+    }
+    pub fn r#type(&self) -> Type {
+        match self {
+            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+                interpolator.interpolation_type
+            }
+        }
+    }
+    pub fn mode(&self) -> Mode {
+        match self {
+            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
+            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+                interpolator.interpolation_mode
+            }
+        }
+    }
+}
+
 impl PartialEq<InkAnimInterpolatorType> for InkAnimInterpolator {
     fn eq(&self, other: &InkAnimInterpolatorType) -> bool {
         match self {
@@ -359,6 +488,78 @@ pub struct InkAnimSequence {
 pub struct InkAnimAnimationLibraryResource {
     pub cooking_platform: String,
     pub sequences: Vec<InkWrapper<InkAnimSequence>>,
+}
+
+impl<'a> From<InkAnimAnimationLibraryResource> for Vec<Table<'a>> {
+    fn from(value: InkAnimAnimationLibraryResource) -> Self {
+        let mut tables: Vec<Table> = Vec::with_capacity(value.sequences.len());
+        let mut table: Table;
+        let mut row: Row;
+        for sequence in value.sequences {
+            table = Table::new();
+            table.style = TableStyle::extended();
+            table.add_row(Row::new(vec![
+                TableCell::new_with_alignment(sequence.data.name.clone(), 2, Alignment::Center),
+                TableCell::new_with_alignment("index", 1, Alignment::Center),
+                TableCell::new_with_alignment("kind", 1, Alignment::Center),
+                TableCell::new_with_alignment("starts at", 1, Alignment::Center),
+                TableCell::new_with_alignment("ends at", 1, Alignment::Center),
+                TableCell::new_with_alignment("direction", 1, Alignment::Center),
+                TableCell::new_with_alignment("effect", 1, Alignment::Center),
+            ]));
+            for (idx_definition, definition) in sequence.data.definitions.into_iter().enumerate() {
+                for (idx_interpolator, interpolator) in
+                    definition.data.interpolators.into_iter().enumerate()
+                {
+                    if idx_interpolator == 0 {
+                        row = Row::new(vec![
+                            TableCell::new(idx_definition),
+                            TableCell::new(definition.handle_id),
+                        ]);
+                    } else {
+                        row = Row::new(vec![TableCell::new_with_col_span("", 2)]);
+                    }
+                    row.cells.push(TableCell::new_with_alignment(
+                        idx_interpolator,
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        interpolator.data.as_emoji(),
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        interpolator.data.starts(),
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        interpolator.data.ends(),
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        format!("{}", interpolator.data.direction(),),
+                        1,
+                        Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        format!(
+                            "{}.{}",
+                            interpolator.data.r#type(),
+                            interpolator.data.mode()
+                        ),
+                        1,
+                        Alignment::Right,
+                    ));
+                    table.add_row(row.clone());
+                }
+            }
+            tables.push(table);
+        }
+        tables
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
