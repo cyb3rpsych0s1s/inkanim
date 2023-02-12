@@ -83,6 +83,12 @@ pub struct Args {
     /// e.g. "scale", "transparency", "translation", and so on
     #[arg(short, long)]
     pub r#type: Option<InkAnimInterpolatorType>,
+
+    /// show full path names or not
+    ///
+    /// path names tend to disrupt CLI display (when too long)
+    #[arg(long = "show", default_value_t = false, long_help = Some("displaying full path names tends to disrupt CLI display when too long"))]
+    pub show_path_names: bool,
 }
 
 #[derive(Parser)] // requires `derive` feature

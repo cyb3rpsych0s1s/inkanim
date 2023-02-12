@@ -10,8 +10,9 @@
 
 use std::path::PathBuf;
 
+use args::InkAnimInterpolatorType;
 use clap::Parser;
-use ink::inkWidgetLibraryResource;
+use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper};
 use term_table::{
     row::Row,
     table_cell::{Alignment, TableCell},
@@ -26,6 +27,14 @@ mod ink;
 pub struct DualResources {
     pub widget: inkWidgetLibraryResource,
     pub anim: InkAnimAnimationLibraryResource,
+    pub filter_by_path: Option<Vec<usize>>,
+    pub filter_by_type: Option<InkAnimInterpolatorType>,
+    pub show_path_names: bool,
+}
+
+pub struct OrphanInkAnimInterpolator {
+    pub index: usize,
+    pub interpolator: InkWrapper<InkAnimInterpolator>,
 }
 
 fn main() {
@@ -54,16 +63,22 @@ fn main() {
     // println!("{widget:#?}");
 
     let anim = serde_json::from_str::<InkAnimAnimationLibraryResource>(&anim_json_export).unwrap();
-    let duo = DualResources { widget, anim };
 
     let filter_by_path = args.path.and_then(|x| {
         Some(
             x.split_whitespace()
-                .map(|x| x.parse::<u32>().expect("digit"))
-                .collect::<Vec<u32>>(),
+                .map(|x| x.parse::<usize>().expect("digit"))
+                .collect::<Vec<_>>(),
         )
     });
     let filter_by_type = args.r#type;
+    let duo = DualResources {
+        widget,
+        anim,
+        filter_by_path,
+        filter_by_type,
+        show_path_names: args.show_path_names,
+    };
 
     let tables: Vec<Table> = duo.into();
     println!(
@@ -135,7 +150,13 @@ fn main() {
 
 impl<'a> From<DualResources> for Vec<Table<'a>> {
     fn from(value: DualResources) -> Self {
-        let DualResources { widget, anim } = value;
+        let DualResources {
+            widget,
+            anim,
+            filter_by_type,
+            show_path_names,
+            ..
+        } = value;
         if anim.sequences.len() != widget.library_items.len() {
             panic!("widget and anim lengths must match")
         }
@@ -154,9 +175,40 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                 TableCell::new_with_alignment("direction", 1, Alignment::Center),
                 TableCell::new_with_alignment("effect", 1, Alignment::Center),
             ]));
-            for (idx_definition, definition) in
-                sequence.data.definitions.into_iter().take(10).enumerate()
-            {
+            for (idx_definition, definition) in sequence.data.definitions.into_iter().enumerate() {
+                let interpolators: Vec<OrphanInkAnimInterpolator> =
+                    if let Some(ref filter) = value.filter_by_type {
+                        definition
+                            .data
+                            .interpolators
+                            .into_iter()
+                            .enumerate()
+                            .filter_map(|(idx, x)| {
+                                if x.data == *filter {
+                                    let orphan = OrphanInkAnimInterpolator {
+                                        index: idx,
+                                        interpolator: x,
+                                    };
+                                    return Some(orphan);
+                                }
+                                None
+                            })
+                            .collect()
+                    } else {
+                        definition
+                            .data
+                            .interpolators
+                            .into_iter()
+                            .enumerate()
+                            .map(|(idx, x)| OrphanInkAnimInterpolator {
+                                index: idx,
+                                interpolator: x,
+                            })
+                            .collect()
+                    };
+                if interpolators.len() == 0 {
+                    continue;
+                }
                 let target = sequence
                     .data
                     .targets
@@ -167,71 +219,84 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                     ink::Target::WithoutHandleId(_) => None,
                 };
 
-                let fqcn = infos.and_then(|x| {
-                    widget
-                        .library_items
-                        .get(0)
-                        .expect("Root")
-                        .package
-                        .file
-                        .data
-                        .root_chunk
-                        .get_path_names(&x)
-                });
-
-                row = Row::new(vec![
-                    TableCell::new(idx_definition),
-                    TableCell::new(definition.handle_id),
-                    TableCell::new_with_alignment(
+                if show_path_names {
+                    let fqcn = infos.clone().and_then(|x| {
+                        widget
+                            .library_items
+                            .get(0)
+                            .expect("Root")
+                            .package
+                            .file
+                            .data
+                            .root_chunk
+                            .get_path_names(&x)
+                    });
+                    table.add_row(Row::new(vec![TableCell::new_with_alignment(
                         fqcn.and_then(|x| Some(x.join(" . ")))
                             .unwrap_or("".to_string()),
-                        8,
+                        10,
                         Alignment::Left,
-                    ),
-                ]);
-                table.add_row(row);
+                    )]));
+                } else {
+                    table.add_row(Row::new(vec![
+                        TableCell::new(idx_definition),
+                        TableCell::new(definition.handle_id),
+                        TableCell::new_with_alignment(
+                            infos
+                                .and_then(|x| {
+                                    Some(
+                                        x.iter()
+                                            .map(|x| x.to_string())
+                                            .collect::<Vec<_>>()
+                                            .join(" . "),
+                                    )
+                                })
+                                .unwrap_or("".to_string()),
+                            8,
+                            Alignment::Left,
+                        ),
+                    ]));
+                }
 
-                for (idx_interpolator, interpolator) in
-                    definition.data.interpolators.into_iter().enumerate()
-                {
+                for (idx_orphan, orphan) in interpolators.into_iter().enumerate() {
                     row = Row::new(vec![TableCell::new_with_col_span("", 2)]);
-                    row.has_separator = idx_interpolator == 0;
+                    row.has_separator = idx_orphan == 0;
                     row.cells.push(TableCell::new_with_alignment(
-                        idx_interpolator,
+                        orphan.index,
                         1,
                         Alignment::Center,
                     ));
                     row.cells.push(TableCell::new_with_alignment(
-                        interpolator.data.as_emoji(),
+                        orphan.interpolator.data.as_emoji(),
                         1,
                         Alignment::Center,
                     ));
                     row.cells.push(TableCell::new_with_alignment(
-                        interpolator.data.starts(),
+                        orphan.interpolator.data.starts(),
                         1,
                         Alignment::Left,
                     ));
                     row.cells.push(TableCell::new_with_col_span("=>", 1));
                     row.cells.push(TableCell::new_with_alignment(
-                        interpolator.data.ends(),
+                        orphan.interpolator.data.ends(),
                         1,
                         Alignment::Left,
                     ));
                     row.cells.push(TableCell::new_with_alignment(
-                        format!("({})", interpolator.data.duration(),),
+                        format!("({})", orphan.interpolator.data.duration(),),
                         1,
                         Alignment::Left,
                     ));
                     row.cells.push(TableCell::new_with_alignment(
-                        format!("{}", interpolator.data.direction(),),
+                        format!("{}", orphan.interpolator.data.direction(),),
                         1,
                         Alignment::Center,
                     ));
                     row.cells.push(TableCell::new_with_alignment(
                         format!(
                             "{}.{}",
-                            interpolator.data.r#type(),
-                            interpolator.data.mode()
+                            orphan.interpolator.data.r#type(),
+                            orphan.interpolator.data.mode()
                         ),
                         1,
                         Alignment::Right,
