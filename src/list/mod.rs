@@ -170,7 +170,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         .file
                         .data
                         .root_chunk
-                        .get_widget_kind(&x)
+                        .get_widget_classname(&x)
                 });
 
                 for (idx_orphan, orphan) in interpolators.into_iter().enumerate() {

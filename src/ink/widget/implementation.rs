@@ -117,7 +117,7 @@ impl Classname for Widget {
 
 pub trait WidgetTree {
     /// return the widget type
-    fn get_widget_kind(&self, path: &[usize]) -> Option<String>;
+    fn get_widget_classname(&self, path: &[usize]) -> Option<String>;
     /// return the full path names to the widget
     fn get_path_names(&self, path: &[usize]) -> Option<Vec<String>>;
     /// return the full path indexes to the widget
@@ -236,7 +236,7 @@ impl ByIndex for Widget {
 }
 
 impl WidgetTree for inkWidgetLibraryItemInstance {
-    fn get_widget_kind(&self, path: &[usize]) -> Option<String> {
+    fn get_widget_classname(&self, path: &[usize]) -> Option<String> {
         let mut parent: Option<Widget> = Some(Widget::inkMultiChildren(
             self.root_widget.data.children.data.clone(),
         ));
@@ -506,8 +506,8 @@ impl inkWidgetLibraryResource {
 }
 
 impl WidgetTree for inkWidgetLibraryResource {
-    fn get_widget_kind(&self, path: &[usize]) -> Option<String> {
-        self.root_chunk().get_widget_kind(path)
+    fn get_widget_classname(&self, path: &[usize]) -> Option<String> {
+        self.root_chunk().get_widget_classname(path)
     }
 
     fn get_path_names(&self, path: &[usize]) -> Option<Vec<String>> {
