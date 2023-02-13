@@ -2,6 +2,8 @@
 
 This little tool allows to quickly introspect `.inkwidget` and corresponding `.inkanim` exported as JSON from [Wolvenkit](https://wiki.redmodding.org/wolvenkit/readme) when [modding](https://wiki.redmodding.org/home/) the game [Cyberpunk 2077](https://www.cyberpunk.net/).
 
+## why ?
+
 Browsing in WolvenKit is fine when there's a couple of widgets and interpolators,
 but it can quickly become tedious or close to impossible when there's hundreds of [inkanimInterpolator](https://nativedb.red4ext.com/inkanimInterpolator)s and deeply-nested [inkWidget](https://nativedb.red4ext.com/inkWidget)s.
 >
@@ -39,3 +41,7 @@ available commands:
   ```sh
   inkanim whereis --help
   ```
+
+## roadmap
+
+This tool doesn't support all the widgets types yet, so please open an [issue](https://github.com/cyb3rpsych0s1s/inkanim-utils/issues) if this is blocking for you.
