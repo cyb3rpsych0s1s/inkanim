@@ -1,6 +1,10 @@
 use std::path::PathBuf;
 
-use clap::{builder::PossibleValue, Parser, ValueEnum};
+use clap::{builder::PossibleValue, ValueEnum};
+
+const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
+const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));
+const FADEOUT: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::Out));
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Fade {
@@ -17,10 +21,6 @@ pub enum InkAnimInterpolatorType {
     Transparency(Option<Fade>),
     TextValueProgress,
 }
-
-const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
-const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));
-const FADEOUT: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::Out));
 
 impl ValueEnum for InkAnimInterpolatorType {
     fn value_variants<'a>() -> &'a [Self] {
@@ -57,45 +57,29 @@ impl ValueEnum for InkAnimInterpolatorType {
 }
 
 #[derive(clap::Args, Debug)]
-#[command(author, version, about, long_about = None)]
-pub struct Args {
+pub struct Files {
     /// .inkwidget path
     #[arg(short, long)]
     pub widget: PathBuf,
 
-    /// .inkanim path
+    /// optional .inkanim path
     ///
     /// note: if left unspecified, it defaults to the same path as the .inkwidget,
     /// with suffix "_animations" and .inkanim extension instead
     #[arg(short, long)]
     pub anim: Option<PathBuf>,
+}
 
-    /// filter by path
+#[derive(clap::Args, Debug)]
+pub struct PathIndexes {
+    /// optionally filter by widget path indexes
     ///
     /// e.g. "1.3.0.0.16"
     #[arg(short, long, value_parser = parse_path_var)]
-    pub path: Option<std::vec::Vec<usize>>,
-
-    /// filter by interpolation type
-    #[arg(short, long)]
-    pub r#type: Option<InkAnimInterpolatorType>,
-
-    /// show widgets name instead of index
-    ///
-    /// note: displaying names tend to disrupt CLI display (when too long)
-    #[arg(short, long = "show", default_value_t = false)]
-    pub show_path_names: bool,
+    pub path: std::vec::Vec<usize>,
 }
 
-#[allow(clippy::upper_case_acronyms)]
-#[derive(Parser)] // requires `derive` feature
-#[command(name = "inkanim")]
-#[command(bin_name = "inkanim")]
-pub enum CLI {
-    List(Args),
-}
-
-fn parse_path_var(path: &str) -> Result<Vec<usize>, std::io::Error> {
+pub(crate) fn parse_path_var(path: &str) -> Result<Vec<usize>, std::io::Error> {
     Ok(path
         .split('.')
         .into_iter()

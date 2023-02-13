@@ -170,10 +170,10 @@ impl inkWidgetLibraryItemInstance {
                         parent = Some(Widget::inkVerticalPanelWidget(node.clone()));
                         continue;
                     }
-                    Widget::inkMultiChildren(node) => {
+                    Widget::inkMultiChildren(_node) => {
                         panic!("encountered unexpected inkMultiChildren at index {idx}");
                     }
-                    Widget::inkTextWidget(leaf) => return Some("inkTextWidget".to_string()),
+                    Widget::inkTextWidget(_leaf) => return Some("inkTextWidget".to_string()),
                 }
             }
         }

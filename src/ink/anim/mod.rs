@@ -121,12 +121,12 @@ pub enum InkAnimInterpolator {
 impl InkAnimInterpolator {
     pub fn as_short_display(&self) -> &str {
         match self {
-            Self::inkanimScaleInterpolator(interpolator) => "scale",
-            Self::inkanimTranslationInterpolator(interpolator) => "translation",
-            Self::inkanimTransparencyInterpolator(interpolator) => "transparency",
-            Self::inkanimSizeInterpolator(interpolator) => "size",
-            Self::inkanimColorInterpolator(interpolator) => "color",
-            Self::inkanimTextValueProgressInterpolator(interpolator) => "text value progress",
+            Self::inkanimScaleInterpolator(_interpolator) => "scale",
+            Self::inkanimTranslationInterpolator(_interpolator) => "translation",
+            Self::inkanimTransparencyInterpolator(_interpolator) => "transparency",
+            Self::inkanimSizeInterpolator(_interpolator) => "size",
+            Self::inkanimColorInterpolator(_interpolator) => "color",
+            Self::inkanimTextValueProgressInterpolator(_interpolator) => "text value progress",
         }
     }
     pub fn starts(&self) -> f32 {
@@ -315,7 +315,7 @@ impl InkAnimSequence {
     /// summarize all paths matching sequences of digits
     pub fn get_path_indexes_matching(&self, searched: &[usize]) -> Vec<PathSummary> {
         let count = searched.len();
-        let last = count - 1;
+        let _last = count - 1;
         let mut out = vec![];
         for (target_index, target) in self.targets.iter().enumerate() {
             match target {
