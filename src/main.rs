@@ -240,12 +240,16 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                             .root_chunk
                             .get_path_names(&x)
                     });
-                    table.add_row(Row::new(vec![TableCell::new_with_alignment(
-                        fqcn.and_then(|x| Some(x.join(" . ")))
-                            .unwrap_or("".to_string()),
-                        10,
-                        Alignment::Left,
-                    )]));
+                    table.add_row(Row::new(vec![
+                        TableCell::new(idx_definition),
+                        TableCell::new(definition.handle_id),
+                        TableCell::new_with_alignment(
+                            fqcn.and_then(|x| Some(x.join(" . ")))
+                                .unwrap_or("".to_string()),
+                            8,
+                            Alignment::Left,
+                        ),
+                    ]));
                 } else {
                     table.add_row(Row::new(vec![
                         TableCell::new(idx_definition),
