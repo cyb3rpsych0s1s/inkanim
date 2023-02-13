@@ -99,7 +99,7 @@ pub struct PathNames {
 
 pub(crate) fn parse_path_indexes(path: &str) -> Result<Vec<usize>, std::io::Error> {
     Ok(path
-        .split('.')
+        .split(&['.', '│'][..])
         .into_iter()
         .map(|x| x.trim().parse::<usize>().expect("digit"))
         .collect())
@@ -107,7 +107,7 @@ pub(crate) fn parse_path_indexes(path: &str) -> Result<Vec<usize>, std::io::Erro
 
 pub(crate) fn parse_path_names(path: &str) -> Result<Vec<String>, std::io::Error> {
     Ok(path
-        .split('.')
+        .split(&['.', '│'][..])
         .into_iter()
         .map(|x| x.trim().to_string())
         .collect())
