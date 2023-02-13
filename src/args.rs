@@ -75,8 +75,8 @@ pub struct Args {
     /// filter by path
     ///
     /// e.g. "1 3 0 0 16"
-    #[arg(short, long)]
-    pub path: Option<String>,
+    #[arg(short, long, value_parser = parse_path_var)]
+    pub path: Option<std::vec::Vec<usize>>,
 
     /// filter by interpolation type
     ///
@@ -96,4 +96,12 @@ pub struct Args {
 #[command(bin_name = "ink")]
 pub enum CLI {
     List(Args),
+}
+
+fn parse_path_var(path: &str) -> Result<Vec<usize>, std::io::Error> {
+    Ok(path
+        .split('.')
+        .into_iter()
+        .map(|x| x.trim().parse::<usize>().expect("digit"))
+        .collect())
 }

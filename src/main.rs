@@ -64,13 +64,7 @@ fn main() {
 
     let anim = serde_json::from_str::<InkAnimAnimationLibraryResource>(&anim_json_export).unwrap();
 
-    let filter_by_path = args.path.and_then(|x| {
-        Some(
-            x.split('.')
-                .map(|x| x.parse::<usize>().expect("digit"))
-                .collect::<Vec<_>>(),
-        )
-    });
+    let filter_by_path = args.path;
     let filter_by_type = args.r#type;
     let duo = DualResources {
         widget,
