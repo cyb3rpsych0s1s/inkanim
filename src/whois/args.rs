@@ -1,7 +1,7 @@
 use crate::args::{Files, PathIndexes};
 
 #[derive(clap::Args, Debug)]
-#[command(author, version, about, long_about = None)]
+#[command()]
 pub struct Args {
     #[command(flatten)]
     pub files: Files,
