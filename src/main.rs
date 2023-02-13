@@ -8,6 +8,8 @@
 
 // use crate::ink::inkWidgetLibraryResource;
 
+const COLUMN_COUNT: usize = 11;
+
 use args::InkAnimInterpolatorType;
 use clap::Parser;
 use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper, SameOrNested};
@@ -101,6 +103,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                 TableCell::new_with_alignment("kind", 1, Alignment::Center),
                 TableCell::new_with_alignment("time", 4, Alignment::Center),
                 TableCell::new_with_alignment("direction", 1, Alignment::Center),
+                TableCell::new_with_alignment("interpolation", 1, Alignment::Center),
                 TableCell::new_with_alignment("effect", 1, Alignment::Center),
             ]));
             for (idx_definition, definition) in sequence.data.definitions.into_iter().enumerate() {
@@ -174,7 +177,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         TableCell::new_with_alignment(
                             fqcn.map(|x| x.join(" . "))
                                 .unwrap_or_else(|| "".to_string()),
-                            8,
+                            COLUMN_COUNT - 2,
                             Alignment::Left,
                         ),
                     ]));
@@ -192,7 +195,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                                         .join(" . ")
                                 })
                                 .unwrap_or_else(|| "".to_string()),
-                            8,
+                            COLUMN_COUNT - 2,
                             Alignment::Left,
                         ),
                     ]));
@@ -252,6 +255,11 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         format!("{}", orphan.interpolator.data.direction(),),
                         1,
                         Alignment::Center,
+                    ));
+                    row.cells.push(TableCell::new_with_alignment(
+                        format!("{}", orphan.interpolator.data.transformation(),),
+                        1,
+                        Alignment::Left,
                     ));
                     row.cells.push(TableCell::new_with_alignment(
                         format!(

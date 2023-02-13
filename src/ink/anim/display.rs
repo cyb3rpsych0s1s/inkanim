@@ -1,6 +1,6 @@
 use super::{
-    Direction, HDRColor, InkAnimDefinition, InkAnimInterpolator, Interpolator, Mode, Range, Type,
-    Vector2,
+    Direction, HDRColor, InkAnimDefinition, InkAnimInterpolator, Interpolator, Mode, Range,
+    Transformation, Type, Vector2,
 };
 
 impl std::fmt::Display for Direction {
@@ -130,5 +130,27 @@ impl std::fmt::Display for InkAnimDefinition {
                 .collect::<Vec<String>>()
                 .join("\n")
         )
+    }
+}
+
+impl std::fmt::Display for Transformation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match (&self.from, &self.to) {
+            (Range::Percent(from), Range::Percent(to)) if from == to => {
+                write!(f, "{}%", from * 100.,)
+            }
+            (Range::Percent(from), Range::Percent(to)) => {
+                write!(f, "{}% => {}%", from * 100., to * 100.,)
+            }
+            (Range::Position(from), Range::Position(to)) if from == to => {
+                write!(f, "{}", from,)
+            }
+            (Range::Position(from), Range::Position(to)) => write!(f, "{} => {}", from, to,),
+            (Range::Color(from), Range::Color(to)) if from == to => {
+                write!(f, "{}", from)
+            }
+            (Range::Color(from), Range::Color(to)) => write!(f, "{} => {}", from, to,),
+            (from, to) => panic!("interpolation start value and end value differ\nstart value: {from:#?}\nend value: {to:#?}"),
+        }
     }
 }

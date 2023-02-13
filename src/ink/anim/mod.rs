@@ -76,6 +76,12 @@ pub enum Range {
     Color(HDRColor),
 }
 
+#[derive(Debug, Clone)]
+pub struct Transformation {
+    pub from: Range,
+    pub to: Range,
+}
+
 /// generic interpolator
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -189,6 +195,19 @@ impl InkAnimInterpolator {
             | Self::inkanimSizeInterpolator(interpolator)
             | Self::inkanimColorInterpolator(interpolator)
             | Self::inkanimTextValueProgressInterpolator(interpolator) => interpolator.duration,
+        }
+    }
+    pub fn transformation(&self) -> Transformation {
+        match self {
+            Self::inkanimScaleInterpolator(interpolator)
+            | Self::inkanimTranslationInterpolator(interpolator)
+            | Self::inkanimTransparencyInterpolator(interpolator)
+            | Self::inkanimSizeInterpolator(interpolator)
+            | Self::inkanimColorInterpolator(interpolator)
+            | Self::inkanimTextValueProgressInterpolator(interpolator) => Transformation {
+                from: interpolator.start_value.clone(),
+                to: interpolator.end_value.clone(),
+            },
         }
     }
 }
