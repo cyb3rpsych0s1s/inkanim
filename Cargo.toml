@@ -5,6 +5,7 @@ edition = "2021"
 authors = ["Roms1383"]
 license = "MIT OR Apache-2.0"
 keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
+description = "CLI tool to quickly extract infos from JSON exports of .inkwidget and .inkanim"
 categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
