@@ -65,34 +65,32 @@ pub struct Args {
 
     /// .inkanim path
     ///
-    /// if left unspecified, it defaults to the same path as the .inkwidget,
+    /// note: if left unspecified, it defaults to the same path as the .inkwidget,
     /// with suffix "_animations" and .inkanim extension instead
     #[arg(short, long)]
     pub anim: Option<PathBuf>,
 
     /// filter by path
     ///
-    /// e.g. "1 3 0 0 16"
+    /// e.g. "1.3.0.0.16"
     #[arg(short, long, value_parser = parse_path_var)]
     pub path: Option<std::vec::Vec<usize>>,
 
     /// filter by interpolation type
-    ///
-    /// e.g. "scale", "transparency", "translation", and so on
     #[arg(short, long)]
     pub r#type: Option<InkAnimInterpolatorType>,
 
-    /// show full path names or not
+    /// show widgets name instead of index
     ///
-    /// path names tend to disrupt CLI display (when too long)
-    #[arg(short, long = "show", default_value_t = false, long_help = Some("displaying full path names tends to disrupt CLI display when too long"))]
+    /// note: displaying names tend to disrupt CLI display (when too long)
+    #[arg(short, long = "show", default_value_t = false)]
     pub show_path_names: bool,
 }
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Parser)] // requires `derive` feature
-#[command(name = "ink")]
-#[command(bin_name = "ink")]
+#[command(name = "inkanim")]
+#[command(bin_name = "inkanim")]
 pub enum CLI {
     List(Args),
 }
