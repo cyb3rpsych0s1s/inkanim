@@ -1,49 +1,47 @@
-#![allow(dead_code, unused_variables)]
+use args::{InkAnimInterpolatorType, PathIndexes};
+use clap::Parser;
+use cli::CLI;
+use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper};
 
-use std::path::PathBuf;
+use crate::ink::InkAnimAnimationLibraryResource;
 
-use ink::InkAnimAnimationLibraryResource;
-
-use crate::ink::{inkWidgetLibraryResource, InkAnimDefinition, InkWrapper};
-
+mod args;
+mod cli;
 mod ink;
+mod list;
+mod read;
+mod whereis;
+mod whois;
+
+use list::list;
+use read::read;
+use whereis::whereis;
+use whois::whois;
+
+pub struct DualResources {
+    pub widget: inkWidgetLibraryResource,
+    pub anim: InkAnimAnimationLibraryResource,
+    pub filter_by_path: Option<PathIndexes>,
+    pub filter_by_type: Option<InkAnimInterpolatorType>,
+    pub show_path_names: bool,
+}
+
+pub struct OrphanInkAnimInterpolator {
+    pub index: usize,
+    pub interpolator: InkWrapper<InkAnimInterpolator>,
+}
 
 fn main() {
-    let anim_json_export =
-        std::fs::read_to_string(PathBuf::from("./inkanim_connect_to_girl.json".to_string()))
-            .expect(".inkanim");
-    let widget_json_export = std::fs::read_to_string(PathBuf::from(
-        "./inkwidget_connect_to_girl.json".to_string(),
-    ))
-    .expect(".inkwidget");
-
-    // 1 3 0 0 is Booting_Screen
-    // 1 3 0 0 12 is rectangles_Beauty
-    let path = vec![1, 3, 0, 0, 9];
-    let anim = serde_json::from_str::<InkAnimAnimationLibraryResource>(&anim_json_export).unwrap();
-    let widget = serde_json::from_str::<inkWidgetLibraryResource>(&widget_json_export).unwrap();
-    println!(
-        "{:#?}",
-        anim.sequences
-            .iter()
-            .map(|x| x.data.definitions.clone())
-            .collect::<Vec<Vec<InkWrapper<InkAnimDefinition>>>>()
-    );
-    let matches = anim.sequences[0].data.get_path_indexes_matching(&path);
-    // println!("{matches:#?}");
-    // println!(
-    //     "found {} target(s) at this path or nested below",
-    //     matches.len()
-    // );
-    // println!("{widget:#?}");
-    let names = widget
-        .library_items
-        .get(0)
-        .unwrap()
-        .package
-        .file
-        .data
-        .root_chunk
-        .get_path_names(&path);
-    println!("names found in path {:#?}\n{:#?}", path, names);
+    let args = CLI::parse();
+    let files = match args {
+        CLI::List(list::Args { ref files, .. }) => files,
+        CLI::WhoIs(whois::Args { ref files, .. }) => files,
+        CLI::WhereIs(whereis::Args { ref files, .. }) => files,
+    };
+    let (widget, anim) = read(files);
+    match args {
+        CLI::List(args) => list(args, widget, anim),
+        CLI::WhoIs(args) => whois(args, widget, anim),
+        CLI::WhereIs(args) => whereis(args, widget, anim),
+    };
 }
