@@ -8,7 +8,7 @@
 
 // use crate::ink::inkWidgetLibraryResource;
 
-use std::path::PathBuf;
+
 
 use args::InkAnimInterpolatorType;
 use clap::Parser;
@@ -39,9 +39,7 @@ pub struct OrphanInkAnimInterpolator {
 
 fn main() {
     let args = CLI::parse();
-    let args = match args {
-        CLI::List(args) => args,
-    };
+    let CLI::List(args) = args;
 
     let widget_json_path = args.widget.clone();
     let anim_json_path = args.anim.unwrap_or_else(|| {
@@ -57,7 +55,7 @@ fn main() {
 
     let widget_json_export = std::fs::read_to_string(widget_json_path).expect(".inkwidget");
     let anim_json_export =
-        std::fs::read_to_string(PathBuf::from(anim_json_path)).expect(".inkanim");
+        std::fs::read_to_string(anim_json_path).expect(".inkanim");
 
     let widget = serde_json::from_str::<inkWidgetLibraryResource>(&widget_json_export).unwrap();
     // println!("{widget:#?}");
@@ -200,7 +198,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                             })
                             .collect()
                     };
-                if interpolators.len() == 0 {
+                if interpolators.is_empty() {
                     continue;
                 }
                 let target = sequence
@@ -238,7 +236,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         TableCell::new(idx_definition),
                         TableCell::new(definition.handle_id),
                         TableCell::new_with_alignment(
-                            fqcn.and_then(|x| Some(x.join(" . ")))
+                            fqcn.map(|x| x.join(" . "))
                                 .unwrap_or("".to_string()),
                             8,
                             Alignment::Left,
@@ -249,15 +247,10 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         TableCell::new(idx_definition),
                         TableCell::new(definition.handle_id),
                         TableCell::new_with_alignment(
-                            infos
-                                .and_then(|x| {
-                                    Some(
-                                        x.iter()
+                            infos.map(|x| x.iter()
                                             .map(|x| x.to_string())
                                             .collect::<Vec<_>>()
-                                            .join(" . "),
-                                    )
-                                })
+                                            .join(" . "))
                                 .unwrap_or("".to_string()),
                             8,
                             Alignment::Left,

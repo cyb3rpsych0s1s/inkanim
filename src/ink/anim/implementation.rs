@@ -19,6 +19,6 @@ impl SameOrNested for Vec<usize> {
                 return true;
             }
         }
-        return false;
+        false
     }
 }

@@ -305,7 +305,7 @@ impl InkAnimSequence {
         for (target_index, target) in self.targets.iter().enumerate() {
             match target {
                 Target::WithHandleId(ref handle) => {
-                    let ref path = handle.data.path;
+                    let path = &handle.data.path;
                     if path.same_or_nested(searched) {
                         out.push(PathSummary {
                             Name: self.name.clone(),
@@ -318,7 +318,7 @@ impl InkAnimSequence {
                 _ => continue,
             }
         }
-        return out;
+        out
     }
     /// find all interpolators matching filter
     pub fn get_interpolators_matching(

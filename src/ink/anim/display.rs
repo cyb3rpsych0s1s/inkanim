@@ -97,22 +97,22 @@ impl std::fmt::Display for InkAnimInterpolator {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             InkAnimInterpolator::inkanimScaleInterpolator(interpolator) => {
-                write!(f, "{} {}", "♻️", interpolator)
+                write!(f, "♻️ {}", interpolator)
             }
             InkAnimInterpolator::inkanimTranslationInterpolator(interpolator) => {
-                write!(f, "{} {}", "↕️", interpolator)
+                write!(f, "↕️ {}", interpolator)
             }
             InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator) => {
-                write!(f, "{} {}", "👻", interpolator)
+                write!(f, "👻 {}", interpolator)
             }
             InkAnimInterpolator::inkanimSizeInterpolator(interpolator) => {
-                write!(f, "{} {}", "📏", interpolator)
+                write!(f, "📏 {}", interpolator)
             }
             InkAnimInterpolator::inkanimColorInterpolator(interpolator) => {
-                write!(f, "{} {}", "🎨", interpolator)
+                write!(f, "🎨 {}", interpolator)
             }
             InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
-                write!(f, "{} {:#?}", "🈺", interpolator)
+                write!(f, "🈺 {:#?}", interpolator)
             }
         }
     }
