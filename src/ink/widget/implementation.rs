@@ -24,6 +24,8 @@ impl ByIndex for Widget {
     fn by_index(&self, idx: usize) -> Option<Widget> {
         match self {
             Self::inkCanvasWidget(node) => node.children.data.by_index(idx),
+            Self::inkHorizontalPanelWidget(node) => node.children.data.by_index(idx),
+            Self::inkVerticalPanelWidget(node) => node.children.data.by_index(idx),
             Self::inkMultiChildren(node) => node.by_index(idx),
             Self::inkTextWidget(leaf) => Some(Self::inkTextWidget(leaf.clone())),
         }
