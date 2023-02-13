@@ -59,14 +59,14 @@ impl ValueEnum for InkAnimInterpolatorType {
 #[derive(clap::Args, Debug)]
 pub struct Files {
     /// .inkwidget path
-    #[arg(short, long)]
+    #[arg(short, long, value_name = "FILE")]
     pub widget: PathBuf,
 
     /// optional .inkanim path
     ///
     /// note: if left unspecified, it defaults to the same path as the .inkwidget,
     /// with suffix "_animations" and .inkanim extension instead
-    #[arg(short, long)]
+    #[arg(short, long, value_name = "FILE")]
     pub anim: Option<PathBuf>,
 }
 
@@ -75,7 +75,7 @@ pub struct PathIndexes {
     /// filter by widget path indexes
     ///
     /// e.g. "1.3.0.0.16"
-    #[arg(short, long, value_parser = parse_path_indexes)]
+    #[arg(short, long, value_parser = parse_path_indexes, value_name = "INDEXES")]
     pub path: std::vec::Vec<usize>,
 }
 
@@ -84,7 +84,7 @@ pub struct PathNames {
     /// filter by widget path name(s)
     ///
     /// e.g. "main_canvas.Arrival.Arrival_GPS_Canvas.Arrival_GPS_Elements_Canvas"
-    #[arg(short, long, value_parser = parse_path_names)]
+    #[arg(short, long, value_parser = parse_path_names, value_name = "NAMES")]
     pub path: std::vec::Vec<String>,
 }
 
