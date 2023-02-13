@@ -53,6 +53,7 @@ native_compound_widget!(inkCacheWidget);
 #[serde(tag = "$type")]
 pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
+    pub name: String,
 }
 
 native_leaf_widget!(inkTextWidget);

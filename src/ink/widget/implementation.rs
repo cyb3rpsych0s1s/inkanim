@@ -9,9 +9,9 @@ use super::{
     WidgetSummary,
 };
 
-macro_rules! impl_compound_widget {
+macro_rules! impl_ink_children {
     ($ty:ident) => {
-        impl InkCompoundWidget for $ty {
+        impl InkChildren for $ty {
             fn children(&self) -> Vec<Widget> {
                 self.children.data.children()
             }
@@ -37,12 +37,18 @@ pub trait Classname {
     fn classname(&self) -> String;
 }
 
-pub trait InkCompoundWidget {
+pub trait InkWidget {
+    fn name(&self) -> &str;
+}
+
+pub trait InkChildren {
     fn children(&self) -> Vec<Widget>;
     fn nodes(&self) -> Vec<InkWrapper<Widget>>;
 }
 
-impl InkCompoundWidget for inkMultiChildren {
+pub trait InkCompoundWidget: InkWidget + InkChildren {}
+
+impl InkChildren for inkMultiChildren {
     fn children(&self) -> Vec<Widget> {
         self.children.iter().map(|x| x.data.clone()).collect()
     }
@@ -52,14 +58,14 @@ impl InkCompoundWidget for inkMultiChildren {
     }
 }
 
-impl_compound_widget!(inkCanvasWidget);
-impl_compound_widget!(inkHorizontalPanelWidget);
-impl_compound_widget!(inkVerticalPanelWidget);
-impl_compound_widget!(inkScrollAreaWidget);
-impl_compound_widget!(inkUniformGridWidget);
-impl_compound_widget!(inkVirtualCompoundWidget);
-impl_compound_widget!(inkFlexWidget);
-impl_compound_widget!(inkCacheWidget);
+impl_ink_children!(inkCanvasWidget);
+impl_ink_children!(inkHorizontalPanelWidget);
+impl_ink_children!(inkVerticalPanelWidget);
+impl_ink_children!(inkScrollAreaWidget);
+impl_ink_children!(inkUniformGridWidget);
+impl_ink_children!(inkVirtualCompoundWidget);
+impl_ink_children!(inkFlexWidget);
+impl_ink_children!(inkCacheWidget);
 
 impl_classname!(inkMultiChildren);
 
@@ -135,7 +141,7 @@ pub trait Leaves {
 
 impl<T> ByIndex for T
 where
-    T: InkCompoundWidget,
+    T: InkChildren,
 {
     fn by_index(&self, idx: usize) -> Option<Widget> {
         self.children().get(idx).map(Clone::clone)
@@ -144,7 +150,7 @@ where
 
 impl<T> ByName for T
 where
-    T: InkCompoundWidget,
+    T: InkChildren,
 {
     fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
         for (idx, child) in self.children().iter().enumerate() {
