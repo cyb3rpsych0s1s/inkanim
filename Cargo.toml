@@ -4,15 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Roms1383"]
 license = "MIT OR Apache-2.0"
-keywords = [
-  "cli",
-  "utils",
-  "wolvenkit",
-  "cyberpunk",
-  "2077",
-  "inkanim",
-  "inkwidget",
-]
+keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
 categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
