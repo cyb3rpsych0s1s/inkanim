@@ -1,6 +1,5 @@
 mod conversion;
-
-use std::fmt;
+mod display;
 
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
@@ -18,39 +17,11 @@ pub enum Direction {
     FromTo = 2,
 }
 
-impl std::fmt::Display for Direction {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Self::To => "To",
-                Self::From => "From",
-                Self::FromTo => "FromTo",
-            }
-        )
-    }
-}
-
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Mode {
     EasyIn = 0,
     EasyOut = 1,
     EasyInOut = 2,
-}
-
-impl std::fmt::Display for Mode {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Self::EasyIn => "EasyIn",
-                Self::EasyOut => "EasyOut",
-                Self::EasyInOut => "EasyInOut",
-            }
-        )
-    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -65,27 +36,6 @@ pub enum Type {
     Elastic = 7,
     Circular = 8,
     Back = 9,
-}
-
-impl std::fmt::Display for Type {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Self::Linear => "Linear",
-                Self::Quadratic => "Quadratic",
-                Self::Qubic => "Qubic",
-                Self::Quartic => "Quartic",
-                Self::Quintic => "Quintic",
-                Self::Sinusoidal => "Sinusoidal",
-                Self::Exponential => "Exponential",
-                Self::Elastic => "Elastic",
-                Self::Circular => "Circular",
-                Self::Back => "Back",
-            }
-        )
-    }
 }
 
 #[allow(non_camel_case_types)]
@@ -103,12 +53,6 @@ pub struct Vector2 {
     pub y: f32,
 }
 
-impl std::fmt::Display for Vector2 {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "X: {}, Y: {}", self.x, self.y)
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
 #[serde(tag = "$type")]
 #[serde(rename_all = "PascalCase")]
@@ -119,16 +63,6 @@ pub struct HDRColor {
     pub red: f32,
 }
 
-impl std::fmt::Display for HDRColor {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "R:{}, G: {}, B: {}, A: {}",
-            self.red, self.green, self.blue, self.alpha
-        )
-    }
-}
-
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
 #[serde(untagged)]
@@ -136,16 +70,6 @@ pub enum Range {
     Percent(f32),
     Position(Vector2),
     Color(HDRColor),
-}
-
-impl std::fmt::Display for Range {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Range::Position(position) => write!(f, "{position}"),
-            Range::Color(color) => write!(f, "{color}"),
-            Range::Percent(percent) => write!(f, "{percent}"),
-        }
-    }
 }
 
 #[allow(non_camel_case_types)]
@@ -165,21 +89,6 @@ pub struct Interpolator {
     pub start_value: Range,
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub use_relative_duration: bool,
-}
-
-impl std::fmt::Display for Interpolator {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{} => {} starts at {}, until {} (duration: {}, relative: {})",
-            self.start_value,
-            self.end_value,
-            self.start_delay,
-            self.start_delay + self.duration,
-            self.duration,
-            self.use_relative_duration
-        )
-    }
 }
 
 #[allow(non_camel_case_types)]
@@ -316,50 +225,10 @@ impl PartialEq<InkAnimInterpolatorType> for InkAnimInterpolator {
     }
 }
 
-impl std::fmt::Display for InkAnimInterpolator {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator) => {
-                write!(f, "{} {}", "♻️", interpolator)
-            }
-            InkAnimInterpolator::inkanimTranslationInterpolator(interpolator) => {
-                write!(f, "{} {}", "↕️", interpolator)
-            }
-            InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator) => {
-                write!(f, "{} {}", "👻", interpolator)
-            }
-            InkAnimInterpolator::inkanimSizeInterpolator(interpolator) => {
-                write!(f, "{} {}", "📏", interpolator)
-            }
-            InkAnimInterpolator::inkanimColorInterpolator(interpolator) => {
-                write!(f, "{} {}", "🎨", interpolator)
-            }
-            InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
-                write!(f, "{} {:#?}", "🈺", interpolator)
-            }
-        }
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InkAnimDefinition {
     pub interpolators: Vec<InkWrapper<InkAnimInterpolator>>,
-}
-
-impl std::fmt::Display for InkAnimDefinition {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            self.interpolators
-                .iter()
-                .enumerate()
-                .map(|(idx, x)| { format!("[{idx}] {x}") })
-                .collect::<Vec<String>>()
-                .join("\n")
-        )
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
