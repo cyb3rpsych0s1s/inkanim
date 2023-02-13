@@ -39,6 +39,7 @@ pub struct inkTextWidget {
 }
 
 /// any widget
+#[allow(clippy::enum_variant_names)]
 #[allow(non_camel_case_types)]
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]

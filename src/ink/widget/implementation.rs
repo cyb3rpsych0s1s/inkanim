@@ -23,9 +23,9 @@ impl ByIndex for inkMultiChildren {
 impl ByIndex for Widget {
     fn by_index(&self, idx: usize) -> Option<Widget> {
         match self {
-            Widget::inkCanvasWidget(node) => node.children.data.by_index(idx),
-            Widget::inkMultiChildren(node) => node.by_index(idx),
-            Widget::inkTextWidget(leaf) => Some(Widget::inkTextWidget(leaf.clone())),
+            Self::inkCanvasWidget(node) => node.children.data.by_index(idx),
+            Self::inkMultiChildren(node) => node.by_index(idx),
+            Self::inkTextWidget(leaf) => Some(Self::inkTextWidget(leaf.clone())),
         }
     }
 }

@@ -21,6 +21,7 @@ pub enum Direction {
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkanimInterpolationMode)
+#[allow(clippy::enum_variant_names)]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Mode {
     EasyIn = 0,
@@ -98,6 +99,7 @@ pub struct Interpolator {
 /// any interpolator
 ///
 /// possible kinds include: scale, translation, transparency, etc
+#[allow(clippy::enum_variant_names)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
@@ -113,86 +115,80 @@ pub enum InkAnimInterpolator {
 impl InkAnimInterpolator {
     pub fn as_short_display(&self) -> &str {
         match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator) => "scale",
-            InkAnimInterpolator::inkanimTranslationInterpolator(interpolator) => "translation",
-            InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator) => "transparency",
-            InkAnimInterpolator::inkanimSizeInterpolator(interpolator) => "size",
-            InkAnimInterpolator::inkanimColorInterpolator(interpolator) => "color",
-            InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
-                "text value progress"
-            }
+            Self::inkanimScaleInterpolator(interpolator) => "scale",
+            Self::inkanimTranslationInterpolator(interpolator) => "translation",
+            Self::inkanimTransparencyInterpolator(interpolator) => "transparency",
+            Self::inkanimSizeInterpolator(interpolator) => "size",
+            Self::inkanimColorInterpolator(interpolator) => "color",
+            Self::inkanimTextValueProgressInterpolator(interpolator) => "text value progress",
         }
     }
     pub fn starts(&self) -> f32 {
         match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
-                interpolator.start_delay
-            }
+            Self::inkanimScaleInterpolator(interpolator)
+            | Self::inkanimTranslationInterpolator(interpolator)
+            | Self::inkanimTransparencyInterpolator(interpolator)
+            | Self::inkanimSizeInterpolator(interpolator)
+            | Self::inkanimColorInterpolator(interpolator)
+            | Self::inkanimTextValueProgressInterpolator(interpolator) => interpolator.start_delay,
         }
     }
     pub fn ends(&self) -> f32 {
         match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+            Self::inkanimScaleInterpolator(interpolator)
+            | Self::inkanimTranslationInterpolator(interpolator)
+            | Self::inkanimTransparencyInterpolator(interpolator)
+            | Self::inkanimSizeInterpolator(interpolator)
+            | Self::inkanimColorInterpolator(interpolator)
+            | Self::inkanimTextValueProgressInterpolator(interpolator) => {
                 self.starts() + interpolator.duration
             }
         }
     }
     pub fn direction(&self) -> Direction {
         match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+            Self::inkanimScaleInterpolator(interpolator)
+            | Self::inkanimTranslationInterpolator(interpolator)
+            | Self::inkanimTransparencyInterpolator(interpolator)
+            | Self::inkanimSizeInterpolator(interpolator)
+            | Self::inkanimColorInterpolator(interpolator)
+            | Self::inkanimTextValueProgressInterpolator(interpolator) => {
                 interpolator.interpolation_direction
             }
         }
     }
     pub fn r#type(&self) -> Type {
         match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+            Self::inkanimScaleInterpolator(interpolator)
+            | Self::inkanimTranslationInterpolator(interpolator)
+            | Self::inkanimTransparencyInterpolator(interpolator)
+            | Self::inkanimSizeInterpolator(interpolator)
+            | Self::inkanimColorInterpolator(interpolator)
+            | Self::inkanimTextValueProgressInterpolator(interpolator) => {
                 interpolator.interpolation_type
             }
         }
     }
     pub fn mode(&self) -> Mode {
         match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
+            Self::inkanimScaleInterpolator(interpolator)
+            | Self::inkanimTranslationInterpolator(interpolator)
+            | Self::inkanimTransparencyInterpolator(interpolator)
+            | Self::inkanimSizeInterpolator(interpolator)
+            | Self::inkanimColorInterpolator(interpolator)
+            | Self::inkanimTextValueProgressInterpolator(interpolator) => {
                 interpolator.interpolation_mode
             }
         }
     }
     pub fn duration(&self) -> f32 {
         match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTranslationInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimSizeInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimColorInterpolator(interpolator)
-            | InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
-                interpolator.duration
-            }
+            Self::inkanimScaleInterpolator(interpolator)
+            | Self::inkanimTranslationInterpolator(interpolator)
+            | Self::inkanimTransparencyInterpolator(interpolator)
+            | Self::inkanimSizeInterpolator(interpolator)
+            | Self::inkanimColorInterpolator(interpolator)
+            | Self::inkanimTextValueProgressInterpolator(interpolator) => interpolator.duration,
         }
     }
 }

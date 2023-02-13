@@ -8,8 +8,6 @@
 
 // use crate::ink::inkWidgetLibraryResource;
 
-
-
 use args::InkAnimInterpolatorType;
 use clap::Parser;
 use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper, SameOrNested};
@@ -54,8 +52,7 @@ fn main() {
     });
 
     let widget_json_export = std::fs::read_to_string(widget_json_path).expect(".inkwidget");
-    let anim_json_export =
-        std::fs::read_to_string(anim_json_path).expect(".inkanim");
+    let anim_json_export = std::fs::read_to_string(anim_json_path).expect(".inkanim");
 
     let widget = serde_json::from_str::<inkWidgetLibraryResource>(&widget_json_export).unwrap();
     // println!("{widget:#?}");
@@ -237,7 +234,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         TableCell::new(definition.handle_id),
                         TableCell::new_with_alignment(
                             fqcn.map(|x| x.join(" . "))
-                                .unwrap_or("".to_string()),
+                                .unwrap_or_else(|| "".to_string()),
                             8,
                             Alignment::Left,
                         ),
@@ -247,11 +244,14 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         TableCell::new(idx_definition),
                         TableCell::new(definition.handle_id),
                         TableCell::new_with_alignment(
-                            infos.map(|x| x.iter()
-                                            .map(|x| x.to_string())
-                                            .collect::<Vec<_>>()
-                                            .join(" . "))
-                                .unwrap_or("".to_string()),
+                            infos
+                                .map(|x| {
+                                    x.iter()
+                                        .map(|x| x.to_string())
+                                        .collect::<Vec<_>>()
+                                        .join(" . ")
+                                })
+                                .unwrap_or_else(|| "".to_string()),
                             8,
                             Alignment::Left,
                         ),
