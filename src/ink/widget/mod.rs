@@ -1,6 +1,6 @@
-mod implementation;
+pub(crate) mod implementation;
 
-pub use implementation::ByIndex;
+pub use implementation::*;
 
 use std::path::PathBuf;
 
@@ -135,82 +135,6 @@ pub struct inkWidgetLibraryResource {
     pub animation_library_res_ref: AnimationLibraryResRef,
     pub external_dependencies_for_internal_items: Vec<AnimationLibraryResRef>,
     pub library_items: Vec<inkWidgetLibraryItem>,
-}
-
-impl inkWidgetLibraryItemInstance {
-    pub fn get_widget_kind(&self, path: &[usize]) -> Option<String> {
-        let mut parent: Option<Widget> = Some(Widget::inkMultiChildren(
-            self.root_widget.data.children.data.clone(),
-        ));
-        let last = path.len() - 1;
-        for (i, idx) in path.iter().enumerate() {
-            if parent.is_none() {
-                break;
-            }
-            if let Some(ref child) = parent.as_ref().unwrap().by_index(*idx) {
-                match child {
-                    Widget::inkCanvasWidget(node) => {
-                        if i == last {
-                            return Some("inkCanvasWidget".to_string());
-                        }
-                        parent = Some(Widget::inkCanvasWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkHorizontalPanelWidget(node) => {
-                        if i == last {
-                            return Some("inkHorizontalPanelWidget".to_string());
-                        }
-                        parent = Some(Widget::inkHorizontalPanelWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkVerticalPanelWidget(node) => {
-                        if i == last {
-                            return Some("inkVerticalPanelWidget".to_string());
-                        }
-                        parent = Some(Widget::inkVerticalPanelWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkMultiChildren(_node) => {
-                        panic!("encountered unexpected inkMultiChildren at index {idx}");
-                    }
-                    Widget::inkTextWidget(_leaf) => return Some("inkTextWidget".to_string()),
-                }
-            }
-        }
-        None
-    }
-    pub fn get_path_names(&self, path: &[usize]) -> Option<Vec<String>> {
-        let mut names: Vec<String> = vec![];
-        let mut parent: Option<Widget> = Some(Widget::inkMultiChildren(
-            self.root_widget.data.children.data.clone(),
-        ));
-
-        for idx in path {
-            if parent.is_none() {
-                break;
-            }
-            if let Some(ref child) = parent.unwrap().by_index(*idx) {
-                match child {
-                    Widget::inkCanvasWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkCanvasWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkMultiChildren(_)
-                    | Widget::inkHorizontalPanelWidget(_)
-                    | Widget::inkVerticalPanelWidget(_) => {
-                        panic!("encountered unexpected inkMultiChildren at index {idx}");
-                    }
-                    Widget::inkTextWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        break;
-                    }
-                }
-            }
-            return None;
-        }
-        Some(names)
-    }
 }
 
 /// widget aggregated informations summary

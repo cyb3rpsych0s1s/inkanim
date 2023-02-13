@@ -352,6 +352,12 @@ impl InkAnimSequence {
     }
 }
 
+impl InkWrapper<InkAnimSequence> {
+    pub fn name(&self) -> &str {
+        self.data.name.as_str()
+    }
+}
+
 /// animation aggregated informations summary
 #[allow(dead_code, non_snake_case)]
 #[derive(Debug)]

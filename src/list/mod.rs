@@ -8,7 +8,10 @@ use term_table::{
 };
 
 use crate::{
-    ink::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, SameOrNested, Target},
+    ink::{
+        inkWidgetLibraryResource, widget::implementation::WidgetTree,
+        InkAnimAnimationLibraryResource, SameOrNested, Target,
+    },
     DualResources, OrphanInkAnimInterpolator,
 };
 

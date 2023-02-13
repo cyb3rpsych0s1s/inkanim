@@ -1,17 +1,51 @@
 mod args;
-pub(crate) use args::Args;
 
-use crate::ink::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource};
+pub(crate) use args::Args;
+use term_table::{
+    row::Row,
+    table_cell::{Alignment, TableCell},
+    Table, TableStyle,
+};
+
+use crate::ink::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, WidgetTree};
 
 pub(crate) fn whois(
     args: Args,
-    _: inkWidgetLibraryResource,
+    widget: inkWidgetLibraryResource,
     anim: InkAnimAnimationLibraryResource,
 ) {
     let indexes = args.path.path;
-    for sequence in anim.sequences {
-        println!("{}", sequence.data.name);
-        let summary = sequence.data.get_path_indexes_matching(&indexes);
-        println!("{:#?}", summary);
+    let depth = indexes.len();
+    let sequences: Vec<&str> = anim.sequences.iter().map(|x| x.name()).collect();
+    let found = widget.get_path_names(&indexes);
+
+    if let Some(names) = found {
+        assert_eq!(depth, names.len());
+
+        let mut table = Table::new();
+        table.style = TableStyle::rounded();
+        table.add_row(Row::new(
+            indexes
+                .iter()
+                .map(|x| TableCell::new_with_alignment(x, 1, Alignment::Center))
+                .collect::<Vec<_>>(),
+        ));
+        table.add_row(Row::new(
+            names
+                .iter()
+                .map(|x| TableCell::new_with_alignment(x, 1, Alignment::Center))
+                .collect::<Vec<_>>(),
+        ));
+        println!("{}", table.render());
+    } else {
+        println!(
+            "couldn't find\n{}\nin sequence(s): {}",
+            indexes
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<_>>()
+                .join(" . "),
+            sequences.join(", "),
+        );
     }
 }
