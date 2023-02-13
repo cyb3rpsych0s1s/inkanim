@@ -1,6 +1,6 @@
 # Cargo InkAnim
 
-![build](https://github.com/cyb3rpsych0s1s/inkanim-utils/actions/workflows/quality.yml/badge.svg)
+![build](https://github.com/cyb3rpsych0s1s/inkanim-utils/actions/workflows/quality.yml/badge.svg) ![crates.io](https://img.shields.io/crates/v/cargo-inkanim.svg)
 
 This little tool allows to quickly introspect `.inkwidget` and corresponding `.inkanim` exported as JSON from [Wolvenkit](https://wiki.redmodding.org/wolvenkit/readme) when [modding](https://wiki.redmodding.org/home/) the game [Cyberpunk 2077](https://www.cyberpunk.net/).
 
