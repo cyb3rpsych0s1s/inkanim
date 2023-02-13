@@ -38,20 +38,18 @@ impl ValueEnum for InkAnimInterpolatorType {
 
     fn to_possible_value(&self) -> Option<PossibleValue> {
         match self {
-            InkAnimInterpolatorType::Color => Some(PossibleValue::new("color").alias("colour")),
-            InkAnimInterpolatorType::Size => Some(PossibleValue::new("size").alias("dimension")),
-            InkAnimInterpolatorType::Scale => Some(PossibleValue::new("scale")),
-            InkAnimInterpolatorType::Translation => {
-                Some(PossibleValue::new("translation").alias("move"))
-            }
-            InkAnimInterpolatorType::Transparency(direction) => match direction {
+            Self::Color => Some(PossibleValue::new("color").alias("colour")),
+            Self::Size => Some(PossibleValue::new("size").alias("dimension")),
+            Self::Scale => Some(PossibleValue::new("scale")),
+            Self::Translation => Some(PossibleValue::new("translation").alias("move")),
+            Self::Transparency(direction) => match direction {
                 None => Some(PossibleValue::new("transparency").aliases(["opacity", "alpha"])),
                 Some(Fade::In) => Some(PossibleValue::new("fadein").aliases(["fade-in", "appear"])),
                 Some(Fade::Out) => {
                     Some(PossibleValue::new("fadeout").aliases(["fade-out", "disappear"]))
                 }
             },
-            InkAnimInterpolatorType::TextValueProgress => {
+            Self::TextValueProgress => {
                 Some(PossibleValue::new("text-value-progress").aliases(["text", "progress", "tvp"]))
             }
         }
@@ -91,6 +89,7 @@ pub struct Args {
     pub show_path_names: bool,
 }
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Parser)] // requires `derive` feature
 #[command(name = "ink")]
 #[command(bin_name = "ink")]
