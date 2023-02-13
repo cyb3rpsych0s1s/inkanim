@@ -72,17 +72,34 @@ pub struct Files {
 
 #[derive(clap::Args, Debug)]
 pub struct PathIndexes {
-    /// optionally filter by widget path indexes
+    /// filter by widget path indexes
     ///
     /// e.g. "1.3.0.0.16"
-    #[arg(short, long, value_parser = parse_path_var)]
+    #[arg(short, long, value_parser = parse_path_indexes)]
     pub path: std::vec::Vec<usize>,
 }
 
-pub(crate) fn parse_path_var(path: &str) -> Result<Vec<usize>, std::io::Error> {
+#[derive(clap::Args, Debug)]
+pub struct PathNames {
+    /// filter by widget path name(s)
+    ///
+    /// e.g. "main_canvas.Arrival.Arrival_GPS_Canvas.Arrival_GPS_Elements_Canvas"
+    #[arg(short, long, value_parser = parse_path_names)]
+    pub path: std::vec::Vec<String>,
+}
+
+pub(crate) fn parse_path_indexes(path: &str) -> Result<Vec<usize>, std::io::Error> {
     Ok(path
         .split('.')
         .into_iter()
         .map(|x| x.trim().parse::<usize>().expect("digit"))
+        .collect())
+}
+
+pub(crate) fn parse_path_names(path: &str) -> Result<Vec<String>, std::io::Error> {
+    Ok(path
+        .split('.')
+        .into_iter()
+        .map(|x| x.trim().to_string())
         .collect())
 }

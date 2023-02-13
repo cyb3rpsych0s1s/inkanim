@@ -1,19 +1,63 @@
 use super::{
-    inkCanvasWidget, inkMultiChildren, inkWidgetLibraryItem, inkWidgetLibraryItemInstance,
-    inkWidgetLibraryResource, Widget, WidgetSummary,
+    inkCanvasWidget, inkHorizontalPanelWidget, inkMultiChildren, inkVerticalPanelWidget,
+    inkWidgetLibraryItem, inkWidgetLibraryItemInstance, inkWidgetLibraryResource, Widget,
+    WidgetSummary,
 };
 
 pub trait WidgetTree {
+    /// return the widget type
     fn get_widget_kind(&self, path: &[usize]) -> Option<String>;
+    /// return the full path names to the widget
     fn get_path_names(&self, path: &[usize]) -> Option<Vec<String>>;
+    /// return the full path indexes to the widget
+    fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>>;
 }
 
 pub trait ByIndex {
+    /// find a widget by index
     fn by_index(&self, idx: usize) -> Option<Widget>;
 }
 
+pub trait ByName {
+    /// find a widget by name
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)>;
+}
+
 pub trait Leaves {
+    /// get widget summary for elements
     fn leaves(&self) -> Vec<WidgetSummary>;
+}
+
+impl ByIndex for inkMultiChildren {
+    fn by_index(&self, idx: usize) -> Option<Widget> {
+        self.children.get(idx).map(|child| child.data.clone())
+    }
+}
+
+impl ByName for inkMultiChildren {
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
+        for (idx, child) in self.children.iter().enumerate() {
+            match &child.data {
+                Widget::inkMultiChildren(_) => {
+                    panic!("unexpected inkMultiChildren with name {name}")
+                }
+                Widget::inkCanvasWidget(node) if node.name == name => {
+                    return Some((idx, child.data.clone()))
+                }
+                Widget::inkTextWidget(node) if node.name == name => {
+                    return Some((idx, child.data.clone()))
+                }
+                Widget::inkHorizontalPanelWidget(node) if node.name == name => {
+                    return Some((idx, child.data.clone()))
+                }
+                Widget::inkVerticalPanelWidget(node) if node.name == name => {
+                    return Some((idx, child.data.clone()))
+                }
+                _ => continue,
+            };
+        }
+        None
+    }
 }
 
 impl ByIndex for inkCanvasWidget {
@@ -22,9 +66,21 @@ impl ByIndex for inkCanvasWidget {
     }
 }
 
-impl ByIndex for inkMultiChildren {
-    fn by_index(&self, idx: usize) -> Option<Widget> {
-        self.children.get(idx).map(|child| child.data.clone())
+impl ByName for inkCanvasWidget {
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
+        self.children.data.by_name(name)
+    }
+}
+
+impl ByName for inkHorizontalPanelWidget {
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
+        self.children.data.by_name(name)
+    }
+}
+
+impl ByName for inkVerticalPanelWidget {
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
+        self.children.data.by_name(name)
     }
 }
 
@@ -127,9 +183,17 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                         parent = Some(Widget::inkCanvasWidget(node.clone()));
                         continue;
                     }
-                    Widget::inkMultiChildren(_)
-                    | Widget::inkHorizontalPanelWidget(_)
-                    | Widget::inkVerticalPanelWidget(_) => {
+                    Widget::inkHorizontalPanelWidget(node) => {
+                        names.push(node.name.clone());
+                        parent = Some(Widget::inkHorizontalPanelWidget(node.clone()));
+                        continue;
+                    }
+                    Widget::inkVerticalPanelWidget(node) => {
+                        names.push(node.name.clone());
+                        parent = Some(Widget::inkVerticalPanelWidget(node.clone()));
+                        continue;
+                    }
+                    Widget::inkMultiChildren(_) => {
                         panic!("encountered unexpected inkMultiChildren at index {idx}");
                     }
                     Widget::inkTextWidget(leaf) => {
@@ -144,6 +208,39 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
             return None;
         }
         Some(names)
+    }
+
+    fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>> {
+        let mut indexes: Vec<usize> = vec![];
+        let depth = path.len() - 1;
+        let mut parent: Option<Widget> = Some(Widget::inkMultiChildren(
+            self.root_widget.data.children.data.clone(),
+        ));
+        for (i, name) in path.iter().enumerate() {
+            if parent.is_none() {
+                break;
+            }
+
+            let found = match parent.unwrap() {
+                Widget::inkCanvasWidget(node) => node.by_name(name),
+                Widget::inkMultiChildren(node) => node.by_name(name),
+                Widget::inkTextWidget(_) => {
+                    if i < depth {
+                        return None;
+                    }
+                    break;
+                }
+                Widget::inkHorizontalPanelWidget(node) => node.by_name(name),
+                Widget::inkVerticalPanelWidget(node) => node.by_name(name),
+            };
+            if let Some((idx, widget)) = found {
+                indexes.push(idx);
+                parent = Some(widget);
+                continue;
+            }
+            return None;
+        }
+        Some(indexes)
     }
 }
 
@@ -163,5 +260,9 @@ impl WidgetTree for inkWidgetLibraryResource {
 
     fn get_path_names(&self, path: &[usize]) -> Option<Vec<String>> {
         self.root_chunk().get_path_names(path)
+    }
+
+    fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>> {
+        self.root_chunk().get_path_indexes(path)
     }
 }
