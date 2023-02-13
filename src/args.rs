@@ -87,7 +87,7 @@ pub struct Args {
     /// show full path names or not
     ///
     /// path names tend to disrupt CLI display (when too long)
-    #[arg(long = "show", default_value_t = false, long_help = Some("displaying full path names tends to disrupt CLI display when too long"))]
+    #[arg(short, long = "show", default_value_t = false, long_help = Some("displaying full path names tends to disrupt CLI display when too long"))]
     pub show_path_names: bool,
 }
 
