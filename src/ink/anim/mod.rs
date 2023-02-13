@@ -269,6 +269,9 @@ pub struct InkAnimAnimationLibraryResource {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InkAnimSequenceTargetInfo {
+    /// path to the nested element (indexes)
+    ///
+    /// e.g. `[1,3,0,0,16]`
     pub path: Vec<usize>,
 }
 
@@ -276,6 +279,7 @@ pub struct InkAnimSequenceTargetInfo {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BlankInkAnimSequenceTargetInfo {
+    /// typically here the value is `-1`
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub handle_ref_id: i32,
 }
