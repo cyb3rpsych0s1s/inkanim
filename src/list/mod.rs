@@ -22,7 +22,7 @@ pub(crate) fn list(
     widget: inkWidgetLibraryResource,
     anim: InkAnimAnimationLibraryResource,
 ) {
-    let filter_by_path = args.path;
+    let filter_by_path = args.path.path;
     let filter_by_type = args.r#type;
     let duo = DualResources {
         widget,
@@ -113,7 +113,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                 if let Some(ref filter) = filter_by_path {
                     if infos
                         .as_ref()
-                        .map(|x| !x.same_or_nested(&filter.path))
+                        .map(|x| !x.same_or_nested(filter))
                         .unwrap_or(true)
                     {
                         continue;

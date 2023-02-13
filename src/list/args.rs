@@ -1,4 +1,4 @@
-use crate::args::{Files, InkAnimInterpolatorType, PathIndexes};
+use crate::args::{Files, InkAnimInterpolatorType, OptionalPathIndexes};
 
 #[derive(clap::Args, Debug)]
 #[command()]
@@ -7,7 +7,7 @@ pub struct Args {
     pub files: Files,
 
     #[command(flatten)]
-    pub path: Option<PathIndexes>,
+    pub path: OptionalPathIndexes,
 
     /// optionally filter by interpolation type
     #[arg(short, long)]

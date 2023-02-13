@@ -1,4 +1,4 @@
-use args::{InkAnimInterpolatorType, PathIndexes};
+use args::InkAnimInterpolatorType;
 use clap::Parser;
 use cli::CLI;
 use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper};
@@ -21,7 +21,7 @@ use whois::whois;
 pub struct DualResources {
     pub widget: inkWidgetLibraryResource,
     pub anim: InkAnimAnimationLibraryResource,
-    pub filter_by_path: Option<PathIndexes>,
+    pub filter_by_path: Option<Vec<usize>>,
     pub filter_by_type: Option<InkAnimInterpolatorType>,
     pub show_path_names: bool,
 }

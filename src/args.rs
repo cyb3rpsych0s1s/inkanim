@@ -80,6 +80,15 @@ pub struct PathIndexes {
 }
 
 #[derive(clap::Args, Debug)]
+pub struct OptionalPathIndexes {
+    /// filter by widget path indexes
+    ///
+    /// e.g. "1.3.0.0.16"
+    #[arg(short, long, value_parser = parse_path_indexes, value_name = "INDEXES")]
+    pub path: Option<std::vec::Vec<usize>>,
+}
+
+#[derive(clap::Args, Debug)]
 pub struct PathNames {
     /// filter by widget path name(s)
     ///
