@@ -11,7 +11,7 @@ use super::{
 
 macro_rules! impl_compound_widget {
     ($ty:ident) => {
-        impl CompoundWidget for $ty {
+        impl InkCompoundWidget for $ty {
             fn children(&self) -> Vec<Widget> {
                 self.children.data.children()
             }
@@ -37,12 +37,12 @@ pub trait Classname {
     fn classname(&self) -> String;
 }
 
-pub trait CompoundWidget {
+pub trait InkCompoundWidget {
     fn children(&self) -> Vec<Widget>;
     fn nodes(&self) -> Vec<InkWrapper<Widget>>;
 }
 
-impl CompoundWidget for inkMultiChildren {
+impl InkCompoundWidget for inkMultiChildren {
     fn children(&self) -> Vec<Widget> {
         self.children.iter().map(|x| x.data.clone()).collect()
     }
@@ -135,7 +135,7 @@ pub trait Leaves {
 
 impl<T> ByIndex for T
 where
-    T: CompoundWidget,
+    T: InkCompoundWidget,
 {
     fn by_index(&self, idx: usize) -> Option<Widget> {
         self.children().get(idx).map(Clone::clone)
@@ -144,7 +144,7 @@ where
 
 impl<T> ByName for T
 where
-    T: CompoundWidget,
+    T: InkCompoundWidget,
 {
     fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
         for (idx, child) in self.children().iter().enumerate() {
@@ -173,7 +173,7 @@ where
 
 impl<T> Leaves for T
 where
-    T: CompoundWidget,
+    T: InkCompoundWidget,
 {
     fn leaves(&self) -> Vec<WidgetSummary> {
         let mut out = vec![];
