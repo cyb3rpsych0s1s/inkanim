@@ -13,6 +13,7 @@ pub enum Flags {
     Soft,
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkCanvasWidget)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
@@ -21,6 +22,7 @@ pub struct inkCanvasWidget {
     pub name: String,
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkMultiChildren)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
@@ -28,6 +30,7 @@ pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkTextWidget)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
@@ -35,6 +38,7 @@ pub struct inkTextWidget {
     pub name: String,
 }
 
+/// any widget
 #[allow(non_camel_case_types)]
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -47,6 +51,7 @@ pub enum Widget {
     // add inkVerticalPanelWidget
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkWidgetLibraryItemInstance)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
@@ -86,6 +91,7 @@ pub struct Package {
     pub file: File,
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkWidgetLibraryItem)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
@@ -101,6 +107,7 @@ pub struct AnimationLibraryResRef {
     flags: Flags,
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkWidgetLibraryResource)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type")]
@@ -144,10 +151,13 @@ impl inkWidgetLibraryItemInstance {
     }
 }
 
+/// widget aggregated informations summary
 #[allow(non_snake_case)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WidgetSummary {
+    /// unique handle ID
     pub HandleId: HandleId,
+    /// widget name
     pub Name: String,
     // pub Path: Vec<usize>,
 }

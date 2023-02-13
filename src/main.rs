@@ -274,7 +274,7 @@ impl<'a> From<DualResources> for Vec<Table<'a>> {
                         Alignment::Center,
                     ));
                     row.cells.push(TableCell::new_with_alignment(
-                        orphan.interpolator.data.as_emoji(),
+                        orphan.interpolator.data.as_short_display(),
                         1,
                         Alignment::Center,
                     ));
