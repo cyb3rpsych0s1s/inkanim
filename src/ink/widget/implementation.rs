@@ -12,12 +12,12 @@ use super::{
 macro_rules! impl_ink_children {
     ($ty:ident) => {
         impl InkChildren for $ty {
-            fn children(&self) -> Vec<Widget> {
-                self.children.data.children()
+            fn orphans(&self) -> Vec<Widget> {
+                self.children.data.orphans()
             }
 
-            fn nodes(&self) -> Vec<InkWrapper<Widget>> {
-                self.children.data.nodes()
+            fn children(&self) -> Vec<InkWrapper<Widget>> {
+                self.children.data.children()
             }
         }
     };
@@ -42,18 +42,18 @@ pub trait InkWidget {
 }
 
 pub trait InkChildren {
-    fn children(&self) -> Vec<Widget>;
-    fn nodes(&self) -> Vec<InkWrapper<Widget>>;
+    fn orphans(&self) -> Vec<Widget>;
+    fn children(&self) -> Vec<InkWrapper<Widget>>;
 }
 
 pub trait InkCompoundWidget: InkWidget + InkChildren {}
 
 impl InkChildren for inkMultiChildren {
-    fn children(&self) -> Vec<Widget> {
+    fn orphans(&self) -> Vec<Widget> {
         self.children.iter().map(|x| x.data.clone()).collect()
     }
 
-    fn nodes(&self) -> Vec<InkWrapper<Widget>> {
+    fn children(&self) -> Vec<InkWrapper<Widget>> {
         self.children.iter().map(|x| x.clone()).collect()
     }
 }
@@ -139,12 +139,25 @@ pub trait Leaves {
     fn leaves(&self) -> Vec<WidgetSummary>;
 }
 
+impl<T> InkChildren for InkWrapper<T>
+where
+    T: InkChildren,
+{
+    fn orphans(&self) -> Vec<Widget> {
+        self.data.orphans()
+    }
+
+    fn children(&self) -> Vec<InkWrapper<Widget>> {
+        self.data.children()
+    }
+}
+
 impl<T> ByIndex for T
 where
     T: InkChildren,
 {
     fn by_index(&self, idx: usize) -> Option<Widget> {
-        self.children().get(idx).map(Clone::clone)
+        self.orphans().get(idx).map(Clone::clone)
     }
 }
 
@@ -153,7 +166,7 @@ where
     T: InkChildren,
 {
     fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
-        for (idx, child) in self.children().iter().enumerate() {
+        for (idx, child) in self.orphans().iter().enumerate() {
             match &child {
                 Widget::inkMultiChildren(_) => {
                     panic!("unexpected inkMultiChildren with name {name}")
@@ -183,7 +196,7 @@ where
 {
     fn leaves(&self) -> Vec<WidgetSummary> {
         let mut out = vec![];
-        for child in self.nodes().iter() {
+        for child in self.children().iter() {
             match child.data {
                 Widget::inkTextWidget(ref leaf) => out.push(WidgetSummary {
                     HandleId: child.handle_id,
