@@ -360,75 +360,18 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                 break;
             }
             if let Some(ref child) = parent.as_ref().unwrap().by_index(*idx) {
-                match child {
-                    Widget::inkCanvasWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkCanvasWidget(node.clone()));
-                        continue;
+                if let Widget::inkMultiChildren(_) = child {
+                    panic!("encountered unexpected inkMultiChildren at index {idx}");
+                }
+                if let Some(_) = child.as_compound() {
+                    if i == last {
+                        return Some(child.classname());
                     }
-                    Widget::inkHorizontalPanelWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkHorizontalPanelWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkVerticalPanelWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkVerticalPanelWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkMultiChildren(_node) => {
-                        panic!("encountered unexpected inkMultiChildren at index {idx}");
-                    }
-                    Widget::inkTextWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkImageWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkVideoWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkMaskWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkBorderWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkShapeWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkCircleWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkRectangleWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkVectorGraphicWidget(leaf) => return Some(leaf.classname()),
-                    Widget::inkScrollAreaWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkScrollAreaWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkUniformGridWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkUniformGridWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkVirtualCompoundWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkVirtualCompoundWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkFlexWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkFlexWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkCacheWidget(node) => {
-                        if i == last {
-                            return Some(node.classname());
-                        }
-                        parent = Some(Widget::inkCacheWidget(node.clone()));
-                        continue;
-                    }
+                    parent = Some(child.clone());
+                    continue;
+                }
+                if let Some(_) = child.as_leaf() {
+                    return Some(child.classname());
                 }
             }
         }
