@@ -13,32 +13,39 @@ pub enum Flags {
     Soft,
 }
 
-/// see [NativeDB](https://nativedb.red4ext.com/inkCanvasWidget)
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
-pub struct inkCanvasWidget {
-    pub children: InkWrapper<inkMultiChildren>,
-    pub name: String,
+macro_rules! native_compound_widget {
+    ($ty:ident) => {
+        /// see [NativeDB](https://nativedb.red4ext.com/$ty)
+        #[allow(non_camel_case_types)]
+        #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[serde(tag = "$type")]
+        pub struct $ty {
+            pub children: InkWrapper<inkMultiChildren>,
+            pub name: String,
+        }
+    };
 }
 
-/// see [NativeDB](https://nativedb.red4ext.com/inkHorizontalPanelWidget)
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
-pub struct inkHorizontalPanelWidget {
-    pub children: InkWrapper<inkMultiChildren>,
-    pub name: String,
+macro_rules! native_leaf_widget {
+    ($ty:ident) => {
+        /// see [NativeDB](https://nativedb.red4ext.com/$ty)
+        #[allow(non_camel_case_types)]
+        #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[serde(tag = "$type")]
+        pub struct $ty {
+            pub name: String,
+        }
+    };
 }
 
-/// see [NativeDB](https://nativedb.red4ext.com/inkVerticalPanelWidget)
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
-pub struct inkVerticalPanelWidget {
-    pub children: InkWrapper<inkMultiChildren>,
-    pub name: String,
-}
+native_compound_widget!(inkCanvasWidget);
+native_compound_widget!(inkHorizontalPanelWidget);
+native_compound_widget!(inkVerticalPanelWidget);
+native_compound_widget!(inkScrollAreaWidget);
+native_compound_widget!(inkUniformGridWidget);
+native_compound_widget!(inkVirtualCompoundWidget);
+native_compound_widget!(inkFlexWidget);
+native_compound_widget!(inkCacheWidget);
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkMultiChildren)
 #[allow(non_camel_case_types)]
@@ -48,13 +55,15 @@ pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
 }
 
-/// see [NativeDB](https://nativedb.red4ext.com/inkTextWidget)
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
-pub struct inkTextWidget {
-    pub name: String,
-}
+native_leaf_widget!(inkTextWidget);
+native_leaf_widget!(inkImageWidget);
+native_leaf_widget!(inkVideoWidget);
+native_leaf_widget!(inkMaskWidget);
+native_leaf_widget!(inkBorderWidget);
+native_leaf_widget!(inkShapeWidget);
+native_leaf_widget!(inkCircleWidget);
+native_leaf_widget!(inkRectangleWidget);
+native_leaf_widget!(inkVectorGraphicWidget);
 
 /// any widget
 #[allow(clippy::enum_variant_names)]
@@ -63,11 +72,26 @@ pub struct inkTextWidget {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Widget {
-    inkCanvasWidget(inkCanvasWidget),
     inkMultiChildren(inkMultiChildren),
-    inkTextWidget(inkTextWidget),
+
+    inkCanvasWidget(inkCanvasWidget),
     inkHorizontalPanelWidget(inkHorizontalPanelWidget),
     inkVerticalPanelWidget(inkVerticalPanelWidget),
+    inkScrollAreaWidget(inkScrollAreaWidget),
+    inkUniformGridWidget(inkUniformGridWidget),
+    inkVirtualCompoundWidget(inkVirtualCompoundWidget),
+    inkFlexWidget(inkFlexWidget),
+    inkCacheWidget(inkCacheWidget),
+
+    inkTextWidget(inkTextWidget),
+    inkImageWidget(inkImageWidget),
+    inkVideoWidget(inkVideoWidget),
+    inkMaskWidget(inkMaskWidget),
+    inkBorderWidget(inkBorderWidget),
+    inkShapeWidget(inkShapeWidget),
+    inkCircleWidget(inkCircleWidget),
+    inkRectangleWidget(inkRectangleWidget),
+    inkVectorGraphicWidget(inkVectorGraphicWidget),
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkWidgetLibraryItemInstance)
@@ -145,5 +169,4 @@ pub struct WidgetSummary {
     pub HandleId: HandleId,
     /// widget name
     pub Name: String,
-    // pub Path: Vec<usize>,
 }

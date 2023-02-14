@@ -20,6 +20,15 @@ pub enum InkAnimInterpolatorType {
     Translation,
     Transparency(Option<Fade>),
     TextValueProgress,
+    Effect,
+    Anchor,
+    Pivot,
+    Shear,
+    Rotation,
+    Margin,
+    Padding,
+    TextReplace,
+    TextOffset,
 }
 
 impl ValueEnum for InkAnimInterpolatorType {
@@ -50,8 +59,19 @@ impl ValueEnum for InkAnimInterpolatorType {
                 }
             },
             Self::TextValueProgress => {
-                Some(PossibleValue::new("text-value-progress").aliases(["text", "progress", "tvp"]))
+                Some(PossibleValue::new("text-value-progress").aliases(["progress", "tvp"]))
             }
+            Self::Effect => Some(PossibleValue::new("effect")),
+            Self::Anchor => Some(PossibleValue::new("anchor")),
+            Self::Pivot => Some(PossibleValue::new("pivot")),
+            Self::Shear => Some(PossibleValue::new("shear")),
+            Self::Rotation => Some(PossibleValue::new("rotation")),
+            Self::Margin => Some(PossibleValue::new("margin")),
+            Self::Padding => Some(PossibleValue::new("padding")),
+            Self::TextReplace => {
+                Some(PossibleValue::new("text-replace").aliases(["replace", "tr"]))
+            }
+            Self::TextOffset => Some(PossibleValue::new("text-offset").aliases(["offset", "to"])),
         }
     }
 }
