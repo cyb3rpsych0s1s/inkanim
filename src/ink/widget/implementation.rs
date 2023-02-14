@@ -74,7 +74,7 @@ impl InkChildren for inkMultiChildren {
     }
 
     fn children(&self) -> Vec<InkWrapper<Widget>> {
-        self.children.iter().map(|x| x.clone()).collect()
+        self.children.to_vec()
     }
 }
 
@@ -363,14 +363,14 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                 if let Widget::inkMultiChildren(_) = child {
                     panic!("encountered unexpected inkMultiChildren at index {idx}");
                 }
-                if let Some(_) = child.as_compound() {
+                if child.as_compound().is_some() {
                     if i == last {
                         return Some(child.classname());
                     }
                     parent = Some(child.clone());
                     continue;
                 }
-                if let Some(_) = child.as_leaf() {
+                if child.as_leaf().is_some() {
                     return Some(child.classname());
                 }
             }
@@ -391,12 +391,12 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
             }
             if let Some(ref child) = parent.unwrap().by_index(*idx) {
                 if let Some(name) = child.name() {
-                    if let Some(_) = child.as_compound() {
+                    if child.as_compound().is_some() {
                         names.push(name.to_string());
                         parent = Some(child.clone());
                         continue;
                     }
-                    if let Some(_) = child.as_leaf() {
+                    if child.as_leaf().is_some() {
                         names.push(name.to_string());
                         if i < depth {
                             return None;
