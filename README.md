@@ -29,19 +29,19 @@ available commands:
 - list: quickly introspect and filters by interpolator type or widget indexes path
 
   ```sh
-  cargo-inkanim list --help
+  inkanim list --help
   ```
 
 - whois: quickly get widget names path from indexes path
 
   ```sh
-  cargo-inkanim whois --help
+  inkanim whois --help
   ```
 
 - whereis: quickly get widget indexes path from names path
 
   ```sh
-  cargo-inkanim whereis --help
+  inkanim whereis --help
   ```
 
 ## roadmap
