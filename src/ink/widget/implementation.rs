@@ -1,3 +1,5 @@
+use enum_dispatch::enum_dispatch;
+
 use crate::ink::InkWrapper;
 
 use super::{
@@ -49,6 +51,7 @@ macro_rules! impl_classname {
     };
 }
 
+#[enum_dispatch(Widget)]
 pub trait Classname {
     fn classname(&self) -> String;
 }
@@ -136,34 +139,6 @@ impl_classname!(inkShapeWidget);
 impl_classname!(inkCircleWidget);
 impl_classname!(inkRectangleWidget);
 impl_classname!(inkVectorGraphicWidget);
-
-impl Classname for Widget {
-    fn classname(&self) -> String {
-        match self {
-            Self::inkMultiChildren(widget) => widget.classname(),
-
-            Self::inkCanvasWidget(widget) => widget.classname(),
-            Self::inkHorizontalPanelWidget(widget) => widget.classname(),
-            Self::inkVerticalPanelWidget(widget) => widget.classname(),
-            Self::inkScrollAreaWidget(widget) => widget.classname(),
-            Self::inkUniformGridWidget(widget) => widget.classname(),
-            Self::inkVirtualCompoundWidget(widget) => widget.classname(),
-            Self::inkFlexWidget(widget) => widget.classname(),
-            Self::inkCacheWidget(widget) => widget.classname(),
-
-            Self::inkTextWidget(widget) => widget.classname(),
-            Self::inkImageWidget(widget) => widget.classname(),
-            Self::inkVideoWidget(widget) => widget.classname(),
-            Self::inkMaskWidget(widget) => widget.classname(),
-            Self::inkBorderWidget(widget) => widget.classname(),
-            Self::inkShapeWidget(widget) => widget.classname(),
-            Self::inkCircleWidget(widget) => widget.classname(),
-            Self::inkRectangleWidget(widget) => widget.classname(),
-            Self::inkVectorGraphicWidget(widget) => widget.classname(),
-        }
-    }
-}
-
 impl Widget {
     pub fn name(&self) -> Option<&str> {
         match self {

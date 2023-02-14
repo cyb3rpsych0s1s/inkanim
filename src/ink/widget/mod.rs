@@ -1,5 +1,6 @@
 pub(crate) mod implementation;
 
+use enum_dispatch::enum_dispatch;
 pub use implementation::*;
 
 use std::path::PathBuf;
@@ -70,6 +71,7 @@ native_leaf_widget!(inkVectorGraphicWidget);
 #[allow(non_camel_case_types)]
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[enum_dispatch]
 #[serde(untagged)]
 pub enum Widget {
     inkMultiChildren(inkMultiChildren),
