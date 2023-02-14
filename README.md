@@ -46,4 +46,8 @@ available commands:
 
 ## roadmap
 
-This tool doesn't support all the widgets types yet, so please open an [issue](https://github.com/cyb3rpsych0s1s/inkanim-utils/issues) if this is blocking for you.
+This tool is in its early stage, so please open an [issue](https://github.com/cyb3rpsych0s1s/inkanim-utils/issues) if you find any bug.
+
+Feel free to come [discuss](https://github.com/cyb3rpsych0s1s/inkanim-utils/discussions) any feature you feel is missing.
+
+Contributions welcomed !
