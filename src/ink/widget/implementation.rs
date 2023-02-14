@@ -23,6 +23,22 @@ macro_rules! impl_ink_children {
     };
 }
 
+macro_rules! impl_ink_widget {
+    ($ty:ident) => {
+        impl InkWidget for $ty {
+            fn name(&self) -> &str {
+                self.name.as_str()
+            }
+        }
+    };
+}
+
+macro_rules! impl_leaf_widget {
+    ($ty:ident) => {
+        impl InkLeafWidget for $ty {}
+    };
+}
+
 macro_rules! impl_classname {
     ($ty:ident) => {
         impl Classname for $ty {
@@ -46,7 +62,11 @@ pub trait InkChildren {
     fn children(&self) -> Vec<InkWrapper<Widget>>;
 }
 
+pub trait InkLeafWidget: InkWidget {}
+
 pub trait InkCompoundWidget: InkWidget + InkChildren {}
+
+impl<T> InkCompoundWidget for T where T: InkWidget + InkChildren {}
 
 impl InkChildren for inkMultiChildren {
     fn orphans(&self) -> Vec<Widget> {
@@ -66,6 +86,35 @@ impl_ink_children!(inkUniformGridWidget);
 impl_ink_children!(inkVirtualCompoundWidget);
 impl_ink_children!(inkFlexWidget);
 impl_ink_children!(inkCacheWidget);
+
+impl_ink_widget!(inkCanvasWidget);
+impl_ink_widget!(inkHorizontalPanelWidget);
+impl_ink_widget!(inkVerticalPanelWidget);
+impl_ink_widget!(inkScrollAreaWidget);
+impl_ink_widget!(inkUniformGridWidget);
+impl_ink_widget!(inkVirtualCompoundWidget);
+impl_ink_widget!(inkFlexWidget);
+impl_ink_widget!(inkCacheWidget);
+
+impl_ink_widget!(inkTextWidget);
+impl_ink_widget!(inkImageWidget);
+impl_ink_widget!(inkVideoWidget);
+impl_ink_widget!(inkMaskWidget);
+impl_ink_widget!(inkBorderWidget);
+impl_ink_widget!(inkShapeWidget);
+impl_ink_widget!(inkCircleWidget);
+impl_ink_widget!(inkRectangleWidget);
+impl_ink_widget!(inkVectorGraphicWidget);
+
+impl_leaf_widget!(inkTextWidget);
+impl_leaf_widget!(inkImageWidget);
+impl_leaf_widget!(inkVideoWidget);
+impl_leaf_widget!(inkMaskWidget);
+impl_leaf_widget!(inkBorderWidget);
+impl_leaf_widget!(inkShapeWidget);
+impl_leaf_widget!(inkCircleWidget);
+impl_leaf_widget!(inkRectangleWidget);
+impl_leaf_widget!(inkVectorGraphicWidget);
 
 impl_classname!(inkMultiChildren);
 
@@ -91,26 +140,100 @@ impl_classname!(inkVectorGraphicWidget);
 impl Classname for Widget {
     fn classname(&self) -> String {
         match self {
-            Widget::inkMultiChildren(widget) => widget.classname(),
+            Self::inkMultiChildren(widget) => widget.classname(),
 
-            Widget::inkCanvasWidget(widget) => widget.classname(),
-            Widget::inkHorizontalPanelWidget(widget) => widget.classname(),
-            Widget::inkVerticalPanelWidget(widget) => widget.classname(),
-            Widget::inkScrollAreaWidget(widget) => widget.classname(),
-            Widget::inkUniformGridWidget(widget) => widget.classname(),
-            Widget::inkVirtualCompoundWidget(widget) => widget.classname(),
-            Widget::inkFlexWidget(widget) => widget.classname(),
-            Widget::inkCacheWidget(widget) => widget.classname(),
+            Self::inkCanvasWidget(widget) => widget.classname(),
+            Self::inkHorizontalPanelWidget(widget) => widget.classname(),
+            Self::inkVerticalPanelWidget(widget) => widget.classname(),
+            Self::inkScrollAreaWidget(widget) => widget.classname(),
+            Self::inkUniformGridWidget(widget) => widget.classname(),
+            Self::inkVirtualCompoundWidget(widget) => widget.classname(),
+            Self::inkFlexWidget(widget) => widget.classname(),
+            Self::inkCacheWidget(widget) => widget.classname(),
 
-            Widget::inkTextWidget(widget) => widget.classname(),
-            Widget::inkImageWidget(widget) => widget.classname(),
-            Widget::inkVideoWidget(widget) => widget.classname(),
-            Widget::inkMaskWidget(widget) => widget.classname(),
-            Widget::inkBorderWidget(widget) => widget.classname(),
-            Widget::inkShapeWidget(widget) => widget.classname(),
-            Widget::inkCircleWidget(widget) => widget.classname(),
-            Widget::inkRectangleWidget(widget) => widget.classname(),
-            Widget::inkVectorGraphicWidget(widget) => widget.classname(),
+            Self::inkTextWidget(widget) => widget.classname(),
+            Self::inkImageWidget(widget) => widget.classname(),
+            Self::inkVideoWidget(widget) => widget.classname(),
+            Self::inkMaskWidget(widget) => widget.classname(),
+            Self::inkBorderWidget(widget) => widget.classname(),
+            Self::inkShapeWidget(widget) => widget.classname(),
+            Self::inkCircleWidget(widget) => widget.classname(),
+            Self::inkRectangleWidget(widget) => widget.classname(),
+            Self::inkVectorGraphicWidget(widget) => widget.classname(),
+        }
+    }
+}
+
+impl Widget {
+    pub fn name(&self) -> Option<&str> {
+        match self {
+            Self::inkMultiChildren(_) => None,
+            Self::inkCanvasWidget(node) => Some(node.name()),
+            Self::inkHorizontalPanelWidget(node) => Some(node.name()),
+            Self::inkVerticalPanelWidget(node) => Some(node.name()),
+            Self::inkScrollAreaWidget(node) => Some(node.name()),
+            Self::inkUniformGridWidget(node) => Some(node.name()),
+            Self::inkVirtualCompoundWidget(node) => Some(node.name()),
+            Self::inkFlexWidget(node) => Some(node.name()),
+            Self::inkCacheWidget(node) => Some(node.name()),
+            Self::inkTextWidget(node) => Some(node.name()),
+            Self::inkImageWidget(node) => Some(node.name()),
+            Self::inkVideoWidget(node) => Some(node.name()),
+            Self::inkMaskWidget(node) => Some(node.name()),
+            Self::inkBorderWidget(node) => Some(node.name()),
+            Self::inkShapeWidget(node) => Some(node.name()),
+            Self::inkCircleWidget(node) => Some(node.name()),
+            Self::inkRectangleWidget(node) => Some(node.name()),
+            Self::inkVectorGraphicWidget(node) => Some(node.name()),
+        }
+    }
+    pub fn as_compound(&self) -> Option<&dyn InkCompoundWidget> {
+        match self {
+            Self::inkCanvasWidget(node) => Some(node),
+            Self::inkHorizontalPanelWidget(node) => Some(node),
+            Self::inkVerticalPanelWidget(node) => Some(node),
+            Self::inkScrollAreaWidget(node) => Some(node),
+            Self::inkUniformGridWidget(node) => Some(node),
+            Self::inkVirtualCompoundWidget(node) => Some(node),
+            Self::inkFlexWidget(node) => Some(node),
+            Self::inkCacheWidget(node) => Some(node),
+            _ => None,
+        }
+    }
+    pub fn as_widget(&self) -> Option<&dyn InkWidget> {
+        match self {
+            Self::inkMultiChildren(_) => None,
+            Self::inkCanvasWidget(widget) => Some(widget),
+            Self::inkHorizontalPanelWidget(widget) => Some(widget),
+            Self::inkVerticalPanelWidget(widget) => Some(widget),
+            Self::inkScrollAreaWidget(widget) => Some(widget),
+            Self::inkUniformGridWidget(widget) => Some(widget),
+            Self::inkVirtualCompoundWidget(widget) => Some(widget),
+            Self::inkFlexWidget(widget) => Some(widget),
+            Self::inkCacheWidget(widget) => Some(widget),
+            Self::inkTextWidget(widget) => Some(widget),
+            Self::inkImageWidget(widget) => Some(widget),
+            Self::inkVideoWidget(widget) => Some(widget),
+            Self::inkMaskWidget(widget) => Some(widget),
+            Self::inkBorderWidget(widget) => Some(widget),
+            Self::inkShapeWidget(widget) => Some(widget),
+            Self::inkCircleWidget(widget) => Some(widget),
+            Self::inkRectangleWidget(widget) => Some(widget),
+            Self::inkVectorGraphicWidget(widget) => Some(widget),
+        }
+    }
+    pub fn as_leaf(&self) -> Option<&dyn InkLeafWidget> {
+        match self {
+            Self::inkTextWidget(widget) => Some(widget),
+            Self::inkImageWidget(widget) => Some(widget),
+            Self::inkVideoWidget(widget) => Some(widget),
+            Self::inkMaskWidget(widget) => Some(widget),
+            Self::inkBorderWidget(widget) => Some(widget),
+            Self::inkShapeWidget(widget) => Some(widget),
+            Self::inkCircleWidget(widget) => Some(widget),
+            Self::inkRectangleWidget(widget) => Some(widget),
+            Self::inkVectorGraphicWidget(widget) => Some(widget),
+            _ => None,
         }
     }
 }
@@ -167,24 +290,15 @@ where
 {
     fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
         for (idx, child) in self.orphans().iter().enumerate() {
-            match &child {
-                Widget::inkMultiChildren(_) => {
-                    panic!("unexpected inkMultiChildren with name {name}")
+            if let Widget::inkMultiChildren(_) = &child {
+                panic!("unexpected inkMultiChildren with name {name}");
+            }
+            if let Some(compound) = child.as_compound() {
+                if compound.name() == name {
+                    return Some((idx, child.clone()));
                 }
-                Widget::inkCanvasWidget(node) if node.name == name => {
-                    return Some((idx, child.clone()))
-                }
-                Widget::inkTextWidget(node) if node.name == name => {
-                    return Some((idx, child.clone()))
-                }
-                Widget::inkHorizontalPanelWidget(node) if node.name == name => {
-                    return Some((idx, child.clone()))
-                }
-                Widget::inkVerticalPanelWidget(node) if node.name == name => {
-                    return Some((idx, child.clone()))
-                }
-                _ => continue,
-            };
+            }
+            continue;
         }
         None
     }
@@ -197,24 +311,11 @@ where
     fn leaves(&self) -> Vec<WidgetSummary> {
         let mut out = vec![];
         for child in self.children().iter() {
-            match child.data {
-                Widget::inkTextWidget(ref leaf) => out.push(WidgetSummary {
+            if let Some(name) = child.data.name() {
+                out.push(WidgetSummary {
                     HandleId: child.handle_id,
-                    Name: leaf.name.clone(),
-                }),
-                Widget::inkCanvasWidget(ref node) => out.push(WidgetSummary {
-                    HandleId: child.handle_id,
-                    Name: node.name.clone(),
-                }),
-                Widget::inkHorizontalPanelWidget(ref node) => out.push(WidgetSummary {
-                    HandleId: child.handle_id,
-                    Name: node.name.clone(),
-                }),
-                Widget::inkVerticalPanelWidget(ref node) => out.push(WidgetSummary {
-                    HandleId: child.handle_id,
-                    Name: node.name.clone(),
-                }),
-                _ => {}
+                    Name: name.to_string(),
+                });
             }
         }
         out
@@ -346,115 +447,21 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                 break;
             }
             if let Some(ref child) = parent.unwrap().by_index(*idx) {
-                match child {
-                    Widget::inkCanvasWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkCanvasWidget(node.clone()));
+                if let Some(name) = child.name() {
+                    if let Some(_) = child.as_compound() {
+                        names.push(name.to_string());
+                        parent = Some(child.clone());
                         continue;
                     }
-                    Widget::inkHorizontalPanelWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkHorizontalPanelWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkVerticalPanelWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkVerticalPanelWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkMultiChildren(_) => {
-                        panic!("encountered unexpected inkMultiChildren at index {idx}");
-                    }
-                    Widget::inkTextWidget(leaf) => {
-                        names.push(leaf.name.clone());
+                    if let Some(_) = child.as_leaf() {
+                        names.push(name.to_string());
                         if i < depth {
                             return None;
                         }
                         break;
                     }
-                    Widget::inkImageWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-                    Widget::inkVideoWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-
-                    Widget::inkMaskWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-                    Widget::inkBorderWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-                    Widget::inkShapeWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-
-                    Widget::inkCircleWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-                    Widget::inkRectangleWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-                    Widget::inkVectorGraphicWidget(leaf) => {
-                        names.push(leaf.name.clone());
-                        if i < depth {
-                            return None;
-                        }
-                        break;
-                    }
-                    Widget::inkScrollAreaWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkScrollAreaWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkUniformGridWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkUniformGridWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkVirtualCompoundWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkVirtualCompoundWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkFlexWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkFlexWidget(node.clone()));
-                        continue;
-                    }
-                    Widget::inkCacheWidget(node) => {
-                        names.push(node.name.clone());
-                        parent = Some(Widget::inkCacheWidget(node.clone()));
-                        continue;
-                    }
+                } else {
+                    panic!("encountered unexpected inkMultiChildren at index {idx}");
                 }
             }
             return None;

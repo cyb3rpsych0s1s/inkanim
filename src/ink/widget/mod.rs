@@ -170,5 +170,4 @@ pub struct WidgetSummary {
     pub HandleId: HandleId,
     /// widget name
     pub Name: String,
-    // pub Path: Vec<usize>,
 }
