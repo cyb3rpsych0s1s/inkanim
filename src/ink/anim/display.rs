@@ -95,26 +95,8 @@ impl std::fmt::Display for Interpolator {
 
 impl std::fmt::Display for InkAnimInterpolator {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            InkAnimInterpolator::inkanimScaleInterpolator(interpolator) => {
-                write!(f, "♻️ {}", interpolator)
-            }
-            InkAnimInterpolator::inkanimTranslationInterpolator(interpolator) => {
-                write!(f, "↕️ {}", interpolator)
-            }
-            InkAnimInterpolator::inkanimTransparencyInterpolator(interpolator) => {
-                write!(f, "👻 {}", interpolator)
-            }
-            InkAnimInterpolator::inkanimSizeInterpolator(interpolator) => {
-                write!(f, "📏 {}", interpolator)
-            }
-            InkAnimInterpolator::inkanimColorInterpolator(interpolator) => {
-                write!(f, "🎨 {}", interpolator)
-            }
-            InkAnimInterpolator::inkanimTextValueProgressInterpolator(interpolator) => {
-                write!(f, "🈺 {:#?}", interpolator)
-            }
-        }
+        let emoji = self.as_emoji();
+        write!(f, "{} {}", emoji, self.as_ref())
     }
 }
 
@@ -151,6 +133,28 @@ impl std::fmt::Display for Transformation {
             }
             (Range::Color(from), Range::Color(to)) => write!(f, "{} => {}", from, to,),
             (from, to) => panic!("interpolation start value and end value differ\nstart value: {from:#?}\nend value: {to:#?}"),
+        }
+    }
+}
+
+impl InkAnimInterpolator {
+    pub fn as_emoji(&self) -> &str {
+        match self {
+            Self::inkanimScaleInterpolator(_) => "♻️",
+            Self::inkanimTranslationInterpolator(_) => "↕️",
+            Self::inkanimTransparencyInterpolator(_) => "👻",
+            Self::inkanimSizeInterpolator(_) => "📏",
+            Self::inkanimColorInterpolator(_) => "🎨",
+            Self::inkanimTextValueProgressInterpolator(_) => "🈺",
+            Self::inkanimEffectInterpolator(_) => "✨",
+            Self::inkanimAnchorInterpolator(_) => "⚓",
+            Self::inkanimPivotInterpolator(_) => "🔛",
+            Self::inkanimShearInterpolator(_) => "〰️",
+            Self::inkanimRotationInterpolator(_) => "🔄",
+            Self::inkanimMarginInterpolator(_) => "➡️",
+            Self::inkanimPaddingInterpolator(_) => "⬅️",
+            Self::inkanimTextReplaceInterpolator(_) => "🈁",
+            Self::inkanimTextOffsetInterpolator(_) => "🆙",
         }
     }
 }
