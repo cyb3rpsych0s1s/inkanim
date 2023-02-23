@@ -1,6 +1,6 @@
-# Cargo InkAnim
+# InkAnim
 
-![build](https://github.com/cyb3rpsych0s1s/inkanim-utils/actions/workflows/quality.yml/badge.svg) ![crates.io](https://img.shields.io/crates/v/cargo-inkanim.svg)
+![build](https://github.com/cyb3rpsych0s1s/inkanim/actions/workflows/quality.yml/badge.svg) ![crates.io](https://img.shields.io/crates/v/cargo-inkanim.svg)
 
 This little tool allows to quickly introspect `.inkwidget` and corresponding `.inkanim` exported as JSON from [Wolvenkit](https://wiki.redmodding.org/wolvenkit/readme) when [modding](https://wiki.redmodding.org/home/) the game [Cyberpunk 2077](https://www.cyberpunk.net/).
 
@@ -12,9 +12,9 @@ but it can quickly become tedious or close to impossible when there's hundreds o
 > if you don't believe me, have a look in WolvenKit at `base\\gameplay\\gui\\quests\\q001\\q001_mission0_connect_to_girl.inkwidget` and `base\\gameplay\\gui\\quests\\q001\\q001_mission0_connect_to_girl_animations.inkanim` :wink:
 > this is the anim for the biomonitor from the mission "The Rescue" : watch on [YouTube](https://youtu.be/J5ar3ynfcN4?t=404).
 
-![screenshot: list](https://github.com/cyb3rpsych0s1s/inkanim-utils/raw/main/screenshots/list.png)
-![screenshot: whois](https://github.com/cyb3rpsych0s1s/inkanim-utils/raw/main/screenshots/whois.png)
-![screenshot: whereis](https://github.com/cyb3rpsych0s1s/inkanim-utils/raw/main/screenshots/whereis.png)
+![screenshot: list](https://github.com/cyb3rpsych0s1s/inkanim/raw/main/screenshots/list.png)
+![screenshot: whois](https://github.com/cyb3rpsych0s1s/inkanim/raw/main/screenshots/whois.png)
+![screenshot: whereis](https://github.com/cyb3rpsych0s1s/inkanim/raw/main/screenshots/whereis.png)
 
 ## usage
 
@@ -46,8 +46,8 @@ available commands:
 
 ## roadmap
 
-This tool is in its early stage, so please open an [issue](https://github.com/cyb3rpsych0s1s/inkanim-utils/issues) if you find any bug.
+This tool is in its early stage, so please open an [issue](https://github.com/cyb3rpsych0s1s/inkanim/issues) if you find any bug.
 
-Feel free to come [discuss](https://github.com/cyb3rpsych0s1s/inkanim-utils/discussions) any feature you feel is missing.
+Feel free to come [discuss](https://github.com/cyb3rpsych0s1s/inkanim/discussions) any feature you feel is missing.
 
 Contributions welcomed !
