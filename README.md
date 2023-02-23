@@ -21,7 +21,7 @@ but it can quickly become tedious or close to impossible when there's hundreds o
 install with
 
 ```sh
-cargo install cargo-inkanim
+cargo install inkanim
 ```
 
 available commands:
