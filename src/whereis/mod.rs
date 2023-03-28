@@ -13,16 +13,18 @@ pub(crate) fn whereis(
     widget: inkWidgetLibraryResource,
     anim: InkAnimAnimationLibraryResource,
 ) {
-    // let names = args.names.path;
-    // if names.len() == 0 {
-    //     panic!("please specify widget path names");
-    // }
-    // let indexes = widget.get_path_indexes(&names.iter().map(|x| x.as_str()).collect::<Vec<_>>());
-    // println!("{:#?}", indexes);
-    let names = args.names.path;
+    let names = args
+        .names
+        .path
+        .iter()
+        .map(|x| x.as_str())
+        .collect::<Vec<_>>();
+    if names.len() == 0 {
+        panic!("please specify widget path names");
+    }
     let depth = names.len();
     let sequences: Vec<&str> = anim.sequences.iter().map(|x| x.name()).collect();
-    let found = widget.get_path_indexes(&names.iter().map(|x| x.as_str()).collect::<Vec<_>>());
+    let found = widget.get_path_indexes(&names);
 
     if let Some(indexes) = found {
         assert_eq!(depth, names.len());
