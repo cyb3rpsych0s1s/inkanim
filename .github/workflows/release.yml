@@ -21,12 +21,8 @@ jobs:
         run: cargo install gitmoji-changelog@0.3.0
       - name: ♻️ cache Rust dependencies
         uses: Swatinem/rust-cache@v2
-      - name: 📋 generate CHANGELOG.md
-        run: gitmoji-changelog . -o CHANGELOG.md 
       - name: 🔖 create GitHub release
         uses: softprops/action-gh-release@v1
-        with:
-          body_path: CHANGELOG.md
       - name: 🦀 publish to crates.io
         uses: katyo/publish-crates@v2
         with:
