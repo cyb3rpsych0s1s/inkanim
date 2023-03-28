@@ -11,13 +11,23 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - name: checkout repository
+        uses: actions/checkout@v3
+      - name: setup cargo toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2
+      - name: install gitmoji-changelog
+        run: cargo install gitmoji-changelog@0.3.0
+      - name: cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: generate CHANGELOG.md
+        run: gitmoji-changelog . -o CHANGELOG.md 
       - name: create GitHub release
         uses: softprops/action-gh-release@v1
-      - uses: katyo/publish-crates@v2
+        with:
+          body_path: CHANGELOG.md
+      - name: publish to crates.io
+        uses: katyo/publish-crates@v2
         with:
           registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}

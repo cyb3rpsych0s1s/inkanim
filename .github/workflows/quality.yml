@@ -12,23 +12,31 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - name: checkout repository
+        uses: actions/checkout@v3
+      - name: setup cargo toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2
-      - uses: actions-rs/cargo@v1
+      - name: cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: run cargo check
+        uses: actions-rs/cargo@v1
         with:
           command: check
   lint:
     needs: check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - name: checkout repository
+        uses: actions/checkout@v3
+      - name: setup cargo toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2
-      - uses: actions-rs/cargo@v1
+      - name: cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: run cargo clippy
+        uses: actions-rs/cargo@v1
         with:
           command: clippy
