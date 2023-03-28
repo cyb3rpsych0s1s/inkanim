@@ -19,7 +19,7 @@ pub(crate) fn whereis(
         .iter()
         .map(|x| x.as_str())
         .collect::<Vec<_>>();
-    if names.len() == 0 {
+    if names.is_empty() {
         panic!("please specify widget path names");
     }
     let depth = names.len();

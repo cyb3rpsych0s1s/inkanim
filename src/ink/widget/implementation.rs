@@ -212,10 +212,10 @@ impl Widget {
         }
     }
     pub fn is_leaf(&self) -> bool {
-        return self.as_leaf().is_some();
+        self.as_leaf().is_some()
     }
     pub fn is_compound(&self) -> bool {
-        return self.as_compound().is_some();
+        self.as_compound().is_some()
     }
 }
 
@@ -342,7 +342,7 @@ impl ByIndex for Widget {
         if let Some(compound) = self.as_compound() {
             return compound.children().by_index(idx);
         }
-        return Some(self.clone());
+        Some(self.clone())
     }
 }
 
