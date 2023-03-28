@@ -17,8 +17,6 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: 🛠 install gitmoji-changelog
-        run: cargo install gitmoji-changelog@0.3.0
       - name: ♻️ cache Rust dependencies
         uses: Swatinem/rust-cache@v2
       - name: 🔖 create GitHub release
