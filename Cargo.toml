@@ -8,7 +8,7 @@ keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
 description = "CLI tool to quickly extract infos from JSON exports of .inkwidget and .inkanim"
 categories = ["command-line-utilities"]
 repository = "https://github.com/cyb3rpsych0s1s/inkanim"
-exclude = [".vscode/*", ".idea/*", "screenshots/*", "*.json"]
+exclude = [".vscode/*", ".idea/*", "screenshots/*", "*.json", ".github/*"]
 
 [[bin]]
 name = "inkanim"
