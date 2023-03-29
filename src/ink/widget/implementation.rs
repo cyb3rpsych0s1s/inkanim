@@ -51,7 +51,7 @@ macro_rules! impl_classname {
     };
 }
 
-#[enum_dispatch(Widget)]
+#[enum_dispatch]
 pub trait Classname {
     fn classname(&self) -> String;
 }

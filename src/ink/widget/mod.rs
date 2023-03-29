@@ -71,7 +71,7 @@ native_leaf_widget!(inkVectorGraphicWidget);
 #[allow(non_camel_case_types)]
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[enum_dispatch]
+#[enum_dispatch(Classname)]
 #[serde(untagged)]
 pub enum Widget {
     inkMultiChildren(inkMultiChildren),
