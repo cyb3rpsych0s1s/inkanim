@@ -5,9 +5,7 @@ mod implementation;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
-use crate::args::{Fade, InkAnimInterpolatorType};
-
-use super::{HandleId, InkWrapper};
+use super::{Fade, HandleId, InkAnimInterpolatorType, InkWrapper};
 
 use conversion::deserialize_vector2_from_anything;
 pub use implementation::SameOrNested;

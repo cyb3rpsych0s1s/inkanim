@@ -1,13 +1,8 @@
-use args::InkAnimInterpolatorType;
 use clap::Parser;
 use cli::CLI;
-use ink::{inkWidgetLibraryResource, InkAnimInterpolator, InkWrapper};
-
-use crate::ink::InkAnimAnimationLibraryResource;
 
 mod args;
 mod cli;
-mod ink;
 mod list;
 mod read;
 mod whereis;
@@ -17,19 +12,6 @@ use list::list;
 use read::read;
 use whereis::whereis;
 use whois::whois;
-
-pub struct DualResources {
-    pub widget: inkWidgetLibraryResource,
-    pub anim: InkAnimAnimationLibraryResource,
-    pub filter_by_path: Option<Vec<usize>>,
-    pub filter_by_type: Option<InkAnimInterpolatorType>,
-    pub show_path_names: bool,
-}
-
-pub struct OrphanInkAnimInterpolator {
-    pub index: usize,
-    pub interpolator: InkWrapper<InkAnimInterpolator>,
-}
 
 fn main() {
     let args = CLI::parse();

@@ -1,4 +1,6 @@
-use crate::args::{Files, InkAnimInterpolatorType, OptionalPathIndexes};
+use inkanim::InkAnimInterpolatorType;
+
+use crate::args::{Files, OptionalPathIndexes};
 
 #[derive(clap::Args, Debug)]
 #[command()]

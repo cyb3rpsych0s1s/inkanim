@@ -7,7 +7,7 @@ use term_table::{
     Table, TableStyle,
 };
 
-use crate::ink::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, WidgetTree};
+use inkanim::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, WidgetTree};
 
 pub(crate) fn whois(
     args: Args,

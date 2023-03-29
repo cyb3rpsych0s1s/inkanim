@@ -6,7 +6,7 @@ use term_table::{
     Table, TableStyle,
 };
 
-use crate::ink::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, WidgetTree};
+use inkanim::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, WidgetTree};
 
 pub(crate) fn whereis(
     args: Args,
