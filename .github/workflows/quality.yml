@@ -38,6 +38,8 @@ jobs:
           toolchain: stable
       - name: ♻️ cache Rust dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-latest
       - name: 🔍 run cargo clippy
         uses: actions-rs/cargo@v1
         with:

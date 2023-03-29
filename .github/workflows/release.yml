@@ -19,6 +19,8 @@ jobs:
           toolchain: stable
       - name: ♻️ cache Rust dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-latest
       - name: 🔖 create GitHub release
         uses: softprops/action-gh-release@v1
       - name: 🦀 publish to crates.io
