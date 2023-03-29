@@ -313,6 +313,11 @@ impl ByName for Vec<InkWrapper<Widget>> {
                     return Some((idx, widget.data.clone()));
                 }
             }
+            if let Some(leaf) = widget.data.as_leaf() {
+                if leaf.name() == name {
+                    return Some((idx, widget.data.clone()));
+                }
+            }
         }
         None
     }
@@ -414,9 +419,8 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
     fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>> {
         let mut indexes: Vec<usize> = vec![];
         let depth = path.len() - 1;
-        let mut parent: Option<Widget> = Some(Widget::inkMultiChildren(
-            self.root_widget.data.children.data.clone(),
-        ));
+        let mut parent: Option<Widget> =
+            Some(Widget::inkCanvasWidget(self.root_widget.data.clone()));
         for (i, name) in path.iter().enumerate() {
             if parent.is_none() {
                 break;
@@ -429,7 +433,7 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                 break;
             }
 
-            if let Some(compound) = parent.unwrap().as_compound() {
+            if let Some(compound) = parent.as_ref().unwrap().as_compound() {
                 if let Some((idx, widget)) = compound.by_name(name) {
                     indexes.push(idx);
                     parent = Some(widget);
