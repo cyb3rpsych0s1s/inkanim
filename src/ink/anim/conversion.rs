@@ -3,7 +3,7 @@ use std::fmt;
 use serde::de::{self, MapAccess};
 use serde::Deserialize;
 
-use crate::ink::{HDRColor, Range, Vector2};
+use crate::anim::{HDRColor, Range, Vector2};
 
 pub fn deserialize_vector2_from_anything<'de, D>(deserializer: D) -> Result<Range, D::Error>
 where

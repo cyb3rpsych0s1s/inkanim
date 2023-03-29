@@ -1,12 +1,14 @@
 mod args;
 pub(crate) use args::Args;
+use inkanim::{
+    anim::InkAnimAnimationLibraryResource,
+    widget::{inkWidgetLibraryResource, WidgetTree},
+};
 use term_table::{
     row::Row,
     table_cell::{Alignment, TableCell},
     Table, TableStyle,
 };
-
-use inkanim::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, WidgetTree};
 
 pub(crate) fn whereis(
     args: Args,

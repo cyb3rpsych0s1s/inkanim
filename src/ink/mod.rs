@@ -1,87 +1,17 @@
-use clap::{builder::PossibleValue, ValueEnum};
 use serde::{Deserialize, Deserializer, Serialize};
 use serde_aux::prelude::*;
 
+use self::{
+    anim::{InkAnimSequence, Target},
+    widget::SiblingOrNested,
+};
+
+/// everything related to *.inkanim*
 pub mod anim;
+/// everything related to *.inkwidget*
 pub mod widget;
 
-pub use anim::*;
-pub use widget::*;
-
-const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
-const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));
-const FADEOUT: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::Out));
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Fade {
-    In,
-    Out,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum InkAnimInterpolatorType {
-    Color,
-    Size,
-    Scale,
-    Translation,
-    Transparency(Option<Fade>),
-    TextValueProgress,
-    Effect,
-    Anchor,
-    Pivot,
-    Shear,
-    Rotation,
-    Margin,
-    Padding,
-    TextReplace,
-    TextOffset,
-}
-
-impl ValueEnum for InkAnimInterpolatorType {
-    fn value_variants<'a>() -> &'a [Self] {
-        &[
-            Self::Color,
-            Self::Size,
-            Self::Scale,
-            Self::Translation,
-            OPACITY,
-            FADEIN,
-            FADEOUT,
-            Self::TextValueProgress,
-        ]
-    }
-
-    fn to_possible_value(&self) -> Option<PossibleValue> {
-        match self {
-            Self::Color => Some(PossibleValue::new("color").alias("colour")),
-            Self::Size => Some(PossibleValue::new("size").alias("dimension")),
-            Self::Scale => Some(PossibleValue::new("scale")),
-            Self::Translation => Some(PossibleValue::new("translation").alias("move")),
-            Self::Transparency(direction) => match direction {
-                None => Some(PossibleValue::new("transparency").aliases(["opacity", "alpha"])),
-                Some(Fade::In) => Some(PossibleValue::new("fadein").aliases(["fade-in", "appear"])),
-                Some(Fade::Out) => {
-                    Some(PossibleValue::new("fadeout").aliases(["fade-out", "disappear"]))
-                }
-            },
-            Self::TextValueProgress => {
-                Some(PossibleValue::new("text-value-progress").aliases(["progress", "tvp"]))
-            }
-            Self::Effect => Some(PossibleValue::new("effect")),
-            Self::Anchor => Some(PossibleValue::new("anchor")),
-            Self::Pivot => Some(PossibleValue::new("pivot")),
-            Self::Shear => Some(PossibleValue::new("shear")),
-            Self::Rotation => Some(PossibleValue::new("rotation")),
-            Self::Margin => Some(PossibleValue::new("margin")),
-            Self::Padding => Some(PossibleValue::new("padding")),
-            Self::TextReplace => {
-                Some(PossibleValue::new("text-replace").aliases(["replace", "tr"]))
-            }
-            Self::TextOffset => Some(PossibleValue::new("text-offset").aliases(["offset", "to"])),
-        }
-    }
-}
-
+/// deserialize handle ID (from number or string)
 pub fn deserialize_handle_id_from_string<'de, D>(deserializer: D) -> Result<HandleId, D::Error>
 where
     D: Deserializer<'de>,
@@ -89,15 +19,12 @@ where
     Ok(HandleId(deserialize_number_from_string(deserializer)?))
 }
 
+/// asset handle ID
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct HandleId(u32);
 
-pub struct OrphanInkAnimInterpolator {
-    pub index: usize,
-    pub interpolator: InkWrapper<InkAnimInterpolator>,
-}
-
+/// wrapper with handle ID
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct InkWrapper<T> {
@@ -118,5 +45,45 @@ where
 impl std::fmt::Display for HandleId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "🔑 {}", self.0)
+    }
+}
+
+/// animation aggregated informations summary
+#[allow(dead_code, non_snake_case)]
+#[derive(Debug)]
+pub struct PathSummary {
+    /// animation name
+    Name: String,
+    /// unique handle ID
+    HandleId: HandleId,
+    /// index in sequence
+    Index: usize,
+    /// path to the nested element
+    Path: Vec<usize>,
+}
+
+impl InkAnimSequence {
+    /// summarize all paths matching sequences of digits
+    pub fn get_path_indexes_matching(&self, searched: &[usize]) -> Vec<PathSummary> {
+        let count = searched.len();
+        let _last = count - 1;
+        let mut out = vec![];
+        for (target_index, target) in self.targets.iter().enumerate() {
+            match target {
+                Target::WithHandleId(ref handle) => {
+                    let path = &handle.data.path;
+                    if path.sibling_or_nested(searched) {
+                        out.push(PathSummary {
+                            Name: self.name.clone(),
+                            HandleId: handle.handle_id,
+                            Index: target_index,
+                            Path: path.clone(),
+                        });
+                    }
+                }
+                _ => continue,
+            }
+        }
+        out
     }
 }

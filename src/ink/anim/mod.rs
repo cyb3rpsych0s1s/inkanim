@@ -1,14 +1,53 @@
 mod conversion;
 mod display;
-mod implementation;
 
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
-use super::{Fade, HandleId, InkAnimInterpolatorType, InkWrapper};
+use super::InkWrapper;
+
+mod implementation;
 
 use conversion::deserialize_vector2_from_anything;
-pub use implementation::SameOrNested;
+
+const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
+const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));
+const FADEOUT: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::Out));
+
+/// orphan interpolator
+pub struct OrphanInkAnimInterpolator {
+    pub index: usize,
+    pub interpolator: InkWrapper<InkAnimInterpolator>,
+}
+
+/// transparency interpolation direction
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Fade {
+    /// transparency interpolates toward `1.`
+    In,
+    /// transparency interpolates toward `0.`
+    Out,
+}
+
+/// every kind of possible interpolation
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum InkAnimInterpolatorType {
+    Color,
+    Size,
+    Scale,
+    Translation,
+    Transparency(Option<Fade>),
+    TextValueProgress,
+    Effect,
+    Anchor,
+    Pivot,
+    Shear,
+    Rotation,
+    Margin,
+    Padding,
+    TextReplace,
+    TextOffset,
+}
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkanimInterpolationDirection)
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -283,41 +322,16 @@ pub struct BlankInkAnimSequenceTargetInfo {
 }
 
 /// any target
-///
-/// can contain:
-/// - a sequence of digits (path to nested element) : when related to interpolator(s)
-/// - a negative handle ref ID (not element related) : when declaring interpolation event(s)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Target {
+    /// a sequence of digits (path to nested element) : when related to interpolator(s)
     WithHandleId(InkWrapper<InkAnimSequenceTargetInfo>),
+    /// a negative [handle ID](super::HandleId) (not element related) : when declaring interpolation event(s)
     WithoutHandleId(BlankInkAnimSequenceTargetInfo),
 }
 
 impl InkAnimSequence {
-    /// summarize all paths matching sequences of digits
-    pub fn get_path_indexes_matching(&self, searched: &[usize]) -> Vec<PathSummary> {
-        let count = searched.len();
-        let _last = count - 1;
-        let mut out = vec![];
-        for (target_index, target) in self.targets.iter().enumerate() {
-            match target {
-                Target::WithHandleId(ref handle) => {
-                    let path = &handle.data.path;
-                    if path.same_or_nested(searched) {
-                        out.push(PathSummary {
-                            Name: self.name.clone(),
-                            HandleId: handle.handle_id,
-                            Index: target_index,
-                            Path: path.clone(),
-                        });
-                    }
-                }
-                _ => continue,
-            }
-        }
-        out
-    }
     /// find all interpolators matching filter
     pub fn get_interpolators_matching(
         &self,
@@ -339,18 +353,4 @@ impl InkWrapper<InkAnimSequence> {
     pub fn name(&self) -> &str {
         self.data.name.as_str()
     }
-}
-
-/// animation aggregated informations summary
-#[allow(dead_code, non_snake_case)]
-#[derive(Debug)]
-pub struct PathSummary {
-    /// animation name
-    Name: String,
-    /// unique handle ID
-    HandleId: HandleId,
-    /// index in sequence
-    Index: usize,
-    /// path to the nested element
-    Path: Vec<usize>,
 }

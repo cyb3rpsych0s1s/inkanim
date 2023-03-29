@@ -8,8 +8,8 @@ use term_table::{
 };
 
 use inkanim::{
-    inkWidgetLibraryResource, InkAnimAnimationLibraryResource, OrphanInkAnimInterpolator,
-    SameOrNested, Target, WidgetTree,
+    anim::{InkAnimAnimationLibraryResource, OrphanInkAnimInterpolator, Target},
+    widget::{inkWidgetLibraryResource, SiblingOrNested, WidgetTree},
 };
 
 use crate::args::DualResources;
@@ -111,7 +111,7 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
             if let Some(ref filter) = filter_by_path {
                 if infos
                     .as_ref()
-                    .map(|x| !x.same_or_nested(filter))
+                    .map(|x| !x.sibling_or_nested(filter))
                     .unwrap_or(true)
                 {
                     continue;

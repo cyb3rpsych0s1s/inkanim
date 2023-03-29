@@ -9,6 +9,11 @@ use serde::{Deserialize, Serialize};
 
 use super::{HandleId, InkWrapper};
 
+/// belongs to the same level or is nested below, in a tree hierarchy
+pub trait SiblingOrNested {
+    fn sibling_or_nested(&self, searched: &[usize]) -> bool;
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Flags {
     Soft,

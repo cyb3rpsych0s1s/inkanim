@@ -1,6 +1,9 @@
 use std::path::PathBuf;
 
-use inkanim::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource, InkAnimInterpolatorType};
+use inkanim::{
+    anim::{InkAnimAnimationLibraryResource, InkAnimInterpolatorType},
+    widget::inkWidgetLibraryResource,
+};
 
 pub struct DualResources {
     pub widget: inkWidgetLibraryResource,

@@ -1,5 +1,6 @@
+use inkanim::{anim::InkAnimAnimationLibraryResource, widget::inkWidgetLibraryResource};
+
 use crate::args::Files;
-use inkanim::{inkWidgetLibraryResource, InkAnimAnimationLibraryResource};
 
 pub fn read(args: &Files) -> (inkWidgetLibraryResource, InkAnimAnimationLibraryResource) {
     let widget_json_path = args.widget.clone();
