@@ -1,3 +1,7 @@
+use std::fmt::Debug;
+
+use enum_dispatch::enum_dispatch;
+
 use crate::ink::InkWrapper;
 
 use super::{
@@ -49,11 +53,12 @@ macro_rules! impl_classname {
     };
 }
 
+#[enum_dispatch]
 pub trait Classname {
     fn classname(&self) -> String;
 }
 
-pub trait InkWidget {
+pub trait InkWidget: Debug {
     fn name(&self) -> &str;
 }
 
@@ -62,11 +67,11 @@ pub trait InkChildren {
     fn children(&self) -> Vec<InkWrapper<Widget>>;
 }
 
-pub trait InkLeafWidget: InkWidget {}
+pub trait InkLeafWidget: InkWidget + Debug {}
 
-pub trait InkCompoundWidget: InkWidget + InkChildren {}
+pub trait InkCompoundWidget: InkWidget + InkChildren + Debug {}
 
-impl<T> InkCompoundWidget for T where T: InkWidget + InkChildren {}
+impl<T> InkCompoundWidget for T where T: InkWidget + InkChildren + Debug {}
 
 impl InkChildren for inkMultiChildren {
     fn orphans(&self) -> Vec<Widget> {
@@ -136,34 +141,6 @@ impl_classname!(inkShapeWidget);
 impl_classname!(inkCircleWidget);
 impl_classname!(inkRectangleWidget);
 impl_classname!(inkVectorGraphicWidget);
-
-impl Classname for Widget {
-    fn classname(&self) -> String {
-        match self {
-            Self::inkMultiChildren(widget) => widget.classname(),
-
-            Self::inkCanvasWidget(widget) => widget.classname(),
-            Self::inkHorizontalPanelWidget(widget) => widget.classname(),
-            Self::inkVerticalPanelWidget(widget) => widget.classname(),
-            Self::inkScrollAreaWidget(widget) => widget.classname(),
-            Self::inkUniformGridWidget(widget) => widget.classname(),
-            Self::inkVirtualCompoundWidget(widget) => widget.classname(),
-            Self::inkFlexWidget(widget) => widget.classname(),
-            Self::inkCacheWidget(widget) => widget.classname(),
-
-            Self::inkTextWidget(widget) => widget.classname(),
-            Self::inkImageWidget(widget) => widget.classname(),
-            Self::inkVideoWidget(widget) => widget.classname(),
-            Self::inkMaskWidget(widget) => widget.classname(),
-            Self::inkBorderWidget(widget) => widget.classname(),
-            Self::inkShapeWidget(widget) => widget.classname(),
-            Self::inkCircleWidget(widget) => widget.classname(),
-            Self::inkRectangleWidget(widget) => widget.classname(),
-            Self::inkVectorGraphicWidget(widget) => widget.classname(),
-        }
-    }
-}
-
 impl Widget {
     pub fn name(&self) -> Option<&str> {
         match self {
@@ -235,6 +212,12 @@ impl Widget {
             Self::inkVectorGraphicWidget(widget) => Some(widget),
             _ => None,
         }
+    }
+    pub fn is_leaf(&self) -> bool {
+        self.as_leaf().is_some()
+    }
+    pub fn is_compound(&self) -> bool {
+        self.as_compound().is_some()
     }
 }
 
@@ -322,30 +305,51 @@ where
     }
 }
 
+impl ByName for Vec<InkWrapper<Widget>> {
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
+        for (idx, widget) in self.iter().enumerate() {
+            if let Some(compound) = widget.data.as_compound() {
+                if compound.name() == name {
+                    return Some((idx, widget.data.clone()));
+                }
+            }
+            if let Some(leaf) = widget.data.as_leaf() {
+                if leaf.name() == name {
+                    return Some((idx, widget.data.clone()));
+                }
+            }
+        }
+        None
+    }
+}
+
+impl ByIndex for Vec<InkWrapper<Widget>> {
+    fn by_index(&self, idx: usize) -> Option<Widget> {
+        self.get(idx).map(|x| x.data.clone())
+    }
+}
+
+impl ByName for &dyn InkCompoundWidget {
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
+        self.children().by_name(name)
+    }
+}
+
+impl ByIndex for &dyn InkCompoundWidget {
+    fn by_index(&self, idx: usize) -> Option<Widget> {
+        self.children().by_index(idx)
+    }
+}
+
 impl ByIndex for Widget {
     fn by_index(&self, idx: usize) -> Option<Widget> {
-        match self {
-            Self::inkMultiChildren(node) => node.by_index(idx),
-
-            Self::inkCanvasWidget(node) => node.children.data.by_index(idx),
-            Self::inkHorizontalPanelWidget(node) => node.children.data.by_index(idx),
-            Self::inkVerticalPanelWidget(node) => node.children.data.by_index(idx),
-            Self::inkScrollAreaWidget(node) => node.by_index(idx),
-            Self::inkUniformGridWidget(node) => node.by_index(idx),
-            Self::inkVirtualCompoundWidget(node) => node.by_index(idx),
-            Self::inkFlexWidget(node) => node.by_index(idx),
-            Self::inkCacheWidget(node) => node.by_index(idx),
-
-            Self::inkTextWidget(leaf) => Some(Self::inkTextWidget(leaf.clone())),
-            Self::inkImageWidget(leaf) => Some(Self::inkImageWidget(leaf.clone())),
-            Self::inkVideoWidget(leaf) => Some(Self::inkVideoWidget(leaf.clone())),
-            Self::inkMaskWidget(leaf) => Some(Self::inkMaskWidget(leaf.clone())),
-            Self::inkBorderWidget(leaf) => Some(Self::inkBorderWidget(leaf.clone())),
-            Self::inkShapeWidget(leaf) => Some(Self::inkShapeWidget(leaf.clone())),
-            Self::inkCircleWidget(leaf) => Some(Self::inkCircleWidget(leaf.clone())),
-            Self::inkRectangleWidget(leaf) => Some(Self::inkRectangleWidget(leaf.clone())),
-            Self::inkVectorGraphicWidget(leaf) => Some(Self::inkVectorGraphicWidget(leaf.clone())),
+        if let Widget::inkMultiChildren(node) = self {
+            return node.by_index(idx);
         }
+        if let Some(compound) = self.as_compound() {
+            return compound.children().by_index(idx);
+        }
+        Some(self.clone())
     }
 }
 
@@ -415,43 +419,26 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
     fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>> {
         let mut indexes: Vec<usize> = vec![];
         let depth = path.len() - 1;
-        let mut parent: Option<Widget> = Some(Widget::inkMultiChildren(
-            self.root_widget.data.children.data.clone(),
-        ));
+        let mut parent: Option<Widget> =
+            Some(Widget::inkCanvasWidget(self.root_widget.data.clone()));
         for (i, name) in path.iter().enumerate() {
             if parent.is_none() {
                 break;
             }
 
-            let found = match parent.unwrap() {
-                Widget::inkCanvasWidget(node) => node.by_name(name),
-                Widget::inkMultiChildren(node) => node.by_name(name),
-                Widget::inkTextWidget(_)
-                | Widget::inkImageWidget(_)
-                | Widget::inkVideoWidget(_)
-                | Widget::inkMaskWidget(_)
-                | Widget::inkBorderWidget(_)
-                | Widget::inkShapeWidget(_)
-                | Widget::inkCircleWidget(_)
-                | Widget::inkRectangleWidget(_)
-                | Widget::inkVectorGraphicWidget(_) => {
-                    if i < depth {
-                        return None;
-                    }
-                    break;
+            if parent.as_ref().unwrap().is_leaf() {
+                if i < depth {
+                    return None;
                 }
-                Widget::inkHorizontalPanelWidget(node) => node.by_name(name),
-                Widget::inkVerticalPanelWidget(node) => node.by_name(name),
-                Widget::inkScrollAreaWidget(node) => node.by_name(name),
-                Widget::inkUniformGridWidget(node) => node.by_name(name),
-                Widget::inkVirtualCompoundWidget(node) => node.by_name(name),
-                Widget::inkFlexWidget(node) => node.by_name(name),
-                Widget::inkCacheWidget(node) => node.by_name(name),
-            };
-            if let Some((idx, widget)) = found {
-                indexes.push(idx);
-                parent = Some(widget);
-                continue;
+                break;
+            }
+
+            if let Some(compound) = parent.as_ref().unwrap().as_compound() {
+                if let Some((idx, widget)) = compound.by_name(name) {
+                    indexes.push(idx);
+                    parent = Some(widget);
+                    continue;
+                }
             }
             return None;
         }
