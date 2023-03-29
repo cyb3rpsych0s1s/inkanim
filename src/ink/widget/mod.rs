@@ -151,6 +151,7 @@ pub struct inkWidgetLibraryItem {
     pub package: Package,
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkanimAnimationLibraryResource)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
