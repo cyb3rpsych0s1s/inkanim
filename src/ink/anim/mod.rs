@@ -4,6 +4,8 @@ mod display;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
+use crate::{HDRColor, Vector2};
+
 use super::InkWrapper;
 
 mod implementation;
@@ -79,26 +81,6 @@ pub enum Type {
     Elastic = 7,
     Circular = 8,
     Back = 9,
-}
-
-/// see [NativeDB](https://nativedb.red4ext.com/Vector2)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
-#[serde(tag = "$type")]
-#[serde(rename_all = "PascalCase")]
-pub struct Vector2 {
-    pub x: f32,
-    pub y: f32,
-}
-
-/// see [NativeDB](https://nativedb.red4ext.com/HDRColor)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
-#[serde(tag = "$type")]
-#[serde(rename_all = "PascalCase")]
-pub struct HDRColor {
-    pub alpha: f32,
-    pub blue: f32,
-    pub green: f32,
-    pub red: f32,
 }
 
 /// specific interpolator values interpretation

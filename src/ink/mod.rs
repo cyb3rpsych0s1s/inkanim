@@ -19,6 +19,26 @@ where
     Ok(HandleId(deserialize_number_from_string(deserializer)?))
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/Vector2)
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
+#[serde(tag = "$type")]
+#[serde(rename_all = "PascalCase")]
+pub struct Vector2 {
+    pub x: f32,
+    pub y: f32,
+}
+
+/// see [NativeDB](https://nativedb.red4ext.com/HDRColor)
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
+#[serde(tag = "$type")]
+#[serde(rename_all = "PascalCase")]
+pub struct HDRColor {
+    pub alpha: f32,
+    pub blue: f32,
+    pub green: f32,
+    pub red: f32,
+}
+
 /// asset handle ID
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(transparent)]
@@ -32,6 +52,10 @@ pub struct InkWrapper<T> {
     pub handle_id: HandleId,
     pub data: T,
 }
+
+/// specific resource ID
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CName(String);
 
 impl<T> std::fmt::Display for InkWrapper<T>
 where
