@@ -151,9 +151,10 @@ pub struct inkWidgetLibraryItem {
     pub package: Package,
 }
 
+#[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct AnimationLibraryResRef {
+pub struct inkanimAnimationLibraryResource {
     depot_path: PathBuf,
     flags: Flags,
 }
@@ -164,7 +165,7 @@ pub struct AnimationLibraryResRef {
 #[serde(tag = "$type")]
 #[serde(rename_all = "camelCase")]
 pub struct inkWidgetLibraryResource {
-    pub animation_library_res_ref: AnimationLibraryResRef,
+    pub animation_library_res_ref: inkanimAnimationLibraryResource,
     pub library_items: Vec<inkWidgetLibraryItem>,
 }
 
