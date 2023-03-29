@@ -165,7 +165,6 @@ pub struct AnimationLibraryResRef {
 #[serde(rename_all = "camelCase")]
 pub struct inkWidgetLibraryResource {
     pub animation_library_res_ref: AnimationLibraryResRef,
-    pub external_dependencies_for_internal_items: Vec<AnimationLibraryResRef>,
     pub library_items: Vec<inkWidgetLibraryItem>,
 }
 
