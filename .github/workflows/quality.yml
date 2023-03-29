@@ -20,6 +20,8 @@ jobs:
           toolchain: stable
       - name: ♻️ cache Rust dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ${{ matrix.os }}
       - name: ✅ run cargo check
         uses: actions-rs/cargo@v1
         with:
