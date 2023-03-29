@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use enum_dispatch::enum_dispatch;
 
 use crate::ink::InkWrapper;
@@ -56,7 +58,7 @@ pub trait Classname {
     fn classname(&self) -> String;
 }
 
-pub trait InkWidget {
+pub trait InkWidget: Debug {
     fn name(&self) -> &str;
 }
 
@@ -65,11 +67,11 @@ pub trait InkChildren {
     fn children(&self) -> Vec<InkWrapper<Widget>>;
 }
 
-pub trait InkLeafWidget: InkWidget {}
+pub trait InkLeafWidget: InkWidget + Debug {}
 
-pub trait InkCompoundWidget: InkWidget + InkChildren {}
+pub trait InkCompoundWidget: InkWidget + InkChildren + Debug {}
 
-impl<T> InkCompoundWidget for T where T: InkWidget + InkChildren {}
+impl<T> InkCompoundWidget for T where T: InkWidget + InkChildren + Debug {}
 
 impl InkChildren for inkMultiChildren {
     fn orphans(&self) -> Vec<Widget> {
