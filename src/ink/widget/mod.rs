@@ -25,7 +25,6 @@ macro_rules! native_compound_widget {
         /// see [NativeDB](https://nativedb.red4ext.com/$ty)
         #[allow(non_camel_case_types)]
         #[derive(Debug, Clone, Serialize, Deserialize)]
-        #[serde(tag = "$type")]
         pub struct $ty {
             pub children: InkWrapper<inkMultiChildren>,
             pub name: String,
@@ -38,7 +37,6 @@ macro_rules! native_leaf_widget {
         /// see [NativeDB](https://nativedb.red4ext.com/$ty)
         #[allow(non_camel_case_types)]
         #[derive(Debug, Clone, Serialize, Deserialize)]
-        #[serde(tag = "$type")]
         pub struct $ty {
             pub name: String,
         }
@@ -57,7 +55,6 @@ native_compound_widget!(inkCacheWidget);
 /// see [NativeDB](https://nativedb.red4ext.com/inkMultiChildren)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
 pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
 }
@@ -78,7 +75,7 @@ native_leaf_widget!(inkVectorGraphicWidget);
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[enum_dispatch(Classname)]
-#[serde(untagged)]
+#[serde(tag = "$type")]
 pub enum Widget {
     inkMultiChildren(inkMultiChildren),
 
