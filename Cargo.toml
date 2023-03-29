@@ -1,6 +1,6 @@
 [package]
 name = "inkanim"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2021"
 authors = ["Roms1383"]
 license = "MIT OR Apache-2.0"
