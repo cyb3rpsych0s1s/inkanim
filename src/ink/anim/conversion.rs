@@ -15,7 +15,7 @@ where
         type Value = Range;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            formatter.write_str("either a Vector2, or its simpler integer or float representation")
+            formatter.write_str("either a Vector2, HDRColor, or its simpler integer or float representation")
         }
 
         fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
