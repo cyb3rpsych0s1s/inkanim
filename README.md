@@ -44,6 +44,22 @@ available commands:
   inkanim whereis --help
   ```
 
+## development
+
+Quickly try out methods with:
+
+```sh
+cargo run list --path '1.3.0.0.6' --type progress --widget ./inkwidget_connect_to_girl.json
+```
+
+```sh
+cargo run whois --path '1.3.0.0.6' --widget ./inkwidget_connect_to_girl.json
+```
+
+```sh
+cargo run whereis --path "main_canvas.Booting_Info_Critica_Mask_Canvas.Booting_Info_Critical_Canvas.Booting_Screen.BOOTING_PROGRESS_Text" --widget ./inkwidget_connect_to_girl.json
+```
+
 ## roadmap
 
 This tool is in its early stage, so please open an [issue](https://github.com/cyb3rpsych0s1s/inkanim/issues) if you find any bug.
