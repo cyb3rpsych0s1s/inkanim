@@ -8,6 +8,9 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use super::{HandleId, InkWrapper};
+use self::{
+    layout::{inkWidgetLayout, textJustificationType},
+};
 
 /// belongs to the same level or is nested below, in a tree hierarchy
 pub trait SiblingOrNested {
@@ -40,6 +43,7 @@ macro_rules! native_leaf_widget {
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub name: String,
+            pub layout: self::layout::inkWidgetLayout,
             $($tt)*
         }
     };
