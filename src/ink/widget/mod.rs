@@ -22,7 +22,7 @@ pub enum Flags {
 
 macro_rules! native_compound_widget {
     ($ty:ident) => {
-        /// see [NativeDB](https://nativedb.red4ext.com/$ty)
+        #[doc=concat!("see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
         #[derive(Debug, Clone, Serialize, Deserialize)]
         pub struct $ty {
@@ -34,7 +34,7 @@ macro_rules! native_compound_widget {
 
 macro_rules! native_leaf_widget {
     ($ty:ident) => {
-        /// see [NativeDB](https://nativedb.red4ext.com/$ty)
+        #[doc=concat!("see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
         #[derive(Debug, Clone, Serialize, Deserialize)]
         pub struct $ty {
