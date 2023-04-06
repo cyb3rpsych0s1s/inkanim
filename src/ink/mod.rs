@@ -1,4 +1,4 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
 use self::{
@@ -10,14 +10,6 @@ use self::{
 pub mod anim;
 /// everything related to *.inkwidget*
 pub mod widget;
-
-/// deserialize handle ID (from number or string)
-pub fn deserialize_handle_id_from_string<'de, D>(deserializer: D) -> Result<HandleId, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    Ok(HandleId(deserialize_number_from_string(deserializer)?))
-}
 
 /// see [NativeDB](https://nativedb.red4ext.com/Vector2)
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
@@ -48,7 +40,6 @@ pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct InkWrapper<T> {
-    #[serde(deserialize_with = "deserialize_handle_id_from_string")]
     pub handle_id: HandleId,
     pub data: T,
 }
