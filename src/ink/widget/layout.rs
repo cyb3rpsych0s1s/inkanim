@@ -34,6 +34,24 @@ pub enum inkEHorizontalAlign {
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum inkEVerticalAlign {
+    Fill = 0,
+    Top = 1,
+    Center = 2,
+    Bottom = 3,
+}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct inkUITransform {
+    pub translation: Vector2,
+    pub scale: Vector2,
+    pub shear: Vector2,
+    pub rotation: f32,
+}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum textJustificationType {
     Left = 0,
     Center = 1,

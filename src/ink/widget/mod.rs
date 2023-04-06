@@ -6,6 +6,7 @@
 mod font;
 pub(crate) mod implementation;
 mod layout;
+mod properties;
 
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
@@ -15,8 +16,11 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use self::{
-    font::{fontStyle, inkFontFamilyResource},
-    layout::textJustificationType,
+    font::{
+        fontStyle, inkFontFamilyResource, textHorizontalAlignment, textLetterCase,
+        textOverflowPolicy, textVerticalAlignment,
+    },
+    layout::{inkEHorizontalAlign, inkEVerticalAlign, textJustificationType},
 };
 
 use super::{HandleId, InkWrapper, LocalizationString};
@@ -30,6 +34,7 @@ pub trait SiblingOrNested {
 #[non_exhaustive]
 pub enum Flags {
     Soft,
+    Hard,
 }
 
 macro_rules! native_compound_widget {
@@ -53,6 +58,9 @@ macro_rules! native_leaf_widget {
         pub struct $ty {
             pub name: String,
             pub layout: self::layout::inkWidgetLayout,
+            pub property_manager: Option<self::properties::PropertyManager>,
+            pub render_transform_pivot: crate::Vector2,
+            pub render_transform: self::layout::inkUITransform,
             $($tt)*
         }
     };
@@ -83,6 +91,15 @@ native_leaf_widget!(inkTextWidget {
   pub font_family: inkFontFamilyResource,
   pub font_style: fontStyle,
   pub justification: textJustificationType,
+  pub text_letter_case: Option<textLetterCase>,
+  pub line_height_percentage: f32,
+  pub text_horizontal_alignment: textHorizontalAlignment,
+  pub text_vertical_alignment: textVerticalAlignment,
+  pub text_overflow_policy: textOverflowPolicy,
+  pub content_h_align: inkEHorizontalAlign,
+  pub content_v_align: inkEVerticalAlign,
+  pub scroll_delay: u16,
+  pub scroll_text_speed: f32,
 });
 native_leaf_widget!(inkImageWidget);
 native_leaf_widget!(inkVideoWidget);

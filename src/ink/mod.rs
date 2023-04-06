@@ -42,7 +42,7 @@ pub struct HDRColor {
 /// asset handle ID
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct HandleId(u32);
+pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")] u32);
 
 /// wrapper with handle ID
 #[derive(Debug, Clone, Serialize, Deserialize)]
