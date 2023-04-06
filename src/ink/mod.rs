@@ -57,6 +57,12 @@ pub struct InkWrapper<T> {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CName(String);
 
+/// specific translation ID
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LocalizationString {
+    pub value: String,
+}
+
 impl<T> std::fmt::Display for InkWrapper<T>
 where
     T: std::fmt::Display,

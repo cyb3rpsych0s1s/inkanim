@@ -1,4 +1,11 @@
+//! .inkwidget
+//!
+//! All the widgets in Cybperunk 2077 UI
+//! are similar to the web and traditional UI frameworks.
+
+mod font;
 pub(crate) mod implementation;
+mod layout;
 
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
@@ -7,10 +14,12 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
-use super::{HandleId, InkWrapper};
 use self::{
-    layout::{inkWidgetLayout, textJustificationType},
+    font::{fontStyle, inkFontFamilyResource},
+    layout::textJustificationType,
 };
+
+use super::{HandleId, InkWrapper, LocalizationString};
 
 /// belongs to the same level or is nested below, in a tree hierarchy
 pub trait SiblingOrNested {
@@ -68,7 +77,13 @@ pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
 }
 
-native_leaf_widget!(inkTextWidget);
+native_leaf_widget!(inkTextWidget {
+  pub localization_string: LocalizationString,
+  pub text: String,
+  pub font_family: inkFontFamilyResource,
+  pub font_style: fontStyle,
+  pub justification: textJustificationType,
+});
 native_leaf_widget!(inkImageWidget);
 native_leaf_widget!(inkVideoWidget);
 native_leaf_widget!(inkMaskWidget);
