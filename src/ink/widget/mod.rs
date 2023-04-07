@@ -42,9 +42,12 @@ macro_rules! native_compound_widget {
         #[doc=concat!("see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
         #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub children: InkWrapper<inkMultiChildren>,
             pub name: String,
+            pub child_order: self::layout::inkEChildOrder,
+            pub child_margin: self::layout::inkMargin,
         }
     };
 }
@@ -61,6 +64,7 @@ macro_rules! native_leaf_widget {
             pub property_manager: Option<self::properties::PropertyManager>,
             pub render_transform_pivot: crate::Vector2,
             pub render_transform: self::layout::inkUITransform,
+            pub size: crate::Vector2,
             $($tt)*
         }
     };

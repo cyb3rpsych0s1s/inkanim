@@ -5,6 +5,8 @@ use self::{
     anim::{InkAnimSequence, Target},
     widget::SiblingOrNested,
 };
+mod conversion;
+use conversion::deserialize_lockey_from_anything;
 
 /// everything related to *.inkanim*
 pub mod anim;
@@ -48,10 +50,17 @@ pub struct InkWrapper<T> {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CName(String);
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum LocKey {
+    ID(u32),
+    Value(String),
+}
+
 /// specific translation ID
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LocalizationString {
-    pub value: String,
+    #[serde(deserialize_with = "deserialize_lockey_from_anything")]
+    value: Option<LocKey>,
 }
 
 impl<T> std::fmt::Display for InkWrapper<T>

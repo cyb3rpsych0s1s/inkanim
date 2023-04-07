@@ -79,3 +79,10 @@ pub struct inkWidgetLayout {
     #[serde(rename = "HAlign")]
     pub h_align: inkEHorizontalAlign,
 }
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum inkEChildOrder {
+    Forward = 0,
+    Backward = 1,
+}

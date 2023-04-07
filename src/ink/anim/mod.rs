@@ -1,4 +1,3 @@
-mod conversion;
 mod display;
 
 use serde::{Deserialize, Serialize};
@@ -10,7 +9,7 @@ use super::InkWrapper;
 
 mod implementation;
 
-use conversion::deserialize_vector2_from_anything;
+use super::conversion::deserialize_vector2_from_anything;
 
 const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
 const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));

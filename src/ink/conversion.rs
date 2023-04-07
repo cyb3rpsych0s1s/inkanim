@@ -3,7 +3,57 @@ use std::fmt;
 use serde::de::{self, MapAccess};
 use serde::Deserialize;
 
-use crate::anim::{HDRColor, Range, Vector2};
+use crate::anim::Range;
+use crate::LocKey;
+
+pub fn deserialize_lockey_from_anything<'de, D>(deserializer: D) -> Result<Option<LocKey>, D::Error>
+where
+    D: de::Deserializer<'de>,
+{
+    struct LocKeyVisitor;
+
+    impl<'de> de::Visitor<'de> for LocKeyVisitor {
+        type Value = Option<LocKey>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("either a String, or its simpler integer representation")
+        }
+
+        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            if v.len() == 0 {
+                return Ok(Some(LocKey::Value(String::new())));
+            }
+            let searched = "LocKey#";
+            let upper = searched.len();
+            let expected = upper + 5; // prefix + length of ID
+            if v.len() == expected && &v[0..upper] == searched {
+                dbg!(&v[upper..]);
+                let id = v[upper..].parse::<u32>().map_err(|_| {
+                    de::Error::custom(&format!("unexpected loc key ID: {}", &v[upper..]))
+                })?;
+                return Ok(Some(LocKey::ID(id)));
+            }
+            Ok(Some(LocKey::Value(v.to_string())))
+        }
+
+        fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+        where
+            A: MapAccess<'de>,
+        {
+            while let Some(key) = map.next_key::<&str>()? {
+                if key == "value" {
+                    let value: &str = map.next_value()?;
+                    return self.visit_str(value);
+                }
+            }
+            Err(de::Error::custom("invalid map sequence"))
+        }
+    }
+    deserializer.deserialize_any(LocKeyVisitor)
+}
 
 pub fn deserialize_vector2_from_anything<'de, D>(deserializer: D) -> Result<Range, D::Error>
 where
@@ -15,7 +65,9 @@ where
         type Value = Range;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            formatter.write_str("either a Vector2, HDRColor, or its simpler integer or float representation")
+            formatter.write_str(
+                "either a Vector2, HDRColor, or its simpler integer or float representation",
+            )
         }
 
         fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
@@ -109,12 +161,12 @@ where
             let (key, value) = &mut map.next_entry::<&str, &str>()?.unwrap();
             if key == &"$type" {
                 if value == &"Vector2" {
-                    return Ok(Range::Position(Vector2::deserialize(
+                    return Ok(Range::Position(crate::Vector2::deserialize(
                         de::value::MapAccessDeserializer::new(map),
                     )?));
                 }
                 if value == &"HDRColor" {
-                    return Ok(Range::Color(HDRColor::deserialize(
+                    return Ok(Range::Color(crate::HDRColor::deserialize(
                         de::value::MapAccessDeserializer::new(map),
                     )?));
                 }
