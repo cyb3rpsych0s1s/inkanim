@@ -11,12 +11,64 @@ where
     D: de::Deserializer<'de>,
 {
     struct LocKeyVisitor;
+    /// length of numeric ID
+    const ID_LEN: usize = 5;
+    /// maximum numeric ID
+    const ID_MAX: usize = 99999;
 
     impl<'de> de::Visitor<'de> for LocKeyVisitor {
         type Value = Option<LocKey>;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
             formatter.write_str("either a String, or its simpler integer representation")
+        }
+
+        fn visit_u16<E>(self, v: u16) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            self.visit_u32(v as u32)
+        }
+
+        fn visit_u32<E>(self, v: u32) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            if v > ID_MAX as u32 {
+                return Err(de::Error::custom("greater than 5 digits"));
+            }
+            Ok(Some(LocKey::ID(v)))
+        }
+
+        fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            self.visit_u32(v as u32)
+        }
+
+        fn visit_i16<E>(self, v: i16) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            self.visit_u32(v as u32)
+        }
+
+        fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            if v < 0 {
+                return Err(de::Error::custom("negative digit"));
+            }
+            self.visit_u32(v as u32)
+        }
+
+        fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            self.visit_u32(v as u32)
         }
 
         fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
@@ -28,9 +80,8 @@ where
             }
             let searched = "LocKey#";
             let upper = searched.len();
-            let expected = upper + 5; // prefix + length of ID
+            let expected = upper + ID_LEN;
             if v.len() == expected && &v[0..upper] == searched {
-                dbg!(&v[upper..]);
                 let id = v[upper..].parse::<u32>().map_err(|_| {
                     de::Error::custom(&format!("unexpected loc key ID: {}", &v[upper..]))
                 })?;
