@@ -31,24 +31,36 @@ pub(crate) fn list(
         show_path_names: args.show_path_names,
     };
 
-    let tables: Vec<Table> = into_table(duo);
-    println!(
-        "{}",
-        tables
-            .iter()
-            .map(|x| x.render())
-            .collect::<Vec<String>>()
-            .join("\n\n")
-    );
+    match &args.mode.output {
+        crate::args::Output::Table => {
+            let tables: Vec<Table> = into_table(duo);
+            println!(
+                "{}",
+                tables
+                    .iter()
+                    .map(|x| x.render())
+                    .collect::<Vec<String>>()
+                    .join("\n\n")
+            );
+        }
+        crate::args::Output::Json => {
+            let json = into_json(duo);
+            println!("{json}");
+        }
+        crate::args::Output::Reds => todo!(),
+    };
 }
 
+fn into_json<'a>(value: DualResources) -> String {
+    serde_json::to_string_pretty(&value.widget).unwrap()
+}
 fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
     let DualResources {
         widget,
         anim,
-        filter_by_type: _,
         show_path_names,
         filter_by_path,
+        ..
     } = value;
     let mut tables: Vec<Table> = Vec::with_capacity(anim.sequences.len());
     let mut table: Table;

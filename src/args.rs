@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use clap::ValueEnum;
 use inkanim::{
     anim::{InkAnimAnimationLibraryResource, InkAnimInterpolatorType},
     widget::inkWidgetLibraryResource,
@@ -54,6 +55,13 @@ pub struct PathNames {
     pub path: std::vec::Vec<String>,
 }
 
+#[derive(clap::Args, Debug)]
+pub struct Mode {
+    /// optionally output as JSON, Redscript or table (default)
+    #[arg(value_enum, long, default_value_t = Output::Table)]
+    pub output: Output,
+}
+
 pub(crate) fn parse_path_indexes(path: &str) -> Result<Vec<usize>, std::io::Error> {
     Ok(path
         .split(&['.', '│'][..])
@@ -66,4 +74,11 @@ pub(crate) fn parse_path_names(path: &str) -> Result<Vec<String>, std::io::Error
         .split(&['.', '│'][..])
         .map(|x| x.trim().to_string())
         .collect())
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+pub enum Output {
+    Table,
+    Json,
+    Reds,
 }

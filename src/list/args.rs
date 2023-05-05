@@ -1,6 +1,6 @@
 use inkanim::anim::InkAnimInterpolatorType;
 
-use crate::args::{Files, OptionalPathIndexes};
+use crate::args::{Files, Mode, OptionalPathIndexes};
 
 #[derive(clap::Args, Debug)]
 #[command()]
@@ -20,4 +20,7 @@ pub struct Args {
     /// note: displaying names tend to disrupt CLI display (when too long)
     #[arg(short, long = "show", default_value_t = false)]
     pub show_path_names: bool,
+
+    #[command(flatten)]
+    pub mode: Mode,
 }

@@ -75,7 +75,7 @@ where
         where
             E: de::Error,
         {
-            if v.len() == 0 {
+            if v.is_empty() {
                 return Ok(Some(LocKey::Value(String::new())));
             }
             let searched = "LocKey#";
@@ -83,7 +83,7 @@ where
             let expected = upper + ID_LEN;
             if v.len() == expected && &v[0..upper] == searched {
                 let id = v[upper..].parse::<u32>().map_err(|_| {
-                    de::Error::custom(&format!("unexpected loc key ID: {}", &v[upper..]))
+                    de::Error::custom(format!("unexpected loc key ID: {}", &v[upper..]))
                 })?;
                 return Ok(Some(LocKey::ID(id)));
             }
