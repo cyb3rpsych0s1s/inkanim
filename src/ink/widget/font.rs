@@ -18,7 +18,7 @@ pub struct inkFontFamilyResource {
 #[derive(Debug, Serialize, Clone, Deserialize)]
 pub struct fontStyle(CName);
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, clippy::enum_variant_names)]
 #[derive(Debug, Serialize, Clone, Deserialize)]
 pub enum textLetterCase {
     OriginalCase = 0,

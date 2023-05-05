@@ -145,8 +145,8 @@ pub enum InkAnimInterpolator {
     inkanimTextOffsetInterpolator(Interpolator),
 }
 
-impl InkAnimInterpolator {
-    pub fn as_ref(&self) -> &Interpolator {
+impl AsRef<Interpolator> for InkAnimInterpolator {
+    fn as_ref(&self) -> &Interpolator {
         match self {
             Self::inkanimScaleInterpolator(interpolator)
             | Self::inkanimTranslationInterpolator(interpolator)
