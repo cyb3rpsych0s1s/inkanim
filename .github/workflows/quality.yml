@@ -15,9 +15,7 @@ jobs:
       - name: ⬇️ checkout repository
         uses: actions/checkout@v3
       - name: 🛠 setup cargo toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
       - name: ♻️ cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
@@ -33,14 +31,14 @@ jobs:
       - name: ⬇️ checkout repository
         uses: actions/checkout@v3
       - name: 🛠 setup cargo toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
       - name: ♻️ cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: ubuntu-latest
+      - name: 🔍 run cargo fmt
+        run: cargo fmt --check
+      - name: 🔍 run cargo fix
+        run: cargo fix
       - name: 🔍 run cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
+        run: cargo clippy -- -Dwarnings
