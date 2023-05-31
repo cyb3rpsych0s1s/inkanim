@@ -36,7 +36,9 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: ubuntu-latest
+      - name: 🔍 run cargo fmt
+        run: cargo fmt --check
+      - name: 🔍 run cargo fix
+        run: cargo fix
       - name: 🔍 run cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
+        run: cargo clippy -- -Dwarnings
