@@ -21,9 +21,7 @@ jobs:
         with:
           shared-key: ${{ matrix.os }}
       - name: ✅ run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
+        run: cargo check
   lint:
     needs: check
     runs-on: ubuntu-latest
