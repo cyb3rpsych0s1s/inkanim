@@ -319,7 +319,7 @@ impl InkAnimSequence {
         filter: &InkAnimInterpolatorType,
     ) -> Vec<InkWrapper<InkAnimInterpolator>> {
         self.definitions
-            .get(0)
+            .first()
             .expect("at least one ink anim definition")
             .data
             .interpolators

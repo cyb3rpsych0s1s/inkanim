@@ -468,7 +468,7 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
 
 impl inkWidgetLibraryResource {
     pub fn root(&self) -> &inkWidgetLibraryItem {
-        self.library_items.get(0).expect("Root")
+        self.library_items.first().expect("Root")
     }
     pub fn root_chunk(&self) -> &inkWidgetLibraryItemInstance {
         &self.root().package.file.data.root_chunk
