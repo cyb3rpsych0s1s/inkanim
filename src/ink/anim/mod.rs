@@ -1,16 +1,54 @@
-mod conversion;
 mod display;
-mod implementation;
 
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
-use crate::args::{Fade, InkAnimInterpolatorType};
+use crate::{HDRColor, Vector2};
 
-use super::{HandleId, InkWrapper};
+use super::InkWrapper;
 
-use conversion::deserialize_vector2_from_anything;
-pub use implementation::SameOrNested;
+mod implementation;
+
+use super::conversion::deserialize_vector2_from_anything;
+
+const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
+const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));
+const FADEOUT: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::Out));
+
+/// orphan interpolator
+pub struct OrphanInkAnimInterpolator {
+    pub index: usize,
+    pub interpolator: InkWrapper<InkAnimInterpolator>,
+}
+
+/// transparency interpolation direction
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Fade {
+    /// transparency interpolates toward `1.`
+    In,
+    /// transparency interpolates toward `0.`
+    Out,
+}
+
+/// every kind of possible interpolation
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum InkAnimInterpolatorType {
+    Color,
+    Size,
+    Scale,
+    Translation,
+    Transparency(Option<Fade>),
+    TextValueProgress,
+    Effect,
+    Anchor,
+    Pivot,
+    Shear,
+    Rotation,
+    Margin,
+    Padding,
+    TextReplace,
+    TextOffset,
+}
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkanimInterpolationDirection)
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -42,26 +80,6 @@ pub enum Type {
     Elastic = 7,
     Circular = 8,
     Back = 9,
-}
-
-/// see [NativeDB](https://nativedb.red4ext.com/Vector2)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
-#[serde(tag = "$type")]
-#[serde(rename_all = "PascalCase")]
-pub struct Vector2 {
-    pub x: f32,
-    pub y: f32,
-}
-
-/// see [NativeDB](https://nativedb.red4ext.com/HDRColor)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
-#[serde(tag = "$type")]
-#[serde(rename_all = "PascalCase")]
-pub struct HDRColor {
-    pub alpha: f32,
-    pub blue: f32,
-    pub green: f32,
-    pub red: f32,
 }
 
 /// specific interpolator values interpretation
@@ -127,8 +145,8 @@ pub enum InkAnimInterpolator {
     inkanimTextOffsetInterpolator(Interpolator),
 }
 
-impl InkAnimInterpolator {
-    pub fn as_ref(&self) -> &Interpolator {
+impl AsRef<Interpolator> for InkAnimInterpolator {
+    fn as_ref(&self) -> &Interpolator {
         match self {
             Self::inkanimScaleInterpolator(interpolator)
             | Self::inkanimTranslationInterpolator(interpolator)
@@ -285,48 +303,23 @@ pub struct BlankInkAnimSequenceTargetInfo {
 }
 
 /// any target
-///
-/// can contain:
-/// - a sequence of digits (path to nested element) : when related to interpolator(s)
-/// - a negative handle ref ID (not element related) : when declaring interpolation event(s)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Target {
+    /// a sequence of digits (path to nested element) : when related to interpolator(s)
     WithHandleId(InkWrapper<InkAnimSequenceTargetInfo>),
+    /// a negative [handle ID](super::HandleId) (not element related) : when declaring interpolation event(s)
     WithoutHandleId(BlankInkAnimSequenceTargetInfo),
 }
 
 impl InkAnimSequence {
-    /// summarize all paths matching sequences of digits
-    pub fn get_path_indexes_matching(&self, searched: &[usize]) -> Vec<PathSummary> {
-        let count = searched.len();
-        let _last = count - 1;
-        let mut out = vec![];
-        for (target_index, target) in self.targets.iter().enumerate() {
-            match target {
-                Target::WithHandleId(ref handle) => {
-                    let path = &handle.data.path;
-                    if path.same_or_nested(searched) {
-                        out.push(PathSummary {
-                            Name: self.name.clone(),
-                            HandleId: handle.handle_id,
-                            Index: target_index,
-                            Path: path.clone(),
-                        });
-                    }
-                }
-                _ => continue,
-            }
-        }
-        out
-    }
     /// find all interpolators matching filter
     pub fn get_interpolators_matching(
         &self,
         filter: &InkAnimInterpolatorType,
     ) -> Vec<InkWrapper<InkAnimInterpolator>> {
         self.definitions
-            .get(0)
+            .first()
             .expect("at least one ink anim definition")
             .data
             .interpolators
@@ -341,18 +334,4 @@ impl InkWrapper<InkAnimSequence> {
     pub fn name(&self) -> &str {
         self.data.name.as_str()
     }
-}
-
-/// animation aggregated informations summary
-#[allow(dead_code, non_snake_case)]
-#[derive(Debug)]
-pub struct PathSummary {
-    /// animation name
-    Name: String,
-    /// unique handle ID
-    HandleId: HandleId,
-    /// index in sequence
-    Index: usize,
-    /// path to the nested element
-    Path: Vec<usize>,
 }

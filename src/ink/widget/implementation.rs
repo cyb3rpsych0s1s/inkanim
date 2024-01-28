@@ -9,9 +9,29 @@ use super::{
     inkHorizontalPanelWidget, inkImageWidget, inkMaskWidget, inkMultiChildren, inkRectangleWidget,
     inkScrollAreaWidget, inkShapeWidget, inkTextWidget, inkUniformGridWidget,
     inkVectorGraphicWidget, inkVerticalPanelWidget, inkVideoWidget, inkVirtualCompoundWidget,
-    inkWidgetLibraryItem, inkWidgetLibraryItemInstance, inkWidgetLibraryResource, Widget,
-    WidgetSummary,
+    inkWidgetLibraryItem, inkWidgetLibraryItemInstance, inkWidgetLibraryResource, SiblingOrNested,
+    Widget, WidgetSummary,
 };
+
+impl SiblingOrNested for Vec<usize> {
+    fn sibling_or_nested(&self, searched: &[usize]) -> bool {
+        let count_own = self.len();
+        let count_searched = searched.len();
+        if count_searched == 0 {
+            return true;
+        }
+        let last_searched = count_searched - 1;
+        for (i, path_index) in self.iter().enumerate() {
+            if *path_index != searched[i] {
+                return false;
+            }
+            if i == last_searched && count_own >= count_searched {
+                return true;
+            }
+        }
+        false
+    }
+}
 
 macro_rules! impl_ink_children {
     ($ty:ident) => {
@@ -448,7 +468,7 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
 
 impl inkWidgetLibraryResource {
     pub fn root(&self) -> &inkWidgetLibraryItem {
-        self.library_items.get(0).expect("Root")
+        self.library_items.first().expect("Root")
     }
     pub fn root_chunk(&self) -> &inkWidgetLibraryItemInstance {
         &self.root().package.file.data.root_chunk

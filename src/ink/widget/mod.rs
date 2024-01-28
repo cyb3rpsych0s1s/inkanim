@@ -1,4 +1,12 @@
+//! .inkwidget
+//!
+//! All the widgets in Cybperunk 2077 UI
+//! are similar to the web and traditional UI frameworks.
+
+mod font;
 pub(crate) mod implementation;
+mod layout;
+mod properties;
 
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
@@ -7,35 +15,61 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
-use super::{HandleId, InkWrapper};
+use self::{
+    font::{
+        fontStyle, inkFontFamilyResource, textHorizontalAlignment, textLetterCase,
+        textOverflowPolicy, textVerticalAlignment,
+    },
+    layout::{inkEHorizontalAlign, inkEVerticalAlign, textJustificationType},
+};
+
+use super::{HandleId, InkWrapper, LocalizationString};
+
+/// belongs to the same level or is nested below, in a tree hierarchy
+pub trait SiblingOrNested {
+    fn sibling_or_nested(&self, searched: &[usize]) -> bool;
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum Flags {
     Soft,
+    Hard,
 }
 
 macro_rules! native_compound_widget {
     ($ty:ident) => {
-        /// see [NativeDB](https://nativedb.red4ext.com/$ty)
+        #[doc=concat!("see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
         #[derive(Debug, Clone, Serialize, Deserialize)]
-        #[serde(tag = "$type")]
+        #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub children: InkWrapper<inkMultiChildren>,
             pub name: String,
+            pub child_order: self::layout::inkEChildOrder,
+            pub child_margin: self::layout::inkMargin,
         }
     };
 }
 
 macro_rules! native_leaf_widget {
-    ($ty:ident) => {
-        /// see [NativeDB](https://nativedb.red4ext.com/$ty)
+    ($ty:ident { $($tt:tt)* }) => {
+        #[doc=concat!("🌿 see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
         #[derive(Debug, Clone, Serialize, Deserialize)]
-        #[serde(tag = "$type")]
+        #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub name: String,
+            pub layout: self::layout::inkWidgetLayout,
+            pub property_manager: Option<self::properties::PropertyManager>,
+            pub render_transform_pivot: crate::Vector2,
+            pub render_transform: self::layout::inkUITransform,
+            pub size: crate::Vector2,
+            $($tt)*
         }
+    };
+    ($ty:ident) => {
+        native_leaf_widget!($ty {});
     };
 }
 
@@ -51,12 +85,26 @@ native_compound_widget!(inkCacheWidget);
 /// see [NativeDB](https://nativedb.red4ext.com/inkMultiChildren)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
 pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
 }
 
-native_leaf_widget!(inkTextWidget);
+native_leaf_widget!(inkTextWidget {
+  pub localization_string: LocalizationString,
+  pub text: String,
+  pub font_family: inkFontFamilyResource,
+  pub font_style: fontStyle,
+  pub justification: textJustificationType,
+  pub text_letter_case: Option<textLetterCase>,
+  pub line_height_percentage: f32,
+  pub text_horizontal_alignment: textHorizontalAlignment,
+  pub text_vertical_alignment: textVerticalAlignment,
+  pub text_overflow_policy: textOverflowPolicy,
+  pub content_h_align: inkEHorizontalAlign,
+  pub content_v_align: inkEVerticalAlign,
+  pub scroll_delay: u16,
+  pub scroll_text_speed: f32,
+});
 native_leaf_widget!(inkImageWidget);
 native_leaf_widget!(inkVideoWidget);
 native_leaf_widget!(inkMaskWidget);
@@ -72,7 +120,7 @@ native_leaf_widget!(inkVectorGraphicWidget);
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[enum_dispatch(Classname)]
-#[serde(untagged)]
+#[serde(tag = "$type")]
 pub enum Widget {
     inkMultiChildren(inkMultiChildren),
 
@@ -145,9 +193,11 @@ pub struct inkWidgetLibraryItem {
     pub package: Package,
 }
 
+/// see [NativeDB](https://nativedb.red4ext.com/inkanimAnimationLibraryResource)
+#[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct AnimationLibraryResRef {
+pub struct inkanimAnimationLibraryResource {
     depot_path: PathBuf,
     flags: Flags,
 }
@@ -158,8 +208,7 @@ pub struct AnimationLibraryResRef {
 #[serde(tag = "$type")]
 #[serde(rename_all = "camelCase")]
 pub struct inkWidgetLibraryResource {
-    pub animation_library_res_ref: AnimationLibraryResRef,
-    pub external_dependencies_for_internal_items: Vec<AnimationLibraryResRef>,
+    pub animation_library_res_ref: inkanimAnimationLibraryResource,
     pub library_items: Vec<inkWidgetLibraryItem>,
 }
 

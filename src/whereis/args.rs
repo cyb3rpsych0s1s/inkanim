@@ -1,4 +1,4 @@
-use crate::args::{Files, PathNames};
+use crate::args::{Files, Mode, PathNames};
 
 #[derive(clap::Args, Debug)]
 #[command()]
@@ -8,4 +8,7 @@ pub struct Args {
 
     #[command(flatten)]
     pub names: PathNames,
+
+    #[command(flatten)]
+    pub mode: Mode,
 }
