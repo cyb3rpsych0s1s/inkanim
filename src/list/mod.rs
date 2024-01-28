@@ -134,7 +134,7 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
                 let fqcn = infos.clone().and_then(|x| {
                     widget
                         .library_items
-                        .get(0)
+                        .first()
                         .expect("Root")
                         .package
                         .file
@@ -174,7 +174,7 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
             let kind = infos.clone().and_then(|x| {
                 widget
                     .library_items
-                    .get(0)
+                    .first()
                     .expect("Root")
                     .package
                     .file
