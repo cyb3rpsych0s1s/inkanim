@@ -61,7 +61,7 @@ pub struct OptionalPathNames {
     ///
     /// e.g. "main_canvas.Arrival.Arrival_GPS_Canvas.Arrival_GPS_Elements_Canvas"
     #[arg(short, long, value_parser = parse_path_names, value_name = "NAMES")]
-    pub path: Option<std::vec::Vec<String>>,
+    pub names: Option<std::vec::Vec<String>>,
 }
 
 #[derive(clap::Args, Debug)]

@@ -1,15 +1,40 @@
 mod args;
 pub(crate) use args::Args;
-use inkanim::{anim::InkAnimAnimationLibraryResource, widget::inkWidgetLibraryResource};
+use inkanim::{
+    anim::InkAnimAnimationLibraryResource,
+    widget::{inkWidgetLibraryResource, ByName},
+};
 
 pub(crate) fn show(
     args: Args,
-    _widget: inkWidgetLibraryResource,
+    widget: inkWidgetLibraryResource,
     _anim: InkAnimAnimationLibraryResource,
 ) {
-    match (args.indexes.path, args.names.path) {
+    match (args.indexes.path, args.names.names) {
         (None, None) | (Some(_), Some(_)) => panic!("please specify either --indexes or --names"),
-        (None, Some(_names)) => todo!(),
+        (None, Some(names)) => {
+            if names.is_empty() {
+                panic!("please specify the names tree");
+            }
+            let (first, others) = names.split_at(1);
+            let (_, mut parent) = widget
+            .root_chunk()
+            .root_widget
+            .by_name(first.first().unwrap())
+            .unwrap_or_else(|| {
+                panic!("unable to find widget in tree: {names:#?}");
+            });
+            let last_idx = names.len() - 1;
+            for (idx, name) in others.iter().enumerate() {
+                if parent.is_leaf() && idx < last_idx {
+                    panic!("unable to find widget in tree: {names:#?}");
+                }
+                (_, parent) = parent.as_compound().unwrap().by_name(name).unwrap_or_else(|| {
+                    panic!("unable to find widget in tree: {names:#?}");
+                });
+            }
+            println!("{:#?}", parent);
+        }
         (Some(_indexes), None) => todo!(),
     }
 }
