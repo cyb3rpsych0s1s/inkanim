@@ -120,6 +120,34 @@ pub struct Interpolator {
     pub use_relative_duration: bool,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EffectInterpolator {
+    pub effect_type: inkEffectType,
+    pub effect_name: Name,
+    pub param_name: Name,
+    #[serde(flatten)]
+    pub base: Interpolator,
+}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum inkEffectType {
+    ScanlineWipe = 0,
+    LinearWipe = 1,
+    RadialWipe = 2,
+    LightSweep = 3,
+    BoxBlur = 4,
+    Mask = 5,
+    Glitch = 6,
+    PointCloud = 7,
+    ColorFill = 8,
+    InnerGlow = 9,
+    ColorCorrection = 10,
+    Multisampling = 11,
+    Blackwall = 12,
+}
+
 /// any interpolator
 ///
 /// possible kinds include: scale, translation, transparency, etc
@@ -134,7 +162,7 @@ pub enum InkAnimInterpolator {
     inkanimSizeInterpolator(Interpolator),
     inkanimColorInterpolator(Interpolator),
     inkanimTextValueProgressInterpolator(Interpolator),
-    inkanimEffectInterpolator(Interpolator),
+    inkanimEffectInterpolator(EffectInterpolator),
     inkanimAnchorInterpolator(Interpolator),
     inkanimPivotInterpolator(Interpolator),
     inkanimShearInterpolator(Interpolator),
@@ -148,13 +176,13 @@ pub enum InkAnimInterpolator {
 impl AsRef<Interpolator> for InkAnimInterpolator {
     fn as_ref(&self) -> &Interpolator {
         match self {
+            Self::inkanimEffectInterpolator(interpolator) => &interpolator.base,
             Self::inkanimScaleInterpolator(interpolator)
             | Self::inkanimTranslationInterpolator(interpolator)
             | Self::inkanimTransparencyInterpolator(interpolator)
             | Self::inkanimSizeInterpolator(interpolator)
             | Self::inkanimColorInterpolator(interpolator)
             | Self::inkanimTextValueProgressInterpolator(interpolator)
-            | Self::inkanimEffectInterpolator(interpolator)
             | Self::inkanimAnchorInterpolator(interpolator)
             | Self::inkanimPivotInterpolator(interpolator)
             | Self::inkanimShearInterpolator(interpolator)
@@ -176,7 +204,21 @@ impl InkAnimInterpolator {
             Self::inkanimSizeInterpolator(_) => "size",
             Self::inkanimColorInterpolator(_) => "color",
             Self::inkanimTextValueProgressInterpolator(_) => "text value progress",
-            Self::inkanimEffectInterpolator(_) => "effect",
+            Self::inkanimEffectInterpolator(effect) => match effect.effect_type {
+                inkEffectType::ScanlineWipe => "effect (scan line wipe)",
+                inkEffectType::LinearWipe => "effect (linear wipe)",
+                inkEffectType::RadialWipe => "effect (radial wipe)",
+                inkEffectType::LightSweep => "effect (light sweep)",
+                inkEffectType::BoxBlur => "effect (box blur)",
+                inkEffectType::Mask => "effect (mask)",
+                inkEffectType::Glitch => "effect (glitch)",
+                inkEffectType::PointCloud => "effect (point cloud)",
+                inkEffectType::ColorFill => "effect (color fill)",
+                inkEffectType::InnerGlow => "effect (inner glow)",
+                inkEffectType::ColorCorrection => "effect (color correction)",
+                inkEffectType::Multisampling => "effect (multisampling)",
+                inkEffectType::Blackwall => "effect (blackwall)",
+            },
             Self::inkanimAnchorInterpolator(_) => "anchor",
             Self::inkanimPivotInterpolator(_) => "pivot",
             Self::inkanimShearInterpolator(_) => "shear",
