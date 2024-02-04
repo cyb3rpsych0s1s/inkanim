@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-use crate::HandleId;
+use crate::{HandleId, Name};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "$type", rename_all = "camelCase")]
 pub struct inkPropertyBinding {
-    pub property_name: String,
-    pub style_path: String,
+    pub property_name: Name,
+    pub style_path: Name,
 }
 
 #[allow(non_camel_case_types)]

@@ -11,9 +11,9 @@ mod properties;
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
 
-use std::path::PathBuf;
-
 use serde::{Deserialize, Serialize};
+
+use crate::{DepotPath, Name};
 
 use self::{
     font::{
@@ -33,6 +33,7 @@ pub trait SiblingOrNested {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum Flags {
+    Default,
     Soft,
     Hard,
 }
@@ -45,7 +46,7 @@ macro_rules! native_compound_widget {
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub children: InkWrapper<inkMultiChildren>,
-            pub name: String,
+            pub name: $crate::Name,
             pub child_order: self::layout::inkEChildOrder,
             pub child_margin: self::layout::inkMargin,
         }
@@ -59,7 +60,7 @@ macro_rules! native_leaf_widget {
         #[derive(Debug, Clone, Serialize, Deserialize)]
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
-            pub name: String,
+            pub name: $crate::Name,
             pub layout: self::layout::inkWidgetLayout,
             pub property_manager: Option<self::properties::PropertyManager>,
             pub render_transform_pivot: crate::Vector2,
@@ -147,7 +148,6 @@ pub enum Widget {
 /// see [NativeDB](https://nativedb.red4ext.com/inkWidgetLibraryItemInstance)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
 #[serde(rename_all = "camelCase")]
 pub struct inkWidgetLibraryItemInstance {
     pub root_widget: InkWrapper<inkCanvasWidget>,
@@ -156,40 +156,20 @@ pub struct inkWidgetLibraryItemInstance {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Data {
-    pub version: usize,
-    pub build_version: usize,
-    pub root_chunk: inkWidgetLibraryItemInstance,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct Header {
-    wolven_kit_version: String,
-    w_kit_json_version: String,
-    game_version: usize,
-    exported_date_time: chrono::DateTime<chrono::Utc>,
-    data_type: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct File {
-    pub header: Header,
-    pub data: Data,
+    pub file: crate::Data<inkWidgetLibraryItemInstance>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Package {
-    pub file: File,
+    pub data: self::Data,
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkWidgetLibraryItem)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
 pub struct inkWidgetLibraryItem {
-    pub name: String,
+    pub name: Name,
     pub package: Package,
 }
 
@@ -198,14 +178,13 @@ pub struct inkWidgetLibraryItem {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkanimAnimationLibraryResource {
-    depot_path: PathBuf,
+    depot_path: DepotPath,
     flags: Flags,
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkWidgetLibraryResource)
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
 #[serde(rename_all = "camelCase")]
 pub struct inkWidgetLibraryResource {
     pub animation_library_res_ref: inkanimAnimationLibraryResource,
@@ -219,5 +198,5 @@ pub struct WidgetSummary {
     /// unique handle ID
     pub HandleId: HandleId,
     /// widget name
-    pub Name: String,
+    pub Name: Name,
 }

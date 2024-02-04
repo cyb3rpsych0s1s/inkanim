@@ -1,8 +1,6 @@
-use std::path::PathBuf;
-
 use serde::{Deserialize, Serialize};
 
-use crate::CName;
+use crate::{DepotPath, Name};
 
 use super::Flags;
 
@@ -10,13 +8,13 @@ use super::Flags;
 #[derive(Debug, Serialize, Clone, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkFontFamilyResource {
-    depot_path: PathBuf,
+    depot_path: DepotPath,
     flags: Flags,
 }
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Serialize, Clone, Deserialize)]
-pub struct fontStyle(CName);
+pub struct fontStyle(Name);
 
 #[allow(non_camel_case_types, clippy::enum_variant_names)]
 #[derive(Debug, Serialize, Clone, Deserialize)]

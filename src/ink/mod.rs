@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
@@ -12,6 +14,67 @@ use conversion::deserialize_lockey_from_anything;
 pub mod anim;
 /// everything related to *.inkwidget*
 pub mod widget;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Name {
+    #[serde(rename = "$type")]
+    r#type: String,
+    #[serde(rename = "$storage")]
+    storage: String,
+    #[serde(rename = "$value")]
+    value: String,
+}
+
+impl Name {
+    pub fn as_str(&self) -> &str {
+        self.value.as_str()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Storage {
+    String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ResourcePath {
+    #[serde(rename = "$storage")]
+    storage: Storage,
+    #[serde(rename = "$value")]
+    value: PathBuf,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "$type")]
+pub enum DepotPath {
+    ResourcePath(ResourcePath),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Data<T> {
+    pub version: usize,
+    pub build_version: usize,
+    pub root_chunk: T,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Header {
+    wolven_kit_version: String,
+    w_kit_json_version: String,
+    game_version: usize,
+    exported_date_time: chrono::DateTime<chrono::Utc>,
+    data_type: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct File<T> {
+    pub header: Header,
+    pub data: Data<T>,
+}
 
 /// see [NativeDB](https://nativedb.red4ext.com/Vector2)
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
@@ -83,7 +146,7 @@ impl std::fmt::Display for HandleId {
 #[derive(Debug)]
 pub struct PathSummary {
     /// animation name
-    Name: String,
+    Name: Name,
     /// unique handle ID
     HandleId: HandleId,
     /// index in sequence
