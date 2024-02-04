@@ -5,6 +5,7 @@
 
 mod font;
 pub(crate) mod implementation;
+mod image;
 mod layout;
 mod properties;
 
@@ -12,6 +13,7 @@ use enum_dispatch::enum_dispatch;
 pub use implementation::*;
 
 use serde::{Deserialize, Serialize};
+use serde_aux::prelude::deserialize_bool_from_anything;
 
 use crate::{DepotPath, Name};
 
@@ -19,8 +21,7 @@ use self::{
     font::{
         fontStyle, inkFontFamilyResource, textHorizontalAlignment, textLetterCase,
         textOverflowPolicy, textVerticalAlignment,
-    },
-    layout::{inkEHorizontalAlign, inkEVerticalAlign, textJustificationType},
+    }, image::{inkBrushMirrorType, inkBrushTileType, inkTextureAtlas}, layout::{inkEHorizontalAlign, inkEVerticalAlign, inkMargin, textJustificationType}
 };
 
 use super::{HandleId, InkWrapper, LocalizationString};
@@ -106,7 +107,24 @@ native_leaf_widget!(inkTextWidget {
   pub scroll_delay: u16,
   pub scroll_text_speed: f32,
 });
-native_leaf_widget!(inkImageWidget);
+native_leaf_widget!(inkImageWidget {
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub use_external_dynamic_texture: bool,
+    pub external_dynamic_texture: Name,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub use_nine_slice_scale: bool,
+    pub nine_slice_scale: inkMargin,
+    pub mirror_type: inkBrushMirrorType,
+    pub tile_type: inkBrushTileType,
+    pub horizontal_tile_crop: f32,
+    pub vertical_tile_crop: f32,
+    pub texture_atlas: inkTextureAtlas,
+    pub texture_part: Name,
+    pub content_h_align: inkEHorizontalAlign,
+    pub content_v_align: inkEVerticalAlign,
+    pub tile_h_align: inkEHorizontalAlign,
+    pub tile_v_align: inkEVerticalAlign,
+});
 native_leaf_widget!(inkVideoWidget);
 native_leaf_widget!(inkMaskWidget);
 native_leaf_widget!(inkBorderWidget);
