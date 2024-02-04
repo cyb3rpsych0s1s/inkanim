@@ -4,8 +4,8 @@
 //! are similar to the web and traditional UI frameworks.
 
 mod font;
-pub(crate) mod implementation;
 mod image;
+pub(crate) mod implementation;
 mod layout;
 mod properties;
 
@@ -21,7 +21,9 @@ use self::{
     font::{
         fontStyle, inkFontFamilyResource, textHorizontalAlignment, textLetterCase,
         textOverflowPolicy, textVerticalAlignment,
-    }, image::{inkBrushMirrorType, inkBrushTileType, inkTextureAtlas}, layout::{inkEHorizontalAlign, inkEVerticalAlign, inkMargin, textJustificationType}
+    },
+    image::{inkBrushMirrorType, inkBrushTileType, inkTextureAtlas},
+    layout::{inkEHorizontalAlign, inkEVerticalAlign, inkMargin, textJustificationType},
 };
 
 use super::{HandleId, InkWrapper, LocalizationString};
