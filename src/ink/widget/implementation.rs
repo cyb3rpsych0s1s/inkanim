@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use enum_dispatch::enum_dispatch;
 
-use crate::ink::InkWrapper;
+use crate::{ink::InkWrapper, Name};
 
 use super::{
     inkBorderWidget, inkCacheWidget, inkCanvasWidget, inkCircleWidget, inkFlexWidget,
@@ -317,7 +317,11 @@ where
             if let Some(name) = child.data.name() {
                 out.push(WidgetSummary {
                     HandleId: child.handle_id,
-                    Name: name.to_string(),
+                    Name: Name {
+                        r#type: String::from("CName"),
+                        storage: String::from("string"),
+                        value: name.to_string(),
+                    },
                 });
             }
         }
@@ -471,20 +475,20 @@ impl inkWidgetLibraryResource {
         self.library_items.first().expect("Root")
     }
     pub fn root_chunk(&self) -> &inkWidgetLibraryItemInstance {
-        &self.root().package.file.data.root_chunk
+        &self.root().package.data.file.root_chunk
     }
 }
 
 impl WidgetTree for inkWidgetLibraryResource {
-    fn get_widget_classname(&self, path: &[usize]) -> Option<String> {
-        self.root_chunk().get_widget_classname(path)
+    fn get_widget_classname(&self, indexes: &[usize]) -> Option<String> {
+        self.root_chunk().get_widget_classname(indexes)
     }
 
-    fn get_path_names(&self, path: &[usize]) -> Option<Vec<String>> {
-        self.root_chunk().get_path_names(path)
+    fn get_path_names(&self, indexes: &[usize]) -> Option<Vec<String>> {
+        self.root_chunk().get_path_names(indexes)
     }
 
-    fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>> {
-        self.root_chunk().get_path_indexes(path)
+    fn get_path_indexes(&self, names: &[&str]) -> Option<Vec<usize>> {
+        self.root_chunk().get_path_indexes(names)
     }
 }

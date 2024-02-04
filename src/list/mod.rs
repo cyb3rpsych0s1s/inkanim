@@ -69,7 +69,11 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
         table = Table::new();
         table.style = TableStyle::rounded();
         table.add_row(Row::new(vec![
-            TableCell::new_with_alignment(sequence.data.name.clone(), 2, Alignment::Center),
+            TableCell::new_with_alignment(
+                sequence.data.name.clone().as_str(),
+                2,
+                Alignment::Center,
+            ),
             TableCell::new_with_alignment("index", 1, Alignment::Center),
             TableCell::new_with_alignment("kind", 1, Alignment::Center),
             TableCell::new_with_alignment("time", 4, Alignment::Center),
@@ -137,8 +141,8 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
                         .first()
                         .expect("Root")
                         .package
-                        .file
                         .data
+                        .file
                         .root_chunk
                         .get_path_names(&x)
                 });
@@ -177,8 +181,8 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
                     .first()
                     .expect("Root")
                     .package
-                    .file
                     .data
+                    .file
                     .root_chunk
                     .get_widget_classname(&x)
             });

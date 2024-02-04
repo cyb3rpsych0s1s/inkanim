@@ -3,7 +3,7 @@ mod display;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
-use crate::{HDRColor, Vector2};
+use crate::{HDRColor, Name, Vector2};
 
 use super::InkWrapper;
 
@@ -265,7 +265,7 @@ pub struct InkAnimSequence {
     ///
     /// ⚠️ `definitions` size must always match `targets` size
     pub definitions: Vec<InkWrapper<InkAnimDefinition>>,
-    pub name: String,
+    pub name: Name,
     /// describe the targets onto which the interpolations are played
     ///
     /// ⚠️ `targets` size must always match `definitions` size
@@ -275,7 +275,6 @@ pub struct InkAnimSequence {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InkAnimAnimationLibraryResource {
-    pub cooking_platform: String,
     pub sequences: Vec<InkWrapper<InkAnimSequence>>,
 }
 
