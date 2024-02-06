@@ -3,11 +3,11 @@
 //! All the widgets in Cybperunk 2077 UI
 //! are similar to the web and traditional UI frameworks.
 
-mod font;
-mod image;
+pub mod font;
+pub mod image;
 pub(crate) mod implementation;
-mod layout;
-mod properties;
+pub mod layout;
+pub mod properties;
 
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
@@ -134,6 +134,11 @@ native_leaf_widget!(inkShapeWidget);
 native_leaf_widget!(inkCircleWidget);
 native_leaf_widget!(inkRectangleWidget);
 native_leaf_widget!(inkVectorGraphicWidget);
+
+unsafe impl red4ext_rs::prelude::NativeRepr for inkTextWidget {
+    const NAME: &'static str = "inkText";
+    const NATIVE_NAME: &'static str = "inkTextWidget";
+}
 
 /// any widget
 #[allow(clippy::enum_variant_names)]

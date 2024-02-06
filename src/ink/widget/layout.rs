@@ -1,3 +1,4 @@
+use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 
 use crate::Vector2;
@@ -24,17 +25,23 @@ pub enum inkEAnchor {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, RedsValue)]
 pub enum inkEHorizontalAlign {
+    #[default]
     Fill = 0,
     Left = 1,
     Center = 2,
     Right = 3,
 }
 
+unsafe impl red4ext_rs::prelude::NativeRepr for inkEHorizontalAlign {
+    const NAME: &'static str = "inkEHorizontalAlign";
+}
+
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub enum inkEVerticalAlign {
+    #[default]
     Fill = 0,
     Top = 1,
     Center = 2,

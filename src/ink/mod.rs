@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
@@ -77,12 +78,16 @@ pub struct File<T> {
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/Vector2)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, PartialOrd, RedsValue)]
 #[serde(tag = "$type")]
 #[serde(rename_all = "PascalCase")]
 pub struct Vector2 {
     pub x: f32,
     pub y: f32,
+}
+
+unsafe impl red4ext_rs::prelude::NativeRepr for Vector2 {
+    const NAME: &'static str = "Vector2";
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/HDRColor)
@@ -178,5 +183,39 @@ impl InkAnimSequence {
             }
         }
         out
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use inkanim_macros::RedsWidget;
+
+    use crate::{widget::layout::inkEHorizontalAlign, RedsWidget, Vector2};
+
+    #[derive(RedsWidget, Debug, Clone, Default, PartialEq)]
+    pub struct TestParent {
+        pub child: TestChild,
+    }
+    unsafe impl red4ext_rs::prelude::NativeRepr for TestParent {
+        const NAME: &'static str = "TestParent";
+    }
+    #[derive(RedsWidget, Debug, Clone, Default, PartialEq)]
+    pub struct TestChild {
+        pub content_h_align: inkEHorizontalAlign,
+        pub size: Vector2,
+    }
+    unsafe impl red4ext_rs::prelude::NativeRepr for TestChild {
+        const NAME: &'static str = "TChild";
+    }
+    #[test]
+    fn reds() {
+        let testouille = TestChild {
+            content_h_align: inkEHorizontalAlign::Fill,
+            size: Vector2 { x: 0., y: 0. },
+        };
+        assert_eq!(testouille.reds_widget("test", None), 
+        r#"let test = new TChild();
+return test;"#
+    );
     }
 }
