@@ -192,13 +192,13 @@ mod tests {
 
     use crate::{widget::layout::inkEHorizontalAlign, RedsWidget, Vector2};
 
-    #[derive(RedsWidget, Debug, Clone, Default, PartialEq)]
-    pub struct TestParent {
-        pub child: TestChild,
-    }
-    unsafe impl red4ext_rs::prelude::NativeRepr for TestParent {
-        const NAME: &'static str = "TestParent";
-    }
+    // #[derive(RedsWidget, Debug, Clone, Default, PartialEq)]
+    // pub struct TestParent {
+    //     pub element: TestChild,
+    // }
+    // unsafe impl red4ext_rs::prelude::NativeRepr for TestParent {
+    //     const NAME: &'static str = "TestParent";
+    // }
     #[derive(RedsWidget, Debug, Clone, Default, PartialEq)]
     pub struct TestChild {
         pub content_h_align: inkEHorizontalAlign,
@@ -208,14 +208,39 @@ mod tests {
         const NAME: &'static str = "TChild";
     }
     #[test]
-    fn reds() {
-        let testouille = TestChild {
+    fn reds_default() {
+        let child = TestChild {
             content_h_align: inkEHorizontalAlign::Fill,
             size: Vector2 { x: 0., y: 0. },
         };
-        assert_eq!(testouille.reds_widget("test", None), 
-        r#"let test = new TChild();
-return test;"#
-    );
+        assert_eq!(
+            child.reds_widget("element", None),
+            r#"let element = new TChild();"#
+        );
+    }
+    #[test]
+    fn reds_simple() {
+        let child = TestChild {
+            content_h_align: inkEHorizontalAlign::Center,
+            size: Vector2 { x: 1., y: 0.6 },
+        };
+        assert_eq!(
+            child.reds_widget("element", None),
+            r#"let element = new TChild();
+element.content_h_align = inkEHorizontalAlign.Center;
+element.size = new Vector2(1., 0.6);"#
+        );
+    }
+    #[test]
+    fn reds_tree() {
+        // let child = TestChild {
+        //     content_h_align: inkEHorizontalAlign::Fill,
+        //     size: Vector2 { x: 0., y: 0. },
+        // };
+        // let parent = TestParent { element: child };
+        // assert_eq!(
+        //     child.reds_widget("element", Some("parent")),
+        //     r#"let element = new TChild();"#
+        // );
     }
 }

@@ -59,7 +59,11 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
                 if self == &Self::default() {
                     return None;
                 }
-                Some(format!("new {}({})", Self::NAME, ::std::stringify!(#(self.#fields),*)))
+                let mut args = Vec::<String>::new();
+                #(
+                    args.push(self.#fields.reds_value().unwrap());
+                )*
+                Some(format!("new {}({})", Self::NAME, args.join(", ")))
             }
         }
     }.into()
