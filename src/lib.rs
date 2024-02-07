@@ -38,7 +38,13 @@ impl InkWrapper<Widget> {
 
 impl RedsWidget for &InkWrapper<Widget> {
     fn reds_widget(&self, name: &str, parent: Option<&str>) -> String {
-        match &self.data {
+        self.data.reds_widget(name, parent)
+    }
+}
+
+impl RedsWidget for Widget {
+    fn reds_widget(&self, name: &str, parent: Option<&str>) -> String {
+        match self {
             Widget::inkMultiChildren(x) => x.reds_widget(name, parent),
             Widget::inkCanvasWidget(x) => x.reds_widget_compound(name, parent),
             Widget::inkHorizontalPanelWidget(x) => x.reds_widget_compound(name, parent),

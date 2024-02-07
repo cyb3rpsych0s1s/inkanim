@@ -173,41 +173,6 @@ native_leaf_widget!(inkCircleWidget);
 native_leaf_widget!(inkRectangleWidget);
 native_leaf_widget!(inkVectorGraphicWidget);
 
-// unsafe impl red4ext_rs::prelude::NativeRepr for inkTextWidget {
-//     const NAME: &'static str = "inkText";
-//     const NATIVE_NAME: &'static str = "inkTextWidget";
-// }
-
-// unsafe impl red4ext_rs::prelude::NativeRepr for inkImageWidget {
-//     const NAME: &'static str = "inkImage";
-//     const NATIVE_NAME: &'static str = "inkImageWidget";
-// }
-
-// unsafe impl red4ext_rs::prelude::NativeRepr for inkVideoWidget {
-//     const NAME: &'static str = "inkVideo";
-//     const NATIVE_NAME: &'static str = "inkVideoWidget";
-// }
-
-// unsafe impl red4ext_rs::prelude::NativeRepr for inkMaskWidget {
-//     const NAME: &'static str = "inkMask";
-//     const NATIVE_NAME: &'static str = "inkMaskWidget";
-// }
-
-// unsafe impl red4ext_rs::prelude::NativeRepr for inkBorderWidget {
-//     const NAME: &'static str = "inkBorder";
-//     const NATIVE_NAME: &'static str = "inkBorderWidget";
-// }
-
-// unsafe impl red4ext_rs::prelude::NativeRepr for inkShapeWidget {
-//     const NAME: &'static str = "inkShape";
-//     const NATIVE_NAME: &'static str = "inkShapeWidget";
-// }
-
-// unsafe impl red4ext_rs::prelude::NativeRepr for inkCircleWidget {
-//     const NAME: &'static str = "inkCircle";
-//     const NATIVE_NAME: &'static str = "inkCircleWidget";
-// }
-
 /// any widget
 #[allow(clippy::enum_variant_names)]
 #[allow(non_camel_case_types)]
