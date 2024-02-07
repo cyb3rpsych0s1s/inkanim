@@ -334,7 +334,8 @@ shape.render_transform_pivot = new Vector2(1., 3.);
 shape.size = new Vector2(360., 100.);
 shape.line_height_percentage = 0.;
 shape.scroll_delay = 0;
-shape.scroll_text_speed = 0.;"#
+shape.scroll_text_speed = 0.;
+parent.AddChild(shape);"#
         );
     }
 }

@@ -145,16 +145,29 @@ fn derive_reds_widget_compound_for_struct(name: &syn::Ident, r#struct: &syn::Dat
                         steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), v));
                     }
                 )*
-                let mut name;
+                let mut child_name;
+                let parent_name = self.name.reds_value();
                 if self.child_order == inkEChildOrder::Forward {
                     for child in self.children.iter() {
-                        name = child.name().expect("no child to be a inkMultiChildren");
-                        steps.push(child.reds_widget(name, self.name.reds_value().as_deref()));
+                        child_name = child.name().expect("no child should be a inkMultiChildren");
+                        steps.push(child.reds_widget(child_name, parent_name.as_deref()));
+                    }
+                    if let Some(v) = parent_name {
+                        for child in self.children.iter() {
+                            child_name = child.name().expect("no child should be a inkMultiChildren");
+                            steps.push(format!("{}.AddChild({});", instance, child_name));
+                        }
                     }
                 } else {
                     for child in self.children.iter().rev() {
-                        name = child.name().expect("no child to be a inkMultiChildren");
-                        steps.push(child.reds_widget(name, self.name.reds_value().as_deref()));
+                        child_name = child.name().expect("no child to be a inkMultiChildren");
+                        steps.push(child.reds_widget(child_name, parent_name.as_deref()));
+                    }
+                    if let Some(v) = parent_name {
+                        for child in self.children.iter() {
+                            child_name = child.name().expect("no child should be a inkMultiChildren");
+                            steps.push(format!("{}.AddChild({});", instance, child_name));
+                        }
                     }
                 }
                 steps.join("\n")
