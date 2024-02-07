@@ -15,7 +15,7 @@ pub use implementation::*;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::deserialize_bool_from_anything;
 
-use crate::{DepotPath, Name};
+use crate::Name;
 
 use self::{
     font::{
@@ -203,7 +203,7 @@ pub struct inkWidgetLibraryItem {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkanimAnimationLibraryResource {
-    depot_path: DepotPath,
+    depot_path: Name,
     flags: Flags,
 }
 

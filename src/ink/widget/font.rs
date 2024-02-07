@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{DepotPath, Name};
+use crate::Name;
 
 use super::Flags;
 
@@ -8,7 +8,7 @@ use super::Flags;
 #[derive(Debug, Serialize, Clone, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkFontFamilyResource {
-    depot_path: DepotPath,
+    depot_path: Name,
     flags: Flags,
 }
 

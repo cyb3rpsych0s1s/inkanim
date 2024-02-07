@@ -19,11 +19,11 @@ pub mod widget;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Name {
     #[serde(rename = "$type")]
-    r#type: String,
+    pub r#type: String,
     #[serde(rename = "$storage")]
-    storage: String,
+    pub storage: String,
     #[serde(rename = "$value")]
-    value: String,
+    pub value: String,
 }
 
 impl Name {
@@ -44,12 +44,6 @@ pub struct ResourcePath {
     storage: Storage,
     #[serde(rename = "$value")]
     value: PathBuf,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "$type")]
-pub enum DepotPath {
-    ResourcePath(ResourcePath),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -101,6 +95,10 @@ pub struct HDRColor {
     pub red: f32,
 }
 
+unsafe impl red4ext_rs::prelude::NativeRepr for HDRColor {
+    const NAME: &'static str = "HDRColor";
+}
+
 /// asset handle ID
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(transparent)]
@@ -118,17 +116,31 @@ pub struct InkWrapper<T> {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CName(String);
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+unsafe impl red4ext_rs::prelude::NativeRepr for CName {
+    const NAME: &'static str = "CName";
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum LocKey {
     ID(u32),
     Value(String),
 }
 
 /// specific translation ID
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct LocalizationString {
     #[serde(deserialize_with = "deserialize_lockey_from_anything")]
-    value: Option<LocKey>,
+    pub value: Option<LocKey>,
+}
+
+impl Default for LocalizationString {
+    fn default() -> Self {
+        Self { value: None }
+    }
+}
+
+unsafe impl red4ext_rs::prelude::NativeRepr for LocalizationString {
+    const NAME: &'static str = "LocalizationString";
 }
 
 impl<T> std::fmt::Display for InkWrapper<T>
