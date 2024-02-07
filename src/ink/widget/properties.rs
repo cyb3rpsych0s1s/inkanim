@@ -1,14 +1,14 @@
 use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 
-use crate::{HandleId, Name};
+use crate::{CName, HandleId};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, RedsValue)]
 #[serde(tag = "$type", rename_all = "camelCase")]
 pub struct inkPropertyBinding {
-    pub property_name: Name,
-    pub style_path: Name,
+    pub property_name: CName,
+    pub style_path: CName,
 }
 
 unsafe impl red4ext_rs::prelude::NativeRepr for inkPropertyBinding {

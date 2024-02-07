@@ -1,7 +1,7 @@
 use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 
-use crate::Name;
+use crate::ResourcePath;
 
 use super::Flags;
 
@@ -9,7 +9,7 @@ use super::Flags;
 #[derive(Debug, Serialize, Clone, Deserialize, Default, PartialEq, RedsValue)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkTextureAtlas {
-    depot_path: Name,
+    depot_path: ResourcePath,
     flags: Flags,
 }
 

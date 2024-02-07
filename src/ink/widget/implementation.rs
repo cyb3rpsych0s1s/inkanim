@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use enum_dispatch::enum_dispatch;
 
-use crate::{ink::InkWrapper, Name};
+use crate::{ink::InkWrapper, CName};
 
 use super::{
     inkBorderWidget, inkCacheWidget, inkCanvasWidget, inkCircleWidget, inkFlexWidget,
@@ -317,11 +317,7 @@ where
             if let Some(name) = child.data.name() {
                 out.push(WidgetSummary {
                     HandleId: child.handle_id,
-                    Name: Name {
-                        r#type: String::from("CName"),
-                        storage: String::from("string"),
-                        value: name.to_string(),
-                    },
+                    Name: CName(name.to_string()),
                 });
             }
         }

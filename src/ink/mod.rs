@@ -4,7 +4,10 @@ use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
-use crate::RedsWidget;
+use crate::{
+    ink::conversion::{deserialize_cname_from_format, deserialize_resourcepath_from_format},
+    RedsValue, RedsWidget,
+};
 
 use self::{
     anim::{InkAnimSequence, Target},
@@ -18,44 +21,33 @@ pub mod anim;
 /// everything related to *.inkwidget*
 pub mod widget;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct Name {
-    #[serde(rename = "$type")]
-    pub r#type: String,
-    #[serde(rename = "$storage")]
-    pub storage: String,
-    #[serde(rename = "$value")]
-    pub value: String,
-}
-
-impl Default for Name {
-    fn default() -> Self {
-        Self {
-            r#type: "CName".to_string(),
-            storage: "string".to_string(),
-            value: "None".to_string(),
-        }
-    }
-}
-
-impl Name {
-    pub fn as_str(&self) -> &str {
-        self.value.as_str()
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum Storage {
+    #[default]
     String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ResourcePath {
-    #[serde(rename = "$storage")]
-    storage: Storage,
-    #[serde(rename = "$value")]
-    value: PathBuf,
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct ResourcePath(
+    #[serde(deserialize_with = "deserialize_resourcepath_from_format")] pub std::path::PathBuf,
+);
+
+impl Default for ResourcePath {
+    fn default() -> Self {
+        Self(PathBuf::new())
+    }
+}
+
+impl RedsValue for ResourcePath {
+    fn reds_value(&self) -> Option<String> {
+        if self.0.as_os_str().to_str().is_none()
+            || self.0.as_os_str().to_str().unwrap().to_string().is_empty()
+        {
+            return None;
+        }
+        Some(format!("r\"{}\"", self.0.as_os_str().to_str().unwrap()))
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -151,8 +143,29 @@ where
 }
 
 /// specific resource ID
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CName(String);
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct CName(#[serde(deserialize_with = "deserialize_cname_from_format")] pub String);
+
+impl Default for CName {
+    fn default() -> Self {
+        Self("None".to_string())
+    }
+}
+
+impl CName {
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl RedsValue for CName {
+    fn reds_value(&self) -> Option<String> {
+        if self.0 == "None" {
+            return None;
+        }
+        Some(self.0.clone())
+    }
+}
 
 unsafe impl red4ext_rs::prelude::NativeRepr for CName {
     const NAME: &'static str = "CName";
@@ -195,7 +208,7 @@ impl std::fmt::Display for HandleId {
 #[derive(Debug)]
 pub struct PathSummary {
     /// animation name
-    Name: Name,
+    Name: CName,
     /// unique handle ID
     HandleId: HandleId,
     /// index in sequence
@@ -273,11 +286,7 @@ element.size = new Vector2(1., 0.6);"#
     #[test]
     fn reds_tree() {
         let inner = inkTextWidget {
-            name: crate::Name {
-                r#type: "CName".to_string(),
-                storage: "string".to_string(),
-                value: "shape".to_string(),
-            },
+            name: crate::CName("shape".to_string()),
             layout: crate::widget::layout::inkWidgetLayout {
                 ..Default::default()
             },
@@ -300,11 +309,7 @@ element.size = new Vector2(1., 0.6);"#
                     }],
                 },
             },
-            name: crate::Name {
-                r#type: "CName".to_string(),
-                storage: "string".to_string(),
-                value: "main_canvas".to_string(),
-            },
+            name: crate::CName("main_canvas".to_string()),
             child_order: crate::widget::layout::inkEChildOrder::Backward,
             child_margin: crate::widget::layout::inkMargin {
                 left: 0.,

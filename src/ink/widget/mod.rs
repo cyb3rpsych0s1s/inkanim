@@ -16,7 +16,7 @@ use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::deserialize_bool_from_anything;
 
-use crate::{Name, RedsWidget};
+use crate::{CName, RedsWidget, ResourcePath};
 
 use self::{
     font::{
@@ -63,7 +63,7 @@ macro_rules! native_compound_widget {
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub children: InkWrapper<inkMultiChildren>,
-            pub name: $crate::Name,
+            pub name: $crate::CName,
             pub child_order: self::layout::inkEChildOrder,
             pub child_margin: self::layout::inkMargin,
         }
@@ -81,7 +81,7 @@ macro_rules! native_leaf_widget {
         #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, inkanim_macros::RedsWidgetLeaf)]
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
-            pub name: $crate::Name,
+            pub name: $crate::CName,
             pub layout: self::layout::inkWidgetLayout,
             pub property_manager: Option<self::properties::PropertyManager>,
             pub render_transform_pivot: crate::Vector2,
@@ -150,7 +150,7 @@ native_leaf_widget!(inkTextWidget {
 native_leaf_widget!(inkImageWidget {
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub use_external_dynamic_texture: bool,
-    pub external_dynamic_texture: Name,
+    pub external_dynamic_texture: CName,
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub use_nine_slice_scale: bool,
     pub nine_slice_scale: inkMargin,
@@ -159,7 +159,7 @@ native_leaf_widget!(inkImageWidget {
     pub horizontal_tile_crop: f32,
     pub vertical_tile_crop: f32,
     pub texture_atlas: inkTextureAtlas,
-    pub texture_part: Name,
+    pub texture_part: CName,
     pub content_h_align: inkEHorizontalAlign,
     pub content_v_align: inkEVerticalAlign,
     pub tile_h_align: inkEHorizontalAlign,
@@ -227,7 +227,7 @@ pub struct Package {
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct inkWidgetLibraryItem {
-    pub name: Name,
+    pub name: CName,
     pub package: Package,
 }
 
@@ -236,7 +236,7 @@ pub struct inkWidgetLibraryItem {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkanimAnimationLibraryResource {
-    depot_path: Name,
+    depot_path: ResourcePath,
     flags: Flags,
 }
 
@@ -256,5 +256,5 @@ pub struct WidgetSummary {
     /// unique handle ID
     pub HandleId: HandleId,
     /// widget name
-    pub Name: Name,
+    pub Name: CName,
 }

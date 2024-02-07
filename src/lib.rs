@@ -138,21 +138,21 @@ impl RedsValue for String {
     }
 }
 
-impl RedsValue for Name {
-    fn reds_value(&self) -> Option<String> {
-        match (
-            self.r#type.as_str(),
-            self.storage.as_str(),
-            self.value.as_str(),
-        ) {
-            ("ResourcePath", "string", "") => None,
-            ("ResourcePath", "string", v) => Some(format!("r\"{v}\"")),
-            ("CName", "string", "None") => None,
-            ("CName", "string", v) => Some(format!("n\"{v}\"")),
-            _ => unreachable!(),
-        }
-    }
-}
+// impl RedsValue for Name {
+//     fn reds_value(&self) -> Option<String> {
+//         match (
+//             self.r#type.as_str(),
+//             self.storage.as_str(),
+//             self.value.as_str(),
+//         ) {
+//             ("ResourcePath", "string", "") => None,
+//             ("ResourcePath", "string", v) => Some(format!("r\"{v}\"")),
+//             ("CName", "string", "None") => None,
+//             ("CName", "string", v) => Some(format!("n\"{v}\"")),
+//             _ => unreachable!(),
+//         }
+//     }
+// }
 
 impl RedsValue for LocalizationString {
     fn reds_value(&self) -> Option<String> {
