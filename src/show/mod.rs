@@ -30,7 +30,8 @@ fn reds(widget: &inkWidgetLibraryResource, names: &[&str]) {
                 panic!("unable to find widget in tree: {names:#?}");
             });
     }
-    println!("{:#?}", parent);
+    // println!("{:#?}", parent.reds_widget_compound());
+    todo!()
 }
 
 pub(crate) fn show(

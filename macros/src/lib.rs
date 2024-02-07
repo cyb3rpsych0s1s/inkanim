@@ -1,13 +1,24 @@
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, Fields};
+use syn::{parse_macro_input, spanned::Spanned, Fields};
 use quote::quote;
 
-#[proc_macro_derive(RedsWidget)]
-pub fn derive_reds_widget(item: TokenStream) -> TokenStream {
+#[proc_macro_derive(RedsWidgetCompound)]
+pub fn derive_reds_widget_compound(item: TokenStream) -> TokenStream {
     let syn::DeriveInput{ ident, data, .. } = parse_macro_input!(item as syn::DeriveInput);
     match &data {
-        syn::Data::Struct(data) => derive_reds_widget_for_struct(&ident, data),
-        syn::Data::Enum(_) | syn::Data::Union(_) => syn::Error::new(ident.span(), "RedsWidget cannot be derived neither on union nor enum")
+        syn::Data::Struct(data) => derive_reds_widget_compound_for_struct(&ident, data),
+        syn::Data::Enum(_) | syn::Data::Union(_) => syn::Error::new(ident.span(), "RedsWidgetCompound cannot be derived neither on union nor enum")
+        .to_compile_error()
+        .into(),
+    }
+}
+
+#[proc_macro_derive(RedsWidgetLeaf)]
+pub fn derive_reds_widget_leaf(item: TokenStream) -> TokenStream {
+    let syn::DeriveInput{ ident, data, .. } = parse_macro_input!(item as syn::DeriveInput);
+    match &data {
+        syn::Data::Struct(data) => derive_reds_widget_leaf_for_struct(&ident, data),
+        syn::Data::Enum(_) | syn::Data::Union(_) => syn::Error::new(ident.span(), "RedsWidgetLeaf cannot be derived neither on union nor enum")
         .to_compile_error()
         .into(),
     }
@@ -26,11 +37,11 @@ pub fn derive_reds_value(item: TokenStream) -> TokenStream {
 }
 
 /// used with Redscript inkWidget class descendants
-fn derive_reds_widget_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -> TokenStream {
+fn derive_reds_widget_leaf_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -> TokenStream {
     let oneliners = r#struct.fields.iter().map(|x| x.ident.clone());
     quote! {
-        impl crate::RedsWidget for #name {
-            fn reds_widget(&self, instance: &str, parent: Option<&str>) -> String {
+        impl crate::RedsWidgetLeaf for #name {
+            fn reds_widget_leaf(&self, instance: &str, parent: Option<&str>) -> String {
                 use ::red4ext_rs::conv::NativeRepr;
                 use crate::RedsValue;
                 let mut steps = vec![];
@@ -40,9 +51,6 @@ fn derive_reds_widget_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) 
                         steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), v));
                     }
                 )*
-                if let Some(parent) = parent {
-                    steps.push(format!("{}.AddChild({});", parent, instance));
-                }
                 steps.join("\n")
             }
         }
@@ -114,6 +122,42 @@ fn derive_reds_value_for_enum(name: &syn::Ident, r#enum: &syn::DataEnum) -> Toke
                 match self {
                     #(#matches),*
                 }
+            }
+        }
+    }.into()
+}
+
+fn derive_reds_widget_compound_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -> TokenStream {
+    let oneliners = r#struct.fields
+    .iter()
+    .filter(|x| x.ident != Some(syn::Ident::new(::std::stringify!(children), x.span())))
+    .map(|x| x.ident.clone());
+    quote! {
+        impl crate::RedsWidgetCompound for #name {
+            fn reds_widget_compound(&self, instance: &str, parent: Option<&str>) -> String {
+                use ::red4ext_rs::conv::NativeRepr;
+                use crate::widget::layout::inkEChildOrder;
+                use crate::RedsValue;
+                let mut steps = vec![];
+                steps.push(format!("let {} = new {}();", instance, Self::NAME));
+                #(
+                    if let Some(v) = self.#oneliners.reds_value() {
+                        steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), v));
+                    }
+                )*
+                let mut name;
+                if self.child_order == inkEChildOrder::Forward {
+                    for child in self.children.iter() {
+                        name = child.name().expect("no child to be a inkMultiChildren");
+                        steps.push(child.reds_widget(name, self.name.reds_value().as_deref()));
+                    }
+                } else {
+                    for child in self.children.iter().rev() {
+                        name = child.name().expect("no child to be a inkMultiChildren");
+                        steps.push(child.reds_widget(name, self.name.reds_value().as_deref()));
+                    }
+                }
+                steps.join("\n")
             }
         }
     }.into()

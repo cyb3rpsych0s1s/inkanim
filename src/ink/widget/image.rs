@@ -6,7 +6,7 @@ use crate::Name;
 use super::Flags;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Default, PartialEq, RedsValue)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkTextureAtlas {
     depot_path: Name,

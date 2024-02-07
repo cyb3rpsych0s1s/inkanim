@@ -4,9 +4,11 @@ use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
+use crate::RedsWidget;
+
 use self::{
     anim::{InkAnimSequence, Target},
-    widget::SiblingOrNested,
+    widget::{inkMultiChildren, SiblingOrNested, Widget},
 };
 mod conversion;
 use conversion::deserialize_lockey_from_anything;
@@ -110,16 +112,42 @@ unsafe impl red4ext_rs::prelude::NativeRepr for HDRColor {
 }
 
 /// asset handle ID
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, PartialEq, RedsValue)]
 #[serde(transparent)]
 pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")] u32);
 
+unsafe impl red4ext_rs::prelude::NativeRepr for HandleId {
+    const NAME: &'static str = "HandleId";
+}
+
+#[cfg(test)]
+impl From<u32> for HandleId {
+    fn from(value: u32) -> Self {
+        Self(value)
+    }
+}
+
 /// wrapper with handle ID
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub struct InkWrapper<T> {
     pub handle_id: HandleId,
     pub data: T,
+}
+
+impl InkWrapper<inkMultiChildren> {
+    pub fn iter(&self) -> std::slice::Iter<'_, InkWrapper<Widget>> {
+        self.data.iter()
+    }
+}
+
+impl<T> RedsWidget for InkWrapper<T>
+where
+    T: RedsWidget,
+{
+    fn reds_widget(&self, name: &str, parent: Option<&str>) -> String {
+        self.data.reds_widget(name, parent)
+    }
 }
 
 /// specific resource ID
@@ -137,16 +165,10 @@ pub enum LocKey {
 }
 
 /// specific translation ID
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
 pub struct LocalizationString {
     #[serde(deserialize_with = "deserialize_lockey_from_anything")]
     pub value: Option<LocKey>,
-}
-
-impl Default for LocalizationString {
-    fn default() -> Self {
-        Self { value: None }
-    }
 }
 
 unsafe impl red4ext_rs::prelude::NativeRepr for LocalizationString {
@@ -210,18 +232,13 @@ impl InkAnimSequence {
 
 #[cfg(test)]
 mod tests {
-    use inkanim_macros::RedsWidget;
+    use inkanim_macros::RedsWidgetLeaf;
 
-    use crate::{widget::layout::inkEHorizontalAlign, RedsWidget, Vector2};
-
-    // #[derive(RedsWidget, Debug, Clone, Default, PartialEq)]
-    // pub struct TestParent {
-    //     pub element: TestChild,
-    // }
-    // unsafe impl red4ext_rs::prelude::NativeRepr for TestParent {
-    //     const NAME: &'static str = "TestParent";
-    // }
-    #[derive(RedsWidget, Debug, Clone, Default, PartialEq)]
+    use crate::{
+        widget::{inkCanvasWidget, inkMultiChildren, inkTextWidget, layout::inkEHorizontalAlign},
+        InkWrapper, RedsWidgetCompound, RedsWidgetLeaf, Vector2,
+    };
+    #[derive(RedsWidgetLeaf, Debug, Clone, Default, PartialEq)]
     pub struct TestChild {
         pub content_h_align: inkEHorizontalAlign,
         pub size: Vector2,
@@ -236,7 +253,7 @@ mod tests {
             size: Vector2 { x: 0., y: 0. },
         };
         assert_eq!(
-            child.reds_widget("element", None),
+            child.reds_widget_leaf("element", None),
             r#"let element = new TChild();"#
         );
     }
@@ -247,7 +264,7 @@ mod tests {
             size: Vector2 { x: 1., y: 0.6 },
         };
         assert_eq!(
-            child.reds_widget("element", None),
+            child.reds_widget_leaf("element", None),
             r#"let element = new TChild();
 element.content_h_align = inkEHorizontalAlign.Center;
 element.size = new Vector2(1., 0.6);"#
@@ -255,14 +272,69 @@ element.size = new Vector2(1., 0.6);"#
     }
     #[test]
     fn reds_tree() {
-        // let child = TestChild {
-        //     content_h_align: inkEHorizontalAlign::Fill,
-        //     size: Vector2 { x: 0., y: 0. },
-        // };
-        // let parent = TestParent { element: child };
-        // assert_eq!(
-        //     child.reds_widget("element", Some("parent")),
-        //     r#"let element = new TChild();"#
-        // );
+        let inner = inkTextWidget {
+            name: crate::Name {
+                r#type: "CName".to_string(),
+                storage: "string".to_string(),
+                value: "shape".to_string(),
+            },
+            layout: crate::widget::layout::inkWidgetLayout {
+                ..Default::default()
+            },
+            property_manager: None,
+            render_transform_pivot: Vector2 { x: 1., y: 3. },
+            render_transform: crate::widget::layout::inkUITransform {
+                ..Default::default()
+            },
+            size: Vector2 { x: 360., y: 100. },
+            ..Default::default()
+        };
+        let child = crate::widget::Widget::inkTextWidget(inner.clone());
+        let parent = inkCanvasWidget {
+            children: InkWrapper {
+                handle_id: 1.into(),
+                data: inkMultiChildren {
+                    children: vec![InkWrapper {
+                        handle_id: 2.into(),
+                        data: child,
+                    }],
+                },
+            },
+            name: crate::Name {
+                r#type: "CName".to_string(),
+                storage: "string".to_string(),
+                value: "main_canvas".to_string(),
+            },
+            child_order: crate::widget::layout::inkEChildOrder::Backward,
+            child_margin: crate::widget::layout::inkMargin {
+                left: 0.,
+                right: 0.,
+                top: 0.,
+                bottom: 0.,
+            },
+        };
+        assert_eq!(
+            inner.reds_widget_leaf("element", Some("parent")),
+            r#"let element = new inkText();
+element.name = n"shape";
+element.render_transform_pivot = new Vector2(1., 3.);
+element.size = new Vector2(360., 100.);
+element.line_height_percentage = 0.;
+element.scroll_delay = 0;
+element.scroll_text_speed = 0.;"#
+        );
+        assert_eq!(
+            parent.reds_widget_compound("parent", None),
+            r#"let parent = new inkCanvas();
+parent.name = n"main_canvas";
+parent.child_order = inkEChildOrder.Backward;
+let shape = new inkText();
+shape.name = n"shape";
+shape.render_transform_pivot = new Vector2(1., 3.);
+shape.size = new Vector2(360., 100.);
+shape.line_height_percentage = 0.;
+shape.scroll_delay = 0;
+shape.scroll_text_speed = 0.;"#
+        );
     }
 }

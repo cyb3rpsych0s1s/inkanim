@@ -16,7 +16,7 @@ use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::deserialize_bool_from_anything;
 
-use crate::Name;
+use crate::{Name, RedsWidget};
 
 use self::{
     font::{
@@ -51,13 +51,25 @@ macro_rules! native_compound_widget {
     ($ty:ident) => {
         #[doc=concat!("see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
-        #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[derive(
+            Debug,
+            Clone,
+            Serialize,
+            Deserialize,
+            Default,
+            PartialEq,
+            inkanim_macros::RedsWidgetCompound,
+        )]
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub children: InkWrapper<inkMultiChildren>,
             pub name: $crate::Name,
             pub child_order: self::layout::inkEChildOrder,
             pub child_margin: self::layout::inkMargin,
+        }
+        unsafe impl red4ext_rs::prelude::NativeRepr for $ty {
+            const NAME: &'static str = ::const_str::replace!(::std::stringify!($ty), "Widget", "");
+            const NATIVE_NAME: &'static str = ::std::stringify!($ty);
         }
     };
 }
@@ -66,7 +78,7 @@ macro_rules! native_leaf_widget {
     ($ty:ident { $($tt:tt)* }) => {
         #[doc=concat!("🌿 see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
-        #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, inkanim_macros::RedsWidgetLeaf)]
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
             pub name: $crate::Name,
@@ -76,6 +88,10 @@ macro_rules! native_leaf_widget {
             pub render_transform: self::layout::inkUITransform,
             pub size: crate::Vector2,
             $($tt)*
+        }
+        unsafe impl red4ext_rs::prelude::NativeRepr for $ty {
+            const NAME: &'static str = ::const_str::replace!(::std::stringify!($ty), "Widget", "");
+            const NATIVE_NAME: &'static str = ::std::stringify!($ty);
         }
     };
     ($ty:ident) => {
@@ -94,9 +110,25 @@ native_compound_widget!(inkCacheWidget);
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkMultiChildren)
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
+}
+
+impl RedsWidget for inkMultiChildren {
+    fn reds_widget(&self, name: &str, parent: Option<&str>) -> String {
+        self.children
+            .iter()
+            .map(|x| x.reds_widget(name, parent))
+            .collect::<Vec<_>>()
+            .join("\n")
+    }
+}
+
+impl inkMultiChildren {
+    pub fn iter(&self) -> std::slice::Iter<'_, InkWrapper<Widget>> {
+        self.children.iter()
+    }
 }
 
 native_leaf_widget!(inkTextWidget {
@@ -141,16 +173,46 @@ native_leaf_widget!(inkCircleWidget);
 native_leaf_widget!(inkRectangleWidget);
 native_leaf_widget!(inkVectorGraphicWidget);
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkTextWidget {
-    const NAME: &'static str = "inkText";
-    const NATIVE_NAME: &'static str = "inkTextWidget";
-}
+// unsafe impl red4ext_rs::prelude::NativeRepr for inkTextWidget {
+//     const NAME: &'static str = "inkText";
+//     const NATIVE_NAME: &'static str = "inkTextWidget";
+// }
+
+// unsafe impl red4ext_rs::prelude::NativeRepr for inkImageWidget {
+//     const NAME: &'static str = "inkImage";
+//     const NATIVE_NAME: &'static str = "inkImageWidget";
+// }
+
+// unsafe impl red4ext_rs::prelude::NativeRepr for inkVideoWidget {
+//     const NAME: &'static str = "inkVideo";
+//     const NATIVE_NAME: &'static str = "inkVideoWidget";
+// }
+
+// unsafe impl red4ext_rs::prelude::NativeRepr for inkMaskWidget {
+//     const NAME: &'static str = "inkMask";
+//     const NATIVE_NAME: &'static str = "inkMaskWidget";
+// }
+
+// unsafe impl red4ext_rs::prelude::NativeRepr for inkBorderWidget {
+//     const NAME: &'static str = "inkBorder";
+//     const NATIVE_NAME: &'static str = "inkBorderWidget";
+// }
+
+// unsafe impl red4ext_rs::prelude::NativeRepr for inkShapeWidget {
+//     const NAME: &'static str = "inkShape";
+//     const NATIVE_NAME: &'static str = "inkShapeWidget";
+// }
+
+// unsafe impl red4ext_rs::prelude::NativeRepr for inkCircleWidget {
+//     const NAME: &'static str = "inkCircle";
+//     const NATIVE_NAME: &'static str = "inkCircleWidget";
+// }
 
 /// any widget
 #[allow(clippy::enum_variant_names)]
 #[allow(non_camel_case_types)]
 #[non_exhaustive]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[enum_dispatch(Classname)]
 #[serde(tag = "$type")]
 pub enum Widget {

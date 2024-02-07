@@ -44,7 +44,7 @@ unsafe impl red4ext_rs::prelude::NativeRepr for inkEHorizontalAlign {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, RedsValue)]
 pub enum inkEVerticalAlign {
     #[default]
     Fill = 0,

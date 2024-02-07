@@ -26,36 +26,56 @@ unsafe impl red4ext_rs::prelude::NativeRepr for fontStyle {
 }
 
 #[allow(non_camel_case_types, clippy::enum_variant_names)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Default, RedsValue, PartialEq)]
 pub enum textLetterCase {
+    #[default]
     OriginalCase = 0,
     UpperCase = 1,
     LowerCase = 2,
 }
 
+unsafe impl red4ext_rs::prelude::NativeRepr for textLetterCase {
+    const NAME: &'static str = "textLetterCase";
+}
+
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Default, RedsValue, PartialEq)]
 pub enum textHorizontalAlignment {
+    #[default]
     Left = 0,
     Center = 1,
     Right = 2,
 }
 
+unsafe impl red4ext_rs::prelude::NativeRepr for textHorizontalAlignment {
+    const NAME: &'static str = "textHorizontalAlignment";
+}
+
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Default, RedsValue, PartialEq)]
 pub enum textVerticalAlignment {
+    #[default]
     Top = 0,
     Center = 1,
     Bottom = 2,
 }
 
+unsafe impl red4ext_rs::prelude::NativeRepr for textVerticalAlignment {
+    const NAME: &'static str = "textVerticalAlignment";
+}
+
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Default, RedsValue, PartialEq)]
 pub enum textOverflowPolicy {
+    #[default]
     None = 0,
     DotsEnd = 1,
     DotsEndLastLine = 2,
     AutoScroll = 3,
     PingPongScroll = 4,
     AdjustToSize = 5,
+}
+
+unsafe impl red4ext_rs::prelude::NativeRepr for textOverflowPolicy {
+    const NAME: &'static str = "textOverflowPolicy";
 }
