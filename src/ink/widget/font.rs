@@ -1,3 +1,4 @@
+use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 
 use crate::Name;
@@ -5,16 +6,24 @@ use crate::Name;
 use super::Flags;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Default, RedsValue, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkFontFamilyResource {
     depot_path: Name,
     flags: Flags,
 }
 
+unsafe impl red4ext_rs::prelude::NativeRepr for inkFontFamilyResource {
+    const NAME: &'static str = "inkFontFamilyResource";
+}
+
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Default, RedsValue, PartialEq)]
 pub struct fontStyle(Name);
+
+unsafe impl red4ext_rs::prelude::NativeRepr for fontStyle {
+    const NAME: &'static str = "fontStyle";
+}
 
 #[allow(non_camel_case_types, clippy::enum_variant_names)]
 #[derive(Debug, Serialize, Clone, Deserialize)]

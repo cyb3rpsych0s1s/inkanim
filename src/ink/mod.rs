@@ -16,7 +16,7 @@ pub mod anim;
 /// everything related to *.inkwidget*
 pub mod widget;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Name {
     #[serde(rename = "$type")]
     pub r#type: String,
@@ -24,6 +24,16 @@ pub struct Name {
     pub storage: String,
     #[serde(rename = "$value")]
     pub value: String,
+}
+
+impl Default for Name {
+    fn default() -> Self {
+        Self {
+            r#type: "CName".to_string(),
+            storage: "string".to_string(),
+            value: "None".to_string(),
+        }
+    }
 }
 
 impl Name {

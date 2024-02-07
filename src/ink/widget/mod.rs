@@ -12,6 +12,7 @@ pub mod properties;
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
 
+use inkanim_macros::RedsValue;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::deserialize_bool_from_anything;
 
@@ -33,12 +34,17 @@ pub trait SiblingOrNested {
     fn sibling_or_nested(&self, searched: &[usize]) -> bool;
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, RedsValue, PartialEq)]
 #[non_exhaustive]
 pub enum Flags {
+    #[default]
     Default,
     Soft,
     Hard,
+}
+
+unsafe impl red4ext_rs::prelude::NativeRepr for Flags {
+    const NAME: &'static str = "Flags";
 }
 
 macro_rules! native_compound_widget {

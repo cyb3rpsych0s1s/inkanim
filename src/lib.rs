@@ -1,12 +1,6 @@
 mod ink;
 pub use ink::*;
 
-pub enum Reds {
-    Default,
-    OneLiner(String),
-    MultiStep { name: String, instantiation: String },
-}
-
 pub trait RedsValue {
     fn reds_value(&self) -> Option<String>;
 }

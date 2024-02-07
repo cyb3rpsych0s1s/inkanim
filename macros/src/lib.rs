@@ -1,5 +1,5 @@
 use proc_macro::TokenStream;
-use syn::parse_macro_input;
+use syn::{parse_macro_input, Fields};
 use quote::quote;
 
 #[proc_macro_derive(RedsWidget)]
@@ -51,6 +51,28 @@ fn derive_reds_widget_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) 
 
 /// used with Redscript native struct
 fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -> TokenStream {
+    let is_tuple = match r#struct.fields {
+        Fields::Unnamed(_) => true,
+        _ => false,
+    };
+    if is_tuple {
+        let indexes = r#struct.fields.iter().enumerate().map(|(index, _)| syn::Index::from(index));
+        return quote! {
+            impl crate::RedsValue for #name {
+                fn reds_value(&self) -> Option<String> {
+                    use ::red4ext_rs::conv::NativeRepr;
+                    if self == &Self::default() {
+                        return None;
+                    }
+                    let mut args = Vec::<String>::new();
+                    #(
+                        args.push(self.#indexes.reds_value().unwrap_or(self.#indexes.default()));
+                    )*
+                    Some(format!("new {}({})", Self::NAME, args.join(", ")))
+                }
+            }
+        }.into()
+    }
     let fields = r#struct.fields.iter().map(|x| x.ident.clone());
     quote! {
         impl crate::RedsValue for #name {
@@ -61,7 +83,7 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
                 }
                 let mut args = Vec::<String>::new();
                 #(
-                    args.push(self.#fields.reds_value().unwrap());
+                    args.push(self.#fields.reds_value().unwrap_or(self.#fields.default()));
                 )*
                 Some(format!("new {}({})", Self::NAME, args.join(", ")))
             }
