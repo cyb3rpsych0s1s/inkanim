@@ -66,7 +66,7 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
                     }
                     let mut args = Vec::<String>::new();
                     #(
-                        args.push(self.#indexes.reds_value().unwrap_or(self.#indexes.default()));
+                        args.push(self.#indexes.reds_value().unwrap_or(Default::default()));
                     )*
                     Some(format!("new {}({})", Self::NAME, args.join(", ")))
                 }
@@ -83,7 +83,7 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
                 }
                 let mut args = Vec::<String>::new();
                 #(
-                    args.push(self.#fields.reds_value().unwrap_or(self.#fields.default()));
+                    args.push(self.#fields.reds_value().unwrap_or(Default::default()));
                 )*
                 Some(format!("new {}({})", Self::NAME, args.join(", ")))
             }
