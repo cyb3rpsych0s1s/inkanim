@@ -101,12 +101,16 @@ unsafe impl red4ext_rs::prelude::NativeRepr for inkMargin {
 #[derive(Debug, Clone, Serialize, Deserialize, Default, RedsValue, PartialEq)]
 #[serde(tag = "$type", rename_all = "camelCase")]
 pub struct inkWidgetLayout {
-    pub anchor: inkEAnchor,
-    pub anchor_point: Vector2,
     pub padding: inkMargin,
     pub margin: inkMargin,
+    pub anchor_point: Vector2,
+    pub size_coefficient: f32,
     #[serde(rename = "HAlign")]
     pub h_align: inkEHorizontalAlign,
+    #[serde(rename = "VAlign")]
+    pub v_align: inkEVerticalAlign,
+    pub anchor: inkEAnchor,
+    pub size_rule: inkESizeRule,
 }
 
 unsafe impl red4ext_rs::prelude::NativeRepr for inkWidgetLayout {
@@ -123,4 +127,16 @@ pub enum inkEChildOrder {
 
 unsafe impl red4ext_rs::prelude::NativeRepr for inkEChildOrder {
     const NAME: &'static str = "inkEChildOrder";
+}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, RedsValue, PartialEq)]
+pub enum inkESizeRule {
+    #[default]
+    Fixed = 0,
+    Stretch = 1,
+}
+
+unsafe impl red4ext_rs::prelude::NativeRepr for inkESizeRule {
+    const NAME: &'static str = "inkESizeRule";
 }

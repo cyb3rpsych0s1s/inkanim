@@ -3,6 +3,7 @@ pub(crate) use args::Args;
 use inkanim::{
     anim::InkAnimAnimationLibraryResource,
     widget::{inkWidgetLibraryResource, ByName},
+    RedsWidget,
 };
 
 fn reds(widget: &inkWidgetLibraryResource, names: &[&str]) {
@@ -30,8 +31,7 @@ fn reds(widget: &inkWidgetLibraryResource, names: &[&str]) {
                 panic!("unable to find widget in tree: {names:#?}");
             });
     }
-    // println!("{:#?}", parent.reds_widget_compound());
-    todo!()
+    println!("{}", parent.reds_widget("root", None));
 }
 
 pub(crate) fn show(
