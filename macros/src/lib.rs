@@ -44,11 +44,12 @@ fn derive_reds_widget_leaf_for_struct(name: &syn::Ident, r#struct: &syn::DataStr
             fn reds_widget_leaf(&self, instance: &str, parent: Option<&str>) -> String {
                 use ::red4ext_rs::conv::NativeRepr;
                 use crate::RedsValue;
+                use crate::IsDefault;
                 let mut steps = vec![];
                 steps.push(format!("let {} = new {}();", instance, Self::NAME));
                 #(
-                    if let Some(v) = self.#oneliners.reds_value() {
-                        steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), v));
+                    if !self.#oneliners.is_default() {
+                        steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), self.#oneliners.reds_value()));
                     }
                 )*
                 steps.join("\n")
@@ -67,16 +68,13 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
         let indexes = r#struct.fields.iter().enumerate().map(|(index, _)| syn::Index::from(index));
         return quote! {
             impl crate::RedsValue for #name {
-                fn reds_value(&self) -> Option<String> {
+                fn reds_value(&self) -> String {
                     use ::red4ext_rs::conv::NativeRepr;
-                    if self == &Self::default() {
-                        return None;
-                    }
                     let mut args = Vec::<String>::new();
                     #(
-                        args.push(self.#indexes.reds_value().unwrap_or(Default::default()));
+                        args.push(self.#indexes.reds_value());
                     )*
-                    Some(format!("new {}({})", Self::NAME, args.join(", ")))
+                    format!("new {}({})", Self::NAME, args.join(", "))
                 }
             }
         }.into()
@@ -84,16 +82,13 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
     let fields = r#struct.fields.iter().map(|x| x.ident.clone());
     quote! {
         impl crate::RedsValue for #name {
-            fn reds_value(&self) -> Option<String> {
+            fn reds_value(&self) -> String {
                 use ::red4ext_rs::conv::NativeRepr;
-                if self == &Self::default() {
-                    return None;
-                }
                 let mut args = Vec::<String>::new();
                 #(
-                    args.push(self.#fields.reds_value().unwrap_or(Default::default()));
+                    args.push(self.#fields.reds_value());
                 )*
-                Some(format!("new {}({})", Self::NAME, args.join(", ")))
+                format!("new {}({})", Self::NAME, args.join(", "))
             }
         }
     }.into()
@@ -109,16 +104,13 @@ fn derive_reds_value_for_enum(name: &syn::Ident, r#enum: &syn::DataEnum) -> Toke
             .into()
         }
         quote!{
-            #name::#variant => Some(::std::format!("{}.{}", Self::NAME, ::std::stringify!(#variant)))
+            #name::#variant => ::std::format!("{}.{}", Self::NAME, ::std::stringify!(#variant))
         }
     });
     quote! {
         impl crate::RedsValue for #name {
-            fn reds_value(&self) -> Option<String> {
+            fn reds_value(&self) -> String {
                 use ::red4ext_rs::conv::NativeRepr;
-                if self == &Self::default() {
-                    return None;
-                }
                 match self {
                     #(#matches),*
                 }
@@ -138,36 +130,37 @@ fn derive_reds_widget_compound_for_struct(name: &syn::Ident, r#struct: &syn::Dat
                 use ::red4ext_rs::conv::NativeRepr;
                 use crate::widget::layout::inkEChildOrder;
                 use crate::RedsValue;
+                use crate::IsDefault;
                 let mut steps = vec![];
-                steps.push(format!("let {} = new {}();", instance, Self::NAME));
+                steps.push(::std::format!("let {} = new {}();", instance, Self::NAME));
                 #(
-                    if let Some(v) = self.#oneliners.reds_value() {
-                        steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), v));
+                    if !self.#oneliners.is_default() {
+                        steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), self.#oneliners.reds_value()));
                     }
                 )*
                 let mut child_name;
-                let parent_name = self.name.reds_value();
+                let mut result: String;
+                let parent_name = if self.name.is_default() { None } else { Some(self.name.reds_value()) };
+                let borrow_parent_name = parent_name.as_ref().map(|x| x.as_str());
                 if self.child_order == inkEChildOrder::Forward {
                     for child in self.children.iter() {
                         child_name = child.name().expect("no child should be a inkMultiChildren");
-                        steps.push(child.reds_widget(child_name, parent_name.as_deref()));
+                        result = child.reds_widget(child_name, borrow_parent_name);
+                        steps.push(result.to_owned());
                     }
-                    if let Some(v) = parent_name {
-                        for child in self.children.iter() {
-                            child_name = child.name().expect("no child should be a inkMultiChildren");
-                            steps.push(format!("{}.AddChild({});", instance, child_name));
-                        }
+                    for child in self.children.iter() {
+                        child_name = child.name().expect("no child should be a inkMultiChildren");
+                        steps.push(format!("{}.AddChild({});", instance, child_name));
                     }
                 } else {
                     for child in self.children.iter().rev() {
-                        child_name = child.name().expect("no child to be a inkMultiChildren");
-                        steps.push(child.reds_widget(child_name, parent_name.as_deref()));
+                        child_name = child.name().expect("no child should be a inkMultiChildren");
+                        result = child.reds_widget(child_name, borrow_parent_name);
+                        steps.push(result.to_owned());
                     }
-                    if let Some(v) = parent_name {
-                        for child in self.children.iter() {
-                            child_name = child.name().expect("no child should be a inkMultiChildren");
-                            steps.push(format!("{}.AddChild({});", instance, child_name));
-                        }
+                    for child in self.children.iter().rev() {
+                        child_name = child.name().expect("no child should be a inkMultiChildren");
+                        steps.push(format!("{}.AddChild({});", instance, child_name));
                     }
                 }
                 steps.join("\n")

@@ -161,6 +161,7 @@ impl_classname!(inkShapeWidget);
 impl_classname!(inkCircleWidget);
 impl_classname!(inkRectangleWidget);
 impl_classname!(inkVectorGraphicWidget);
+
 impl Widget {
     pub fn name(&self) -> Option<&str> {
         match self {

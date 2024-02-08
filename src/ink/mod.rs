@@ -40,13 +40,8 @@ impl Default for ResourcePath {
 }
 
 impl RedsValue for ResourcePath {
-    fn reds_value(&self) -> Option<String> {
-        if self.0.as_os_str().to_str().is_none()
-            || self.0.as_os_str().to_str().unwrap().to_string().is_empty()
-        {
-            return None;
-        }
-        Some(format!("r\"{}\"", self.0.as_os_str().to_str().unwrap()))
+    fn reds_value(&self) -> String {
+        format!("r\"{}\"", self.0.as_os_str().to_str().unwrap_or_default())
     }
 }
 
@@ -159,11 +154,8 @@ impl CName {
 }
 
 impl RedsValue for CName {
-    fn reds_value(&self) -> Option<String> {
-        if self.0 == "None" {
-            return None;
-        }
-        Some(self.0.clone())
+    fn reds_value(&self) -> String {
+        format!("n\"{}\"", self.0.clone())
     }
 }
 

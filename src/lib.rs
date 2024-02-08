@@ -2,8 +2,21 @@ mod ink;
 use ink::widget::Widget;
 pub use ink::*;
 
+pub trait IsDefault {
+    fn is_default(&self) -> bool;
+}
+
+impl<T> IsDefault for T
+where
+    T: Default + PartialEq,
+{
+    fn is_default(&self) -> bool {
+        self == &T::default()
+    }
+}
+
 pub trait RedsValue {
-    fn reds_value(&self) -> Option<String>;
+    fn reds_value(&self) -> String;
 }
 
 pub trait RedsWidgetLeaf {
@@ -71,12 +84,13 @@ impl<T> RedsValue for Vec<T>
 where
     T: RedsValue,
 {
-    fn reds_value(&self) -> Option<String> {
-        Some(
+    fn reds_value(&self) -> String {
+        format!(
+            "[{}]",
             self.iter()
-                .map(|x| x.reds_value().unwrap_or_default())
+                .map(|x| x.reds_value())
                 .collect::<Vec<_>>()
-                .join(""),
+                .join(", "),
         )
     }
 }
@@ -85,86 +99,70 @@ impl<T> RedsValue for Option<T>
 where
     T: RedsValue,
 {
-    fn reds_value(&self) -> Option<String> {
-        self.as_ref().and_then(|x| x.reds_value())
+    fn reds_value(&self) -> String {
+        if self.is_some() {
+            self.as_ref().unwrap().reds_value()
+        } else {
+            "".to_string()
+        }
     }
 }
 
 impl RedsValue for f32 {
-    fn reds_value(&self) -> Option<String> {
+    fn reds_value(&self) -> String {
         if self == &self.trunc() {
-            Some(format!("{}.", self))
+            format!("{}.", self)
         } else {
-            Some(format!("{}", self))
+            format!("{}", self)
         }
     }
 }
 
 impl RedsValue for i32 {
-    fn reds_value(&self) -> Option<String> {
-        Some(format!("{}", self.clone()))
+    fn reds_value(&self) -> String {
+        format!("{}", self.clone())
     }
 }
 
 impl RedsValue for u16 {
-    fn reds_value(&self) -> Option<String> {
-        Some(format!("{}", self.clone()))
+    fn reds_value(&self) -> String {
+        format!("{}", self.clone())
     }
 }
 
 impl RedsValue for u32 {
-    fn reds_value(&self) -> Option<String> {
-        Some(format!("{}", self.clone()))
+    fn reds_value(&self) -> String {
+        format!("{}", self.clone())
     }
 }
 
 impl RedsValue for bool {
-    fn reds_value(&self) -> Option<String> {
+    fn reds_value(&self) -> String {
         if !self {
-            None
+            "false".to_string()
         } else {
-            Some("true".to_string())
+            "true".to_string()
         }
     }
 }
 
 impl RedsValue for String {
-    fn reds_value(&self) -> Option<String> {
-        if self.is_empty() {
-            None
-        } else {
-            Some(self.clone())
-        }
+    fn reds_value(&self) -> String {
+        self.clone()
     }
 }
 
-// impl RedsValue for Name {
-//     fn reds_value(&self) -> Option<String> {
-//         match (
-//             self.r#type.as_str(),
-//             self.storage.as_str(),
-//             self.value.as_str(),
-//         ) {
-//             ("ResourcePath", "string", "") => None,
-//             ("ResourcePath", "string", v) => Some(format!("r\"{v}\"")),
-//             ("CName", "string", "None") => None,
-//             ("CName", "string", v) => Some(format!("n\"{v}\"")),
-//             _ => unreachable!(),
-//         }
-//     }
-// }
-
 impl RedsValue for LocalizationString {
-    fn reds_value(&self) -> Option<String> {
+    fn reds_value(&self) -> String {
         if let Some(ref v) = self.value {
             return match v {
-                LocKey::ID(v) if v == &0 => None,
-                LocKey::ID(v) => Some(format!("LocKey#{}", v)),
-                LocKey::Value(v) if v.as_str() == "null" => None,
-                LocKey::Value(v) if v.as_str() == "None" => None,
-                LocKey::Value(v) => Some(format!("l\"{}\"", v)),
+                LocKey::ID(v) if v == &0 => "null".to_string(),
+                LocKey::ID(v) => format!("LocKey#{}", v),
+                LocKey::Value(v) if v.as_str() == "null" => "null".to_string(),
+                LocKey::Value(v) if v.as_str() == "None" => "null".to_string(),
+                LocKey::Value(v) => format!("l\"{}\"", v),
             };
         }
-        None
+        "null".to_string()
     }
 }
