@@ -139,28 +139,24 @@ fn derive_reds_widget_compound_for_struct(name: &syn::Ident, r#struct: &syn::Dat
                     }
                 )*
                 let mut child_name;
-                let mut result: String;
                 let parent_name = if self.name.is_default() { None } else { Some(self.name.reds_value()) };
-                let borrow_parent_name = parent_name.as_ref().map(|x| x.as_str());
                 if self.child_order == inkEChildOrder::Forward {
                     for child in self.children.iter() {
                         child_name = child.name().expect("no child should be a inkMultiChildren");
-                        result = child.reds_widget(child_name, borrow_parent_name);
-                        steps.push(result.to_owned());
+                        steps.push(child.reds_widget(child_name, parent_name.as_ref().map(|x| x.as_str())));
                     }
                     for child in self.children.iter() {
                         child_name = child.name().expect("no child should be a inkMultiChildren");
-                        steps.push(format!("{}.AddChild({});", instance, child_name));
+                        steps.push(format!("{}.AddChildWidget({});", instance, child_name));
                     }
                 } else {
                     for child in self.children.iter().rev() {
                         child_name = child.name().expect("no child should be a inkMultiChildren");
-                        result = child.reds_widget(child_name, borrow_parent_name);
-                        steps.push(result.to_owned());
+                        steps.push(child.reds_widget(child_name, parent_name.as_ref().map(|x| x.as_str())));
                     }
                     for child in self.children.iter().rev() {
                         child_name = child.name().expect("no child should be a inkMultiChildren");
-                        steps.push(format!("{}.AddChild({});", instance, child_name));
+                        steps.push(format!("{}.AddChildWidget({});", instance, child_name));
                     }
                 }
                 steps.join("\n")
