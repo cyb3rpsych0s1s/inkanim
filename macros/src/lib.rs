@@ -45,11 +45,12 @@ fn derive_reds_widget_leaf_for_struct(name: &syn::Ident, r#struct: &syn::DataStr
                 use ::red4ext_rs::conv::NativeRepr;
                 use crate::RedsValue;
                 use crate::IsDefault;
+                use convert_case::{Case, Casing};
                 let mut steps = vec![];
                 steps.push(format!("let {} = new {}();", instance, Self::NAME));
                 #(
                     if !self.#oneliners.is_default() {
-                        steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), self.#oneliners.reds_value()));
+                        steps.push(::std::format!("{}.Set{}({});", instance, ::std::stringify!(#oneliners).to_case(Case::Pascal), self.#oneliners.reds_value()));
                     }
                 )*
                 steps.join("\n")
@@ -131,11 +132,12 @@ fn derive_reds_widget_compound_for_struct(name: &syn::Ident, r#struct: &syn::Dat
                 use crate::widget::layout::inkEChildOrder;
                 use crate::RedsValue;
                 use crate::IsDefault;
+                use convert_case::{Case, Casing};
                 let mut steps = vec![];
                 steps.push(::std::format!("let {} = new {}();", instance, Self::NAME));
                 #(
                     if !self.#oneliners.is_default() {
-                        steps.push(::std::format!("{}.{} = {};", instance, ::std::stringify!(#oneliners), self.#oneliners.reds_value()));
+                        steps.push(::std::format!("{}.Set{}({});", instance, ::std::stringify!(#oneliners).to_case(Case::Pascal), self.#oneliners.reds_value()));
                     }
                 )*
                 let mut child_name;
