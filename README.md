@@ -1,6 +1,8 @@
 # InkAnim
 
-![build](https://github.com/cyb3rpsych0s1s/inkanim/actions/workflows/quality.yml/badge.svg) [![crates.io](https://img.shields.io/crates/v/inkanim.svg)](https://crates.io/crates/inkanim)
+![build](https://github.com/cyb3rpsych0s1s/inkanim/actions/workflows/quality.yml/badge.svg) [![crates.io](https://img.shields.io/crates/v/inkanim.svg)](https://crates.io/crates/inkanim) ![WolvenKit](https://img.shields.io/badge/8.12.2-red?label=WolvenKit&color=red&link=https%3A%2F%2Fwiki.redmodding.org%2Fwolvenkit) ![WKitJsonVersion](https://img.shields.io/badge/0.0.8-yellow?label=WKitJsonVersion&link=https%3A%2F%2Fwiki.redmodding.org%2Fwolvenkit)
+
+
 
 This little tool allows to quickly introspect `.inkwidget` and corresponding `.inkanim` exported as JSON from [Wolvenkit](https://wiki.redmodding.org/wolvenkit/readme) when [modding](https://wiki.redmodding.org/home/) the game [Cyberpunk 2077](https://www.cyberpunk.net/).
 
