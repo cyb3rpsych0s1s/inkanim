@@ -19,7 +19,7 @@ path = "src/main.rs"
 [dependencies]
 enum_dispatch = "0.3.12"
 serde = { version = "1", features = ["derive"] }
-serde-aux = "4.4.0"
+serde-aux = "4.5.0"
 serde_json = "1"
 chrono = { version = "0.4.33", default-features = false, features = [
   "clock",
