@@ -17,6 +17,7 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+inkanim-macros = { path = "./macros"}
 enum_dispatch = "0.3.12"
 serde = { version = "1.0.197", features = ["derive"] }
 serde-aux = "4.5.0"
@@ -26,5 +27,8 @@ chrono = { version = "0.4.34", default-features = false, features = [
   "std",
   "serde",
 ] }
+const-str = "0.5.6"
+convert_case = "0.6.0"
+red4ext-rs = { git = "https://github.com/jac3km4/red4ext-rs.git", rev = "2646318" }
 clap = { version = "4.5.1", features = ["derive"] }
 term-table = "1.3.2"
