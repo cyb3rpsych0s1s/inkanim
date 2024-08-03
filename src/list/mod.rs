@@ -54,7 +54,7 @@ pub(crate) fn list(
 fn into_json(value: DualResources) -> String {
     serde_json::to_string_pretty(&value.widget).unwrap()
 }
-fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
+fn into_table(value: DualResources) -> Vec<Table> {
     let DualResources {
         widget,
         anim,
@@ -69,17 +69,34 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
         table = Table::new();
         table.style = TableStyle::rounded();
         table.add_row(Row::new(vec![
-            TableCell::new_with_alignment(
-                sequence.data.name.clone().as_str(),
-                2,
-                Alignment::Center,
-            ),
-            TableCell::new_with_alignment("index", 1, Alignment::Center),
-            TableCell::new_with_alignment("kind", 1, Alignment::Center),
-            TableCell::new_with_alignment("time", 4, Alignment::Center),
-            TableCell::new_with_alignment("direction", 1, Alignment::Center),
-            TableCell::new_with_alignment("interpolation", 1, Alignment::Center),
-            TableCell::new_with_alignment("effect", 1, Alignment::Center),
+            TableCell::builder(sequence.data.name.clone().as_str())
+                .col_span(2)
+                .alignment(Alignment::Center)
+                .build(),
+            TableCell::builder("index")
+                .col_span(1)
+                .alignment(Alignment::Center)
+                .build(),
+            TableCell::builder("kind")
+                .col_span(1)
+                .alignment(Alignment::Center)
+                .build(),
+            TableCell::builder("time")
+                .col_span(4)
+                .alignment(Alignment::Center)
+                .build(),
+            TableCell::builder("direction")
+                .col_span(1)
+                .alignment(Alignment::Center)
+                .build(),
+            TableCell::builder("interpolation")
+                .col_span(1)
+                .alignment(Alignment::Center)
+                .build(),
+            TableCell::builder("effect")
+                .col_span(1)
+                .alignment(Alignment::Center)
+                .build(),
         ]));
         for (idx_definition, definition) in sequence.data.definitions.into_iter().enumerate() {
             let interpolators: Vec<OrphanInkAnimInterpolator> =
@@ -149,18 +166,19 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
                 table.add_row(Row::new(vec![
                     TableCell::new(idx_definition),
                     TableCell::new(definition.handle_id),
-                    TableCell::new_with_alignment(
+                    TableCell::builder(
                         fqcn.map(|x| x.join(" . "))
                             .unwrap_or_else(|| "".to_string()),
-                        COLUMN_COUNT - 2,
-                        Alignment::Left,
-                    ),
+                    )
+                    .col_span(COLUMN_COUNT - 2)
+                    .alignment(Alignment::Left)
+                    .build(),
                 ]));
             } else {
                 table.add_row(Row::new(vec![
                     TableCell::new(idx_definition),
                     TableCell::new(definition.handle_id),
-                    TableCell::new_with_alignment(
+                    TableCell::builder(
                         infos
                             .clone()
                             .map(|x| {
@@ -170,9 +188,10 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
                                     .join(" . ")
                             })
                             .unwrap_or_else(|| "".to_string()),
-                        COLUMN_COUNT - 2,
-                        Alignment::Left,
-                    ),
+                    )
+                    .col_span(COLUMN_COUNT - 2)
+                    .alignment(Alignment::Left)
+                    .build(),
                 ]));
             }
             let kind = infos.clone().and_then(|x| {
@@ -189,62 +208,71 @@ fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
 
             for (idx_orphan, orphan) in interpolators.into_iter().enumerate() {
                 if idx_orphan == 0 {
-                    row = Row::new(vec![TableCell::new_with_col_span(
+                    row = Row::new(vec![TableCell::builder(
                         kind.as_ref()
                             .map(|x| x.to_string())
                             .unwrap_or_else(|| "".to_string())
                             .as_str(),
-                        2,
-                    )]);
+                    )
+                    .col_span(2)
+                    .build()]);
                 } else {
-                    row = Row::new(vec![TableCell::new_with_col_span("", 2)]);
+                    row = Row::new(vec![TableCell::builder("").col_span(2).build()]);
                 }
                 row.has_separator = idx_orphan == 0;
-                row.cells.push(TableCell::new_with_alignment(
-                    orphan.index,
-                    1,
-                    Alignment::Center,
-                ));
-                row.cells.push(TableCell::new_with_alignment(
-                    orphan.interpolator.data.as_short_display(),
-                    1,
-                    Alignment::Center,
-                ));
-                row.cells.push(TableCell::new_with_alignment(
-                    orphan.interpolator.data.starts(),
-                    1,
-                    Alignment::Left,
-                ));
-                row.cells.push(TableCell::new_with_col_span("=>", 1));
-                row.cells.push(TableCell::new_with_alignment(
-                    orphan.interpolator.data.ends(),
-                    1,
-                    Alignment::Left,
-                ));
-                row.cells.push(TableCell::new_with_alignment(
-                    format!("({})", orphan.interpolator.data.duration(),),
-                    1,
-                    Alignment::Left,
-                ));
-                row.cells.push(TableCell::new_with_alignment(
-                    format!("{}", orphan.interpolator.data.direction(),),
-                    1,
-                    Alignment::Center,
-                ));
-                row.cells.push(TableCell::new_with_alignment(
-                    format!("{}", orphan.interpolator.data.transformation(),),
-                    1,
-                    Alignment::Left,
-                ));
-                row.cells.push(TableCell::new_with_alignment(
-                    format!(
+                row.cells.push(
+                    TableCell::builder(orphan.index)
+                        .col_span(1)
+                        .alignment(Alignment::Center)
+                        .build(),
+                );
+                row.cells.push(
+                    TableCell::builder(orphan.interpolator.data.as_short_display())
+                        .col_span(1)
+                        .alignment(Alignment::Center)
+                        .build(),
+                );
+                row.cells.push(
+                    TableCell::builder(orphan.interpolator.data.starts())
+                        .col_span(1)
+                        .alignment(Alignment::Left)
+                        .build(),
+                );
+                row.cells.push(TableCell::builder("=>").col_span(1).build());
+                row.cells.push(
+                    TableCell::builder(orphan.interpolator.data.ends())
+                        .col_span(1)
+                        .alignment(Alignment::Left)
+                        .build(),
+                );
+                row.cells.push(
+                    TableCell::builder(format!("({})", orphan.interpolator.data.duration(),))
+                        .col_span(1)
+                        .alignment(Alignment::Left)
+                        .build(),
+                );
+                row.cells.push(
+                    TableCell::builder(format!("{}", orphan.interpolator.data.direction(),))
+                        .col_span(1)
+                        .alignment(Alignment::Center)
+                        .build(),
+                );
+                row.cells.push(
+                    TableCell::builder(format!("{}", orphan.interpolator.data.transformation(),))
+                        .col_span(1)
+                        .alignment(Alignment::Left)
+                        .build(),
+                );
+                row.cells.push(
+                    TableCell::builder(format!(
                         "{}.{}",
                         orphan.interpolator.data.r#type(),
                         orphan.interpolator.data.mode()
-                    ),
-                    1,
-                    Alignment::Right,
-                ));
+                    ))
+                    .col_span(1)
+                    .alignment(Alignment::Right)
+                    .build(),
+                );
                 table.add_row(row.clone());
             }
         }

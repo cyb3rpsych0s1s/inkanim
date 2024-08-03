@@ -21,13 +21,23 @@ fn table(names: &[&str], indexes: &[usize]) {
     table.add_row(Row::new(
         indexes
             .iter()
-            .map(|x| TableCell::new_with_alignment(x, 1, Alignment::Center))
+            .map(|x| {
+                TableCell::builder(x)
+                    .col_span(1)
+                    .alignment(Alignment::Center)
+                    .build()
+            })
             .collect::<Vec<_>>(),
     ));
     table.add_row(Row::new(
         names
             .iter()
-            .map(|x| TableCell::new_with_alignment(x, 1, Alignment::Center))
+            .map(|x| {
+                TableCell::builder(x)
+                    .col_span(1)
+                    .alignment(Alignment::Center)
+                    .build()
+            })
             .collect::<Vec<_>>(),
     ));
     println!("{}", table.render());

@@ -284,7 +284,7 @@ where
     T: InkChildren,
 {
     fn by_index(&self, idx: usize) -> Option<Widget> {
-        self.orphans().get(idx).map(Clone::clone)
+        self.orphans().get(idx).cloned()
     }
 }
 
