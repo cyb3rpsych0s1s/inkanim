@@ -54,7 +54,7 @@ pub(crate) fn list(
 fn into_json(value: DualResources) -> String {
     serde_json::to_string_pretty(&value.widget).unwrap()
 }
-fn into_table<'a>(value: DualResources) -> Vec<Table<'a>> {
+fn into_table(value: DualResources) -> Vec<Table> {
     let DualResources {
         widget,
         anim,
