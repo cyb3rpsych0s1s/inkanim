@@ -18,13 +18,13 @@ path = "src/main.rs"
 
 [dependencies]
 enum_dispatch = "0.3.13"
-serde = { version = "1.0.210", features = ["derive"] }
+serde = { version = "1.0.213", features = ["derive"] }
 serde-aux = "4.5.0"
-serde_json = "1.0.128"
+serde_json = "1.0.132"
 chrono = { version = "0.4.38", default-features = false, features = [
   "clock",
   "std",
   "serde",
 ] }
-clap = { version = "4.5.19", features = ["derive"] }
+clap = { version = "4.5.20", features = ["derive"] }
 term-table = "1.4.0"
