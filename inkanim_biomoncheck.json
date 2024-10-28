@@ -1,11 +1,11 @@
 {
   "Header": {
-    "WolvenKitVersion": "8.12.2\u002B0e283c958d795f6aa4cd34f29d4f4409a0a1681e",
-    "WKitJsonVersion": "0.0.8",
-    "GameVersion": 2110,
-    "ExportedDateTime": "2024-02-04T04:41:16.6384114Z",
+    "WolvenKitVersion": "8.15.0",
+    "WKitJsonVersion": "0.0.9",
+    "GameVersion": 2120,
+    "ExportedDateTime": "2024-10-28T04:39:07.5091739Z",
     "DataType": "CR2W",
-    "ArchiveFileName": "C:\\Development\\4ddicted\\archives\\Addicted.Biomon\\source\\archive\\addicted\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck_animations.inkanim"
+    "ArchiveFileName": "C:\\Development\\4ddicted\\archives\\Addicted.Biomon\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck_animations.inkanim"
   },
   "Data": {
     "Version": 195,

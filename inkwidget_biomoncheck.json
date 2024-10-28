@@ -1,11 +1,11 @@
 {
   "Header": {
-    "WolvenKitVersion": "8.12.2\u002B0e283c958d795f6aa4cd34f29d4f4409a0a1681e",
-    "WKitJsonVersion": "0.0.8",
-    "GameVersion": 2110,
-    "ExportedDateTime": "2024-02-04T04:41:14.0266094Z",
+    "WolvenKitVersion": "8.15.0",
+    "WKitJsonVersion": "0.0.9",
+    "GameVersion": 2120,
+    "ExportedDateTime": "2024-10-28T04:39:07.5880920Z",
     "DataType": "CR2W",
-    "ArchiveFileName": "C:\\Development\\4ddicted\\archives\\Addicted.Biomon\\source\\archive\\addicted\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck.inkwidget"
+    "ArchiveFileName": "C:\\Development\\4ddicted\\archives\\Addicted.Biomon\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck.inkwidget"
   },
   "Data": {
     "Version": 195,
@@ -82,7 +82,7 @@
           },
           "package": {
             "Flags": 0,
-            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "File": {
                 "Version": 195,
@@ -16319,7 +16319,7 @@
           "packageData": {
             "BufferId": "0",
             "Flags": 4063232,
-            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "Version": 4,
               "Sections": 7,
@@ -17246,7 +17246,7 @@
                                                                 "$value": "Default"
                                                               },
                                                               "style": null,
-                                                              "text": "BOOTING…",
+                                                              "text": "BOOTING\u2026",
                                                               "textHorizontalAlignment": "Left",
                                                               "textIdKey": {
                                                                 "$type": "CName",
@@ -34169,7 +34169,7 @@
           },
           "package": {
             "Flags": 0,
-            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "File": {
                 "Version": 195,
@@ -34302,7 +34302,7 @@
           "packageData": {
             "BufferId": "1",
             "Flags": 4063232,
-            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "Version": 4,
               "Sections": 6,
