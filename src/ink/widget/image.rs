@@ -13,7 +13,7 @@ pub struct inkTextureAtlas {
     flags: Flags,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkTextureAtlas {
+unsafe impl red4ext_rs::NativeRepr for inkTextureAtlas {
     const NAME: &'static str = "inkTextureAtlas";
 }
 
@@ -27,7 +27,7 @@ pub enum inkBrushMirrorType {
     Both = 3,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkBrushMirrorType {
+unsafe impl red4ext_rs::NativeRepr for inkBrushMirrorType {
     const NAME: &'static str = "inkBrushMirrorType";
 }
 
@@ -41,6 +41,6 @@ pub enum inkBrushTileType {
     Both = 3,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkBrushTileType {
+unsafe impl red4ext_rs::NativeRepr for inkBrushTileType {
     const NAME: &'static str = "inkBrushTileType";
 }

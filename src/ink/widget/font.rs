@@ -13,7 +13,7 @@ pub struct inkFontFamilyResource {
     flags: Flags,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkFontFamilyResource {
+unsafe impl red4ext_rs::NativeRepr for inkFontFamilyResource {
     const NAME: &'static str = "inkFontFamilyResource";
 }
 
@@ -21,7 +21,7 @@ unsafe impl red4ext_rs::prelude::NativeRepr for inkFontFamilyResource {
 #[derive(Debug, Serialize, Clone, Deserialize, Default, RedsValue, PartialEq)]
 pub struct fontStyle(pub CName);
 
-unsafe impl red4ext_rs::prelude::NativeRepr for fontStyle {
+unsafe impl red4ext_rs::NativeRepr for fontStyle {
     const NAME: &'static str = "fontStyle";
 }
 
@@ -34,7 +34,7 @@ pub enum textLetterCase {
     LowerCase = 2,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for textLetterCase {
+unsafe impl red4ext_rs::NativeRepr for textLetterCase {
     const NAME: &'static str = "textLetterCase";
 }
 
@@ -47,7 +47,7 @@ pub enum textHorizontalAlignment {
     Right = 2,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for textHorizontalAlignment {
+unsafe impl red4ext_rs::NativeRepr for textHorizontalAlignment {
     const NAME: &'static str = "textHorizontalAlignment";
 }
 
@@ -60,7 +60,7 @@ pub enum textVerticalAlignment {
     Bottom = 2,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for textVerticalAlignment {
+unsafe impl red4ext_rs::NativeRepr for textVerticalAlignment {
     const NAME: &'static str = "textVerticalAlignment";
 }
 
@@ -76,6 +76,6 @@ pub enum textOverflowPolicy {
     AdjustToSize = 5,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for textOverflowPolicy {
+unsafe impl red4ext_rs::NativeRepr for textOverflowPolicy {
     const NAME: &'static str = "textOverflowPolicy";
 }

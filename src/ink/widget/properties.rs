@@ -11,7 +11,7 @@ pub struct inkPropertyBinding {
     pub style_path: CName,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkPropertyBinding {
+unsafe impl red4ext_rs::NativeRepr for inkPropertyBinding {
     const NAME: &'static str = "inkPropertyBinding";
 }
 
@@ -22,7 +22,7 @@ pub struct inkPropertyManager {
     pub bindings: Vec<inkPropertyBinding>,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkPropertyManager {
+unsafe impl red4ext_rs::NativeRepr for inkPropertyManager {
     const NAME: &'static str = "inkPropertyManager";
 }
 
@@ -33,6 +33,6 @@ pub struct PropertyManager {
     pub data: inkPropertyManager,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for PropertyManager {
+unsafe impl red4ext_rs::NativeRepr for PropertyManager {
     const NAME: &'static str = "PropertyManager";
 }

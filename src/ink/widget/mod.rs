@@ -43,7 +43,7 @@ pub enum Flags {
     Hard,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for Flags {
+unsafe impl red4ext_rs::NativeRepr for Flags {
     const NAME: &'static str = "Flags";
 }
 
@@ -67,9 +67,8 @@ macro_rules! native_compound_widget {
             pub child_order: self::layout::inkEChildOrder,
             pub child_margin: self::layout::inkMargin,
         }
-        unsafe impl red4ext_rs::prelude::NativeRepr for $ty {
+        unsafe impl red4ext_rs::NativeRepr for $ty {
             const NAME: &'static str = ::const_str::replace!(::std::stringify!($ty), "Widget", "");
-            const NATIVE_NAME: &'static str = ::std::stringify!($ty);
         }
     };
 }
@@ -89,9 +88,8 @@ macro_rules! native_leaf_widget {
             pub size: crate::Vector2,
             $($tt)*
         }
-        unsafe impl red4ext_rs::prelude::NativeRepr for $ty {
+        unsafe impl red4ext_rs::NativeRepr for $ty {
             const NAME: &'static str = ::const_str::replace!(::std::stringify!($ty), "Widget", "");
-            const NATIVE_NAME: &'static str = ::std::stringify!($ty);
         }
     };
     ($ty:ident) => {

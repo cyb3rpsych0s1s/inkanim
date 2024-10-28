@@ -79,7 +79,7 @@ pub struct Vector2 {
     pub y: f32,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for Vector2 {
+unsafe impl red4ext_rs::NativeRepr for Vector2 {
     const NAME: &'static str = "Vector2";
 }
 
@@ -94,7 +94,7 @@ pub struct HDRColor {
     pub red: f32,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for HDRColor {
+unsafe impl red4ext_rs::NativeRepr for HDRColor {
     const NAME: &'static str = "HDRColor";
 }
 
@@ -103,7 +103,7 @@ unsafe impl red4ext_rs::prelude::NativeRepr for HDRColor {
 #[serde(transparent)]
 pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")] u32);
 
-unsafe impl red4ext_rs::prelude::NativeRepr for HandleId {
+unsafe impl red4ext_rs::NativeRepr for HandleId {
     const NAME: &'static str = "HandleId";
 }
 
@@ -159,7 +159,7 @@ impl RedsValue for CName {
     }
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for CName {
+unsafe impl red4ext_rs::NativeRepr for CName {
     const NAME: &'static str = "CName";
 }
 
@@ -176,7 +176,7 @@ pub struct LocalizationString {
     pub value: Option<LocKey>,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for LocalizationString {
+unsafe impl red4ext_rs::NativeRepr for LocalizationString {
     const NAME: &'static str = "LocalizationString";
 }
 
@@ -248,7 +248,7 @@ mod tests {
         pub content_h_align: inkEHorizontalAlign,
         pub size: Vector2,
     }
-    unsafe impl red4ext_rs::prelude::NativeRepr for TestChild {
+    unsafe impl red4ext_rs::NativeRepr for TestChild {
         const NAME: &'static str = "TChild";
     }
     #[test]

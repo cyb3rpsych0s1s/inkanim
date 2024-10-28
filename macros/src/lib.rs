@@ -42,7 +42,7 @@ fn derive_reds_widget_leaf_for_struct(name: &syn::Ident, r#struct: &syn::DataStr
     quote! {
         impl crate::RedsWidgetLeaf for #name {
             fn reds_widget_leaf(&self, instance: &str, parent: Option<&str>) -> String {
-                use ::red4ext_rs::conv::NativeRepr;
+                use ::red4ext_rs::NativeRepr;
                 use crate::RedsValue;
                 use crate::IsDefault;
                 use convert_case::{Case, Casing};
@@ -70,7 +70,7 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
         return quote! {
             impl crate::RedsValue for #name {
                 fn reds_value(&self) -> String {
-                    use ::red4ext_rs::conv::NativeRepr;
+                    use ::red4ext_rs::NativeRepr;
                     let mut args = Vec::<String>::new();
                     #(
                         args.push(self.#indexes.reds_value());
@@ -84,7 +84,7 @@ fn derive_reds_value_for_struct(name: &syn::Ident, r#struct: &syn::DataStruct) -
     quote! {
         impl crate::RedsValue for #name {
             fn reds_value(&self) -> String {
-                use ::red4ext_rs::conv::NativeRepr;
+                use ::red4ext_rs::NativeRepr;
                 let mut args = Vec::<String>::new();
                 #(
                     args.push(self.#fields.reds_value());
@@ -111,7 +111,7 @@ fn derive_reds_value_for_enum(name: &syn::Ident, r#enum: &syn::DataEnum) -> Toke
     quote! {
         impl crate::RedsValue for #name {
             fn reds_value(&self) -> String {
-                use ::red4ext_rs::conv::NativeRepr;
+                use ::red4ext_rs::NativeRepr;
                 match self {
                     #(#matches),*
                 }
@@ -128,7 +128,7 @@ fn derive_reds_widget_compound_for_struct(name: &syn::Ident, r#struct: &syn::Dat
     quote! {
         impl crate::RedsWidgetCompound for #name {
             fn reds_widget_compound(&self, instance: &str, parent: Option<&str>) -> String {
-                use ::red4ext_rs::conv::NativeRepr;
+                use ::red4ext_rs::NativeRepr;
                 use crate::widget::layout::inkEChildOrder;
                 use crate::RedsValue;
                 use crate::IsDefault;

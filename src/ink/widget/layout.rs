@@ -25,7 +25,7 @@ pub enum inkEAnchor {
     Fill = 15,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkEAnchor {
+unsafe impl red4ext_rs::NativeRepr for inkEAnchor {
     const NAME: &'static str = "inkEAnchor";
 }
 
@@ -39,7 +39,7 @@ pub enum inkEHorizontalAlign {
     Right = 3,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkEHorizontalAlign {
+unsafe impl red4ext_rs::NativeRepr for inkEHorizontalAlign {
     const NAME: &'static str = "inkEHorizontalAlign";
 }
 
@@ -53,7 +53,7 @@ pub enum inkEVerticalAlign {
     Bottom = 3,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkEVerticalAlign {
+unsafe impl red4ext_rs::NativeRepr for inkEVerticalAlign {
     const NAME: &'static str = "inkEVerticalAlign";
 }
 
@@ -66,7 +66,7 @@ pub struct inkUITransform {
     pub rotation: f32,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkUITransform {
+unsafe impl red4ext_rs::NativeRepr for inkUITransform {
     const NAME: &'static str = "inkUITransform";
 }
 
@@ -79,7 +79,7 @@ pub enum textJustificationType {
     Right = 2,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for textJustificationType {
+unsafe impl red4ext_rs::NativeRepr for textJustificationType {
     const NAME: &'static str = "textJustificationType";
 }
 
@@ -93,7 +93,7 @@ pub struct inkMargin {
     pub bottom: f32,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkMargin {
+unsafe impl red4ext_rs::NativeRepr for inkMargin {
     const NAME: &'static str = "inkMargin";
 }
 
@@ -113,7 +113,7 @@ pub struct inkWidgetLayout {
     pub size_rule: inkESizeRule,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkWidgetLayout {
+unsafe impl red4ext_rs::NativeRepr for inkWidgetLayout {
     const NAME: &'static str = "inkWidgetLayout";
 }
 
@@ -125,7 +125,7 @@ pub enum inkEChildOrder {
     Backward = 1,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkEChildOrder {
+unsafe impl red4ext_rs::NativeRepr for inkEChildOrder {
     const NAME: &'static str = "inkEChildOrder";
 }
 
@@ -137,6 +137,6 @@ pub enum inkESizeRule {
     Stretch = 1,
 }
 
-unsafe impl red4ext_rs::prelude::NativeRepr for inkESizeRule {
+unsafe impl red4ext_rs::NativeRepr for inkESizeRule {
     const NAME: &'static str = "inkESizeRule";
 }
