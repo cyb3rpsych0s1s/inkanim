@@ -30,5 +30,5 @@ chrono = { version = "0.4.38", default-features = false, features = [
 clap = { version = "4.5.20", features = ["derive"] }
 const-str = "0.5.6"
 convert_case = "0.6.0"
-red4ext-rs = { git = "https://github.com/jac3km4/red4ext-rs.git", rev = "2646318" }
+red4ext-rs = { git = "https://github.com/jac3km4/red4ext-rs.git", rev = "v0.9.1" }
 term-table = "1.4.0"
