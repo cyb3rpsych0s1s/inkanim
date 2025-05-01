@@ -26,5 +26,5 @@ chrono = { version = "0.4.40", default-features = false, features = [
   "std",
   "serde",
 ] }
-clap = { version = "4.5.35", features = ["derive"] }
+clap = { version = "4.5.37", features = ["derive"] }
 term-table = "1.4.0"
