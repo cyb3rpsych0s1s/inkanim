@@ -125,13 +125,13 @@ impl std::fmt::Display for Transformation {
                 write!(f, "{}% => {}%", from * 100., to * 100.,)
             }
             (Range::Position(from), Range::Position(to)) if from == to => {
-                write!(f, "{}", from,)
+                write!(f, "{from}",)
             }
-            (Range::Position(from), Range::Position(to)) => write!(f, "{} => {}", from, to,),
+            (Range::Position(from), Range::Position(to)) => write!(f, "{from} => {to}",),
             (Range::Color(from), Range::Color(to)) if from == to => {
-                write!(f, "{}", from)
+                write!(f, "{from}")
             }
-            (Range::Color(from), Range::Color(to)) => write!(f, "{} => {}", from, to,),
+            (Range::Color(from), Range::Color(to)) => write!(f, "{from} => {to}",),
             (from, to) => panic!("interpolation start value and end value differ\nstart value: {from:#?}\nend value: {to:#?}"),
         }
     }
