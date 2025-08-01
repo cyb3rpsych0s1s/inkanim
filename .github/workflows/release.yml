@@ -22,7 +22,7 @@ jobs:
         with:
           shared-key: ubuntu-latest
       - name: 🔖 create GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
       - name: 🦀 publish to crates.io
         uses: katyo/publish-crates@v2
         with:

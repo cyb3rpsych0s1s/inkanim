@@ -1,11 +1,11 @@
 {
   "Header": {
-    "WolvenKitVersion": "8.15.0",
+    "WolvenKitVersion": "8.16.2-nightly.2025-07-31",
     "WKitJsonVersion": "0.0.9",
-    "GameVersion": 2120,
-    "ExportedDateTime": "2024-10-28T04:39:07.5880920Z",
+    "GameVersion": 2300,
+    "ExportedDateTime": "2025-08-01T10:08:08.3719548Z",
     "DataType": "CR2W",
-    "ArchiveFileName": "C:\\Development\\4ddicted\\archives\\Addicted.Biomon\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck.inkwidget"
+    "ArchiveFileName": "C:\\Users\\Asus\\Desktop\\cp2077\\Archives\\InkAnimFollowUp\\InkAnimFollowUp\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck.inkwidget"
   },
   "Data": {
     "Version": 195,
@@ -82,7 +82,7 @@
           },
           "package": {
             "Flags": 0,
-            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=8.16.2.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "File": {
                 "Version": 195,
@@ -16319,7 +16319,7 @@
           "packageData": {
             "BufferId": "0",
             "Flags": 4063232,
-            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=8.16.2.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "Version": 4,
               "Sections": 7,
@@ -34169,7 +34169,7 @@
           },
           "package": {
             "Flags": 0,
-            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.CR2WWrapper, WolvenKit.RED4, Version=8.16.2.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "File": {
                 "Version": 195,
@@ -34302,7 +34302,7 @@
           "packageData": {
             "BufferId": "1",
             "Flags": 4063232,
-            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=8.15.0.0, Culture=neutral, PublicKeyToken=null",
+            "Type": "WolvenKit.RED4.Archive.Buffer.RedPackage, WolvenKit.RED4, Version=8.16.2.0, Culture=neutral, PublicKeyToken=null",
             "Data": {
               "Version": 4,
               "Sections": 6,
