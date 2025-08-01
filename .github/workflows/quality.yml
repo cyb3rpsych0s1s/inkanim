@@ -40,3 +40,21 @@ jobs:
         run: cargo fix
       - name: 🔍 run cargo clippy
         run: cargo clippy -- -Dwarnings
+  demo:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ checkout repository
+        uses: actions/checkout@v4
+      - name: 🛠 setup cargo toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: 🛠 setup just command runner
+        uses: taiki-e/install-action@v2
+        with:
+          tool: just
+      - name: ♻️ cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-latest
+      - name: 🔍 run just demo
+        run: just demo
