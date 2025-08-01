@@ -1,10 +1,10 @@
 use std::fmt;
 
-use serde::de::{self, MapAccess};
 use serde::Deserialize;
+use serde::de::{self, MapAccess};
 
-use crate::anim::Range;
 use crate::LocKey;
+use crate::anim::Range;
 
 pub fn deserialize_lockey_from_anything<'de, D>(deserializer: D) -> Result<Option<LocKey>, D::Error>
 where

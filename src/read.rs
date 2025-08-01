@@ -1,4 +1,4 @@
-use inkanim::{anim::InkAnimAnimationLibraryResource, widget::inkWidgetLibraryResource, File};
+use inkanim::{File, anim::InkAnimAnimationLibraryResource, widget::inkWidgetLibraryResource};
 
 use crate::args::Files;
 

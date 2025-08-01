@@ -132,7 +132,9 @@ impl std::fmt::Display for Transformation {
                 write!(f, "{from}")
             }
             (Range::Color(from), Range::Color(to)) => write!(f, "{from} => {to}",),
-            (from, to) => panic!("interpolation start value and end value differ\nstart value: {from:#?}\nend value: {to:#?}"),
+            (from, to) => panic!(
+                "interpolation start value and end value differ\nstart value: {from:#?}\nend value: {to:#?}"
+            ),
         }
     }
 }

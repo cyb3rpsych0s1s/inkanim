@@ -2,14 +2,14 @@ mod args;
 pub(crate) use args::Args;
 
 use term_table::{
+    Table, TableStyle,
     row::Row,
     table_cell::{Alignment, TableCell},
-    Table, TableStyle,
 };
 
 use inkanim::{
     anim::{InkAnimAnimationLibraryResource, OrphanInkAnimInterpolator, Target},
-    widget::{inkWidgetLibraryResource, SiblingOrNested, WidgetTree},
+    widget::{SiblingOrNested, WidgetTree, inkWidgetLibraryResource},
 };
 
 use crate::args::DualResources;
@@ -208,14 +208,16 @@ fn into_table(value: DualResources) -> Vec<Table> {
 
             for (idx_orphan, orphan) in interpolators.into_iter().enumerate() {
                 if idx_orphan == 0 {
-                    row = Row::new(vec![TableCell::builder(
-                        kind.as_ref()
-                            .map(|x| x.to_string())
-                            .unwrap_or_else(|| "".to_string())
-                            .as_str(),
-                    )
-                    .col_span(2)
-                    .build()]);
+                    row = Row::new(vec![
+                        TableCell::builder(
+                            kind.as_ref()
+                                .map(|x| x.to_string())
+                                .unwrap_or_else(|| "".to_string())
+                                .as_str(),
+                        )
+                        .col_span(2)
+                        .build(),
+                    ]);
                 } else {
                     row = Row::new(vec![TableCell::builder("").col_span(2).build()]);
                 }

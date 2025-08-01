@@ -2,15 +2,15 @@ use std::fmt::Debug;
 
 use enum_dispatch::enum_dispatch;
 
-use crate::{ink::InkWrapper, Name};
+use crate::{Name, ink::InkWrapper};
 
 use super::{
-    inkBorderWidget, inkCacheWidget, inkCanvasWidget, inkCircleWidget, inkFlexWidget,
-    inkHorizontalPanelWidget, inkImageWidget, inkMaskWidget, inkMultiChildren, inkRectangleWidget,
-    inkScrollAreaWidget, inkShapeWidget, inkTextWidget, inkUniformGridWidget,
-    inkVectorGraphicWidget, inkVerticalPanelWidget, inkVideoWidget, inkVirtualCompoundWidget,
-    inkWidgetLibraryItem, inkWidgetLibraryItemInstance, inkWidgetLibraryResource, SiblingOrNested,
-    Widget, WidgetSummary,
+    SiblingOrNested, Widget, WidgetSummary, inkBorderWidget, inkCacheWidget, inkCanvasWidget,
+    inkCircleWidget, inkFlexWidget, inkHorizontalPanelWidget, inkImageWidget, inkMaskWidget,
+    inkMultiChildren, inkRectangleWidget, inkScrollAreaWidget, inkShapeWidget, inkTextWidget,
+    inkUniformGridWidget, inkVectorGraphicWidget, inkVerticalPanelWidget, inkVideoWidget,
+    inkVirtualCompoundWidget, inkWidgetLibraryItem, inkWidgetLibraryItemInstance,
+    inkWidgetLibraryResource,
 };
 
 impl SiblingOrNested for Vec<usize> {

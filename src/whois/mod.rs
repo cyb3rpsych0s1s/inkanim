@@ -3,12 +3,12 @@ mod args;
 pub(crate) use args::Args;
 use inkanim::{
     anim::InkAnimAnimationLibraryResource,
-    widget::{inkWidgetLibraryResource, WidgetTree},
+    widget::{WidgetTree, inkWidgetLibraryResource},
 };
 use term_table::{
+    Table, TableStyle,
     row::Row,
     table_cell::{Alignment, TableCell},
-    Table, TableStyle,
 };
 
 fn json(_: &[&str], sequences: &[usize]) {

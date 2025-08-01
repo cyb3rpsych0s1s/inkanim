@@ -1,6 +1,6 @@
-use clap::{builder::PossibleValue, ValueEnum};
+use clap::{ValueEnum, builder::PossibleValue};
 
-use super::{Fade, InkAnimInterpolatorType, FADEIN, FADEOUT, OPACITY};
+use super::{FADEIN, FADEOUT, Fade, InkAnimInterpolatorType, OPACITY};
 
 impl ValueEnum for InkAnimInterpolatorType {
     fn value_variants<'a>() -> &'a [Self] {
