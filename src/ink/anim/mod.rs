@@ -262,7 +262,7 @@ impl PartialEq<InkAnimInterpolatorType> for InkAnimInterpolator {
             Self::inkanimTranslationInterpolator(_) => {
                 other == &InkAnimInterpolatorType::Translation
             }
-            Self::inkanimTransparencyInterpolator(ref interpolator) => match other {
+            Self::inkanimTransparencyInterpolator(interpolator) => match other {
                 InkAnimInterpolatorType::Transparency(None) => true,
                 InkAnimInterpolatorType::Transparency(Some(Fade::In)) => {
                     interpolator.start_value < interpolator.end_value

@@ -163,7 +163,7 @@ impl InkAnimSequence {
         let mut out = vec![];
         for (target_index, target) in self.targets.iter().enumerate() {
             match target {
-                Target::WithHandleId(ref handle) => {
+                Target::WithHandleId(handle) => {
                     let path = &handle.data.path;
                     if path.sibling_or_nested(searched) {
                         out.push(PathSummary {
