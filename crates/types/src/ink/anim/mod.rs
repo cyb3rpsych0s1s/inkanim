@@ -7,13 +7,14 @@ use crate::{HDRColor, Name, Vector2};
 
 use super::InkWrapper;
 
+#[cfg(feature = "clap")]
 mod implementation;
 
 use super::conversion::deserialize_vector2_from_anything;
 
-const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
-const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));
-const FADEOUT: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::Out));
+pub const OPACITY: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(None);
+pub const FADEIN: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::In));
+pub const FADEOUT: InkAnimInterpolatorType = InkAnimInterpolatorType::Transparency(Some(Fade::Out));
 
 /// orphan interpolator
 pub struct OrphanInkAnimInterpolator {
