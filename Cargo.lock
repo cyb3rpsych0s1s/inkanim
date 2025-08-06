@@ -261,7 +261,7 @@ dependencies = [
 
 [[package]]
 name = "inkanim"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "clap",
  "inkanim-types",
@@ -271,7 +271,7 @@ dependencies = [
 
 [[package]]
 name = "inkanim-types"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "chrono",
  "clap",
