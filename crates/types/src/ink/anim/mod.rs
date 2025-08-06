@@ -1,3 +1,6 @@
+//! All animations in Cyberpunk 2077 UI
+//! are similar to web and traditional 2D animations frameworks.
+
 mod display;
 
 use serde::{Deserialize, Serialize};

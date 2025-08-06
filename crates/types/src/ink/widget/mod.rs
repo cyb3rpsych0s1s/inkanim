@@ -1,7 +1,5 @@
-//! .inkwidget
-//!
-//! All the widgets in Cybperunk 2077 UI
-//! are similar to the web and traditional UI frameworks.
+//! All widgets in Cyberpunk 2077 UI
+//! are similar to web and traditional UI frameworks.
 
 mod font;
 mod image;
