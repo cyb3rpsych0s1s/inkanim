@@ -1,0 +1,18 @@
+[package]
+name = "inkanim"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
+description = "CLI tool to quickly extract infos from JSON exports of .inkwidget and .inkanim"
+publish = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+inkanim = { path = "../types", features = ["clap"], package = "inkanim-types" }
+serde_json.workspace = true
+clap = { workspace = true, features = ["derive"] }
+term-table = "1.4.0"

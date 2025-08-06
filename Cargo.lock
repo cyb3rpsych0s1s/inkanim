@@ -261,15 +261,23 @@ dependencies = [
 
 [[package]]
 name = "inkanim"
-version = "0.5.0"
+version = "0.6.0"
+dependencies = [
+ "clap",
+ "inkanim-types",
+ "serde_json",
+ "term-table",
+]
+
+[[package]]
+name = "inkanim-types"
+version = "0.6.0"
 dependencies = [
  "chrono",
  "clap",
  "enum_dispatch",
  "serde",
  "serde-aux",
- "serde_json",
- "term-table",
 ]
 
 [[package]]
