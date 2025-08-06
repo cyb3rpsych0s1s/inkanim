@@ -1,30 +1,20 @@
-[package]
-name = "inkanim"
-version = "0.5.0"
+[workspace]
+members = ["crates/types", "crates/cli"]
+resolver = "2"
+
+[workspace.package]
+version = "0.6.0"
 edition = "2024"
+rust-version = "1.88.0"
 authors = ["Roms1383"]
-license = "MIT OR Apache-2.0"
-keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
-description = "CLI tool to quickly extract infos from JSON exports of .inkwidget and .inkanim"
-categories = ["command-line-utilities"]
+license = "MIT/Apache-2.0"
 repository = "https://github.com/cyb3rpsych0s1s/inkanim"
-exclude = [".vscode/*", ".idea/*", "screenshots/*", "*.json", ".github/*"]
+keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
 
-[[bin]]
-name = "inkanim"
-path = "src/main.rs"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
+[workspace.dependencies]
+clap = { version = "4.5.42" }
 enum_dispatch = "0.3.13"
-serde = { version = "1.0.219", features = ["derive"] }
+serde = { version = "1.0.219" }
 serde-aux = "4.7.0"
 serde_json = "1.0.142"
-chrono = { version = "0.4.41", default-features = false, features = [
-  "clock",
-  "std",
-  "serde",
-] }
-clap = { version = "4.5.42", features = ["derive"] }
-term-table = "1.4.0"
+chrono = { version = "0.4.41", default-features = false }
