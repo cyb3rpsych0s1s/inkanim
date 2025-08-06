@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use clap::ValueEnum;
-use inkanim::{
+use inkanim_types::{
     anim::{InkAnimAnimationLibraryResource, InkAnimInterpolatorType},
     widget::inkWidgetLibraryResource,
 };

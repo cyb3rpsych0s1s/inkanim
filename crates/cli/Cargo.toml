@@ -12,7 +12,7 @@ publish = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-inkanim = { path = "../types", features = ["clap"], package = "inkanim-types" }
+inkanim-types = { path = "../types", features = ["clap"] }
 serde_json.workspace = true
 clap = { workspace = true, features = ["derive"] }
 term-table = "1.4.0"

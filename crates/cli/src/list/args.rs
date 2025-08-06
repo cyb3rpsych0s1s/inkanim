@@ -1,4 +1,4 @@
-use inkanim::anim::InkAnimInterpolatorType;
+use inkanim_types::anim::InkAnimInterpolatorType;
 
 use crate::args::{Files, Mode, OptionalPathIndexes};
 

@@ -1,6 +1,6 @@
 mod args;
 pub(crate) use args::Args;
-use inkanim::{
+use inkanim_types::{
     anim::InkAnimAnimationLibraryResource,
     widget::{WidgetTree, inkWidgetLibraryResource},
 };

@@ -7,7 +7,7 @@ use term_table::{
     table_cell::{Alignment, TableCell},
 };
 
-use inkanim::{
+use inkanim_types::{
     anim::{InkAnimAnimationLibraryResource, OrphanInkAnimInterpolator, Target},
     widget::{SiblingOrNested, WidgetTree, inkWidgetLibraryResource},
 };
