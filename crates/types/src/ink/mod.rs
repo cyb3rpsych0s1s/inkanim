@@ -89,6 +89,12 @@ pub struct File<T> {
     pub data: Data<T>,
 }
 
+impl<T> File<T> {
+    pub fn resource(self) -> T {
+        self.data.root_chunk
+    }
+}
+
 /// see [NativeDB](https://nativedb.red4ext.com/Vector2)
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
 #[serde(tag = "$type")]
