@@ -116,6 +116,8 @@ pub struct HDRColor {
 }
 
 /// asset handle ID
+///
+/// identifies the index in the graph.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")] u32);
