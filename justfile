@@ -20,10 +20,10 @@ demo:
 
 # 🎨 format code
 format:
-  @cargo fmt
+  @cargo fmt --all
 
 # 🎨 lint code
 @lint:
-  cargo clippy --fix --allow-dirty --allow-staged
-  cargo fix --allow-dirty --allow-staged
+  cargo clippy --fix --allow-dirty --allow-staged --workspace
+  cargo fix --allow-dirty --allow-staged --workspace
   just format
