@@ -82,8 +82,14 @@ pub trait InkWidget: Debug {
     fn name(&self) -> &str;
 }
 
+/// containers which can contain multiple widgets.
 pub trait InkChildren {
+    /// equivalent to `.children()`
+    /// but stripped of their [wrapper](InkWrapper), effectively making them orphans
+    /// (meaning their relative position in the graph cannot be determined anymore).
     fn orphans(&self) -> Vec<Widget>;
+    /// children [wrappers](InkWrapper),
+    /// which conserve their relative index in the graph.
     fn children(&self) -> Vec<InkWrapper<Widget>>;
 }
 
