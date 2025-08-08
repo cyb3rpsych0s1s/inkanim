@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use crate::{list, whereis, whois};
+use crate::{list, tree, whereis, whois};
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Parser)] // requires `derive` feature
@@ -8,6 +8,9 @@ use crate::{list, whereis, whois};
 pub enum CLI {
     /// list and optionally filter anims and target widgets
     List(list::Args),
+    /// get full tree from .inkwidget
+    #[command(name = "tree")]
+    Tree(tree::Args),
     /// get full path names from path indexes
     #[command(name = "whois")]
     WhoIs(whois::Args),
