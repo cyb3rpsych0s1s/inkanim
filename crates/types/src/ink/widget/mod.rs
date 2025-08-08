@@ -1,11 +1,11 @@
 //! All widgets in Cyberpunk 2077 UI
 //! are similar to web and traditional UI frameworks.
 
-mod font;
-mod image;
+pub mod font;
+pub mod image;
 pub(crate) mod implementation;
-mod layout;
-mod properties;
+pub mod layout;
+pub mod properties;
 
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
