@@ -34,6 +34,12 @@ available commands:
   inkanim list --help
   ```
 
+- tree: quickly display .inkwidget UI tree
+
+  ```sh
+  inkanim tree --help
+  ```
+
 - whois: quickly get widget names path from indexes path
 
   ```sh
@@ -52,6 +58,10 @@ Quickly try out methods with:
 
 ```sh
 cargo run list --path '1.3.0.0.6' --type progress --widget ./inkwidget_connect_to_girl.json
+```
+
+```sh
+cargo run tree --widget ./inkwidget_connect_to_girl.json
 ```
 
 ```sh
