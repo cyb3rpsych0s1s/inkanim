@@ -67,6 +67,19 @@ pub struct Header {
     game_version: usize,
     exported_date_time: chrono::DateTime<chrono::Utc>,
     data_type: String,
+    archive_file_name: PathBuf,
+}
+
+impl std::fmt::Display for Header {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "🗃️  {}\n🐺 {} ({})",
+            self.archive_file_name.display(),
+            self.wolven_kit_version,
+            self.w_kit_json_version,
+        )
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -74,6 +87,12 @@ pub struct Header {
 pub struct File<T> {
     pub header: Header,
     pub data: Data<T>,
+}
+
+impl<T> File<T> {
+    pub fn resource(self) -> T {
+        self.data.root_chunk
+    }
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/Vector2)
@@ -97,6 +116,8 @@ pub struct HDRColor {
 }
 
 /// asset handle ID
+///
+/// identifies the index in the graph.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")] u32);

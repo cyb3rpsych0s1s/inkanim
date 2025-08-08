@@ -82,8 +82,14 @@ pub trait InkWidget: Debug {
     fn name(&self) -> &str;
 }
 
+/// containers which can contain multiple widgets.
 pub trait InkChildren {
+    /// equivalent to `.children()`
+    /// but stripped of their [wrapper](InkWrapper), effectively making them orphans
+    /// (meaning their relative position in the graph cannot be determined anymore).
     fn orphans(&self) -> Vec<Widget>;
+    /// children [wrappers](InkWrapper),
+    /// which conserve their relative index in the graph.
     fn children(&self) -> Vec<InkWrapper<Widget>>;
 }
 
@@ -278,6 +284,16 @@ where
     }
 }
 
+impl InkChildren for inkWidgetLibraryItem {
+    fn orphans(&self) -> Vec<Widget> {
+        self.package.data.file.root_chunk.root_widget.orphans()
+    }
+
+    fn children(&self) -> Vec<InkWrapper<Widget>> {
+        self.package.data.file.root_chunk.root_widget.children()
+    }
+}
+
 impl<T> ByIndex for T
 where
     T: InkChildren,
@@ -296,10 +312,10 @@ where
             if let Widget::inkMultiChildren(_) = &child {
                 panic!("unexpected inkMultiChildren with name {name}");
             }
-            if let Some(compound) = child.as_compound() {
-                if compound.name() == name {
-                    return Some((idx, child.clone()));
-                }
+            if let Some(compound) = child.as_compound()
+                && compound.name() == name
+            {
+                return Some((idx, child.clone()));
             }
             continue;
         }
@@ -332,15 +348,15 @@ where
 impl ByName for Vec<InkWrapper<Widget>> {
     fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
         for (idx, widget) in self.iter().enumerate() {
-            if let Some(compound) = widget.data.as_compound() {
-                if compound.name() == name {
-                    return Some((idx, widget.data.clone()));
-                }
+            if let Some(compound) = widget.data.as_compound()
+                && compound.name() == name
+            {
+                return Some((idx, widget.data.clone()));
             }
-            if let Some(leaf) = widget.data.as_leaf() {
-                if leaf.name() == name {
-                    return Some((idx, widget.data.clone()));
-                }
+            if let Some(leaf) = widget.data.as_leaf()
+                && leaf.name() == name
+            {
+                return Some((idx, widget.data.clone()));
             }
         }
         None
@@ -457,12 +473,12 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                 break;
             }
 
-            if let Some(compound) = parent.as_ref().unwrap().as_compound() {
-                if let Some((idx, widget)) = compound.by_name(name) {
-                    indexes.push(idx);
-                    parent = Some(widget);
-                    continue;
-                }
+            if let Some(compound) = parent.as_ref().unwrap().as_compound()
+                && let Some((idx, widget)) = compound.by_name(name)
+            {
+                indexes.push(idx);
+                parent = Some(widget);
+                continue;
             }
             return None;
         }

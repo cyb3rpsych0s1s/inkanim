@@ -141,14 +141,13 @@ fn into_table(value: DualResources) -> Vec<Table> {
                 Target::WithHandleId(infos) => Some(infos.clone().data.path),
                 Target::WithoutHandleId(_) => None,
             };
-            if let Some(ref filter) = filter_by_path {
-                if infos
+            if let Some(ref filter) = filter_by_path
+                && infos
                     .as_ref()
                     .map(|x| !x.sibling_or_nested(filter))
                     .unwrap_or(true)
-                {
-                    continue;
-                }
+            {
+                continue;
             }
 
             if show_path_names {

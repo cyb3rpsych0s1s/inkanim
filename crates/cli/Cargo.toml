@@ -15,4 +15,4 @@ publish = true
 inkanim-types = { workspace = true, features = ["clap"] }
 serde_json.workspace = true
 clap = { workspace = true, features = ["derive"] }
-term-table = "1.4.0"
+term-table = "1.4"

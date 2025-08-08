@@ -4,7 +4,12 @@ use inkanim_types::{
 
 use crate::args::Files;
 
-pub fn read(args: &Files) -> (inkWidgetLibraryResource, InkAnimAnimationLibraryResource) {
+pub fn read(
+    args: &Files,
+) -> (
+    File<inkWidgetLibraryResource>,
+    File<InkAnimAnimationLibraryResource>,
+) {
     let widget_json_path = args.widget.clone();
     let anim_json_path = args.anim.clone().unwrap_or_else(|| {
         let path = args.widget.clone();
@@ -25,12 +30,12 @@ pub fn read(args: &Files) -> (inkWidgetLibraryResource, InkAnimAnimationLibraryR
     let anim_resource =
         serde_json::from_str::<File<InkAnimAnimationLibraryResource>>(&anim_json_export).unwrap();
 
-    let widget = widget_resource.data.root_chunk;
-    let anim = anim_resource.data.root_chunk;
+    let widget_chunk = &widget_resource.data.root_chunk;
+    let anim_chunk = &anim_resource.data.root_chunk;
 
-    if anim.sequences.len() != widget.library_items.len() {
+    if anim_chunk.sequences.len() != widget_chunk.library_items.len() {
         panic!("widget and anim lengths must match")
     }
 
-    (widget, anim)
+    (widget_resource, anim_resource)
 }
