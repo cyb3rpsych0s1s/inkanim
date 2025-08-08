@@ -312,10 +312,10 @@ where
             if let Widget::inkMultiChildren(_) = &child {
                 panic!("unexpected inkMultiChildren with name {name}");
             }
-            if let Some(compound) = child.as_compound() {
-                if compound.name() == name {
-                    return Some((idx, child.clone()));
-                }
+            if let Some(compound) = child.as_compound()
+                && compound.name() == name
+            {
+                return Some((idx, child.clone()));
             }
             continue;
         }
@@ -348,15 +348,15 @@ where
 impl ByName for Vec<InkWrapper<Widget>> {
     fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
         for (idx, widget) in self.iter().enumerate() {
-            if let Some(compound) = widget.data.as_compound() {
-                if compound.name() == name {
-                    return Some((idx, widget.data.clone()));
-                }
+            if let Some(compound) = widget.data.as_compound()
+                && compound.name() == name
+            {
+                return Some((idx, widget.data.clone()));
             }
-            if let Some(leaf) = widget.data.as_leaf() {
-                if leaf.name() == name {
-                    return Some((idx, widget.data.clone()));
-                }
+            if let Some(leaf) = widget.data.as_leaf()
+                && leaf.name() == name
+            {
+                return Some((idx, widget.data.clone()));
             }
         }
         None
@@ -473,12 +473,12 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                 break;
             }
 
-            if let Some(compound) = parent.as_ref().unwrap().as_compound() {
-                if let Some((idx, widget)) = compound.by_name(name) {
-                    indexes.push(idx);
-                    parent = Some(widget);
-                    continue;
-                }
+            if let Some(compound) = parent.as_ref().unwrap().as_compound()
+                && let Some((idx, widget)) = compound.by_name(name)
+            {
+                indexes.push(idx);
+                parent = Some(widget);
+                continue;
             }
             return None;
         }
