@@ -278,6 +278,16 @@ where
     }
 }
 
+impl InkChildren for inkWidgetLibraryItem {
+    fn orphans(&self) -> Vec<Widget> {
+        self.package.data.file.root_chunk.root_widget.orphans()
+    }
+
+    fn children(&self) -> Vec<InkWrapper<Widget>> {
+        self.package.data.file.root_chunk.root_widget.children()
+    }
+}
+
 impl<T> ByIndex for T
 where
     T: InkChildren,
