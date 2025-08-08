@@ -67,6 +67,7 @@ pub struct Header {
     game_version: usize,
     exported_date_time: chrono::DateTime<chrono::Utc>,
     data_type: String,
+    archive_file_name: PathBuf,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
