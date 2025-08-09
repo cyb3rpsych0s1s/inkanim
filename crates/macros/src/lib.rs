@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{DeriveInput, Error, parse_macro_input, spanned::Spanned};
 
-#[proc_macro_derive(Reds)]
+#[proc_macro_derive(Reds, attributes(reds))]
 pub fn derive_reds(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
@@ -76,8 +76,40 @@ fn derive_reds_enum(input: &DeriveInput) -> proc_macro2::TokenStream {
 fn derive_reds_class(_input: &DeriveInput) -> proc_macro2::TokenStream {
     todo!()
 }
-fn derive_reds_struct(_input: &DeriveInput) -> proc_macro2::TokenStream {
-    todo!()
+fn derive_reds_struct(input: &DeriveInput) -> proc_macro2::TokenStream {
+    match &input.data {
+        syn::Data::Struct(data_struct) => {
+            let ty = &input.ident;
+            let fields = &data_struct
+                .fields
+                .iter()
+                .cloned()
+                .map(|x| x.ident.expect("named fields"))
+                .collect::<Vec<_>>();
+            quote! {
+                impl crate::reds::Instantiate for #ty {
+                    fn instantiate(&self, name: &str) -> std::borrow::Cow<'_, str> {
+                        use crate::reds::Setter;
+                        use crate::reds::Value;
+                        let mut me = format!("{}{}{}{}{}", "let ", name, ": ", stringify!(#ty), ";");
+                        let mut acc: std::borrow::Cow<'_, str>;
+                        #(
+                            me.push_str("\n");
+                            acc = self.setter(name, stringify!(#fields), &self.#fields.value());
+                            me.push_str(&acc);
+                        )*
+                        std::borrow::Cow::Owned(me)
+                    }
+                }
+                impl crate::reds::Setter for #ty {
+                    fn setter(&self, name: &str, field: &str, value: &str) -> std::borrow::Cow<'_, str> {
+                        std::borrow::Cow::Owned(format!("{}{}{}{}{}{}", name, ".", field, " = ", value, ";" ))
+                    }
+                }
+            }
+        }
+        _ => unreachable!(),
+    }
 }
 
 fn abort(input: impl Spanned, msg: impl AsRef<str>) -> TokenStream {

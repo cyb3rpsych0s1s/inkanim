@@ -9,13 +9,22 @@ pub trait Value {
     fn value(&self) -> Cow<'_, str>;
 }
 
-// pub trait Instantiate {
-//     fn instantiate(&self, name: &str) -> Cow<'_, str>;
-// }
+pub trait Instantiate {
+    fn instantiate(&self, name: &str) -> Cow<'_, str>;
+}
 
-// pub trait Setter {
-//     fn setter(&self, name: &str, field: &str, value: &str) -> Cow<'_, str>;
-// }
+pub trait Setter {
+    fn setter(&self, name: &str, field: &str, value: &str) -> Cow<'_, str>;
+}
+
+impl Value for f32 {
+    fn value(&self) -> Cow<'_, str> {
+        if self.fract() == 0.0 {
+            return Cow::Owned(format!("{}.0", self.to_string()));
+        }
+        self.to_string().into()
+    }
+}
 
 // pub trait ScriptName {
 //     const NAME: &str;
@@ -100,3 +109,26 @@ pub trait Value {
 //         })
 //     }
 // }
+
+#[cfg(test)]
+mod tests {
+    use crate::{reds::Instantiate, widget::layout::inkMargin};
+
+    #[test]
+    fn test_struct() {
+        let margin = inkMargin {
+            bottom: 0.0,
+            left: 2.0,
+            right: 10.0,
+            top: 200.0,
+        };
+        assert_eq!(
+            margin.instantiate("margin"),
+            r#"let margin: inkMargin;
+margin.left = 2.0;
+margin.right = 10.0;
+margin.top = 200.0;
+margin.bottom = 0.0;"#
+        );
+    }
+}

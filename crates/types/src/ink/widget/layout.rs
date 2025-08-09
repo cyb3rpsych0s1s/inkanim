@@ -60,8 +60,9 @@ pub enum textJustificationType {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reds)]
 #[serde(tag = "$type")]
+#[reds(struct)]
 pub struct inkMargin {
     pub left: f32,
     pub right: f32,
