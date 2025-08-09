@@ -97,7 +97,7 @@ native_leaf_widget!(inkTextWidget {
   pub font_family: inkFontFamilyResource,
   pub font_style: fontStyle,
   pub justification: textJustificationType,
-  pub text_letter_case: Option<textLetterCase>,
+  pub letter_case: Option<textLetterCase>,
   pub line_height_percentage: f32,
   pub text_horizontal_alignment: textHorizontalAlignment,
   pub text_vertical_alignment: textVerticalAlignment,
