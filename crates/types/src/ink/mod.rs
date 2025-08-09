@@ -10,8 +10,7 @@ use self::{
 mod conversion;
 use conversion::deserialize_lockey_from_anything;
 
-mod reds;
-use reds::*;
+pub mod reds;
 
 /// everything related to *.inkanim*
 pub mod anim;

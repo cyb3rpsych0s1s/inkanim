@@ -1,3 +1,4 @@
+use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 
 use crate::{DepotPath, Name};
@@ -17,7 +18,7 @@ pub struct inkFontFamilyResource {
 pub struct fontStyle(Name);
 
 #[allow(non_camel_case_types, clippy::enum_variant_names)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Reds)]
 pub enum textLetterCase {
     OriginalCase = 0,
     UpperCase = 1,
@@ -25,7 +26,7 @@ pub enum textLetterCase {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Reds)]
 pub enum textHorizontalAlignment {
     Left = 0,
     Center = 1,
@@ -33,7 +34,7 @@ pub enum textHorizontalAlignment {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Reds)]
 pub enum textVerticalAlignment {
     Top = 0,
     Center = 1,
@@ -41,7 +42,7 @@ pub enum textVerticalAlignment {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Serialize, Clone, Deserialize, Reds)]
 pub enum textOverflowPolicy {
     None = 0,
     DotsEnd = 1,

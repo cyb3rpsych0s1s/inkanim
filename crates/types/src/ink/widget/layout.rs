@@ -1,9 +1,10 @@
+use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 
 use crate::Vector2;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reds)]
 pub enum inkEAnchor {
     TopLeft = 0,
     TopCenter = 1,
@@ -24,7 +25,7 @@ pub enum inkEAnchor {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reds)]
 pub enum inkEHorizontalAlign {
     Fill = 0,
     Left = 1,
@@ -33,7 +34,7 @@ pub enum inkEHorizontalAlign {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reds)]
 pub enum inkEVerticalAlign {
     Fill = 0,
     Top = 1,
@@ -51,7 +52,7 @@ pub struct inkUITransform {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reds)]
 pub enum textJustificationType {
     Left = 0,
     Center = 1,
@@ -81,7 +82,7 @@ pub struct inkWidgetLayout {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reds)]
 pub enum inkEChildOrder {
     Forward = 0,
     Backward = 1,

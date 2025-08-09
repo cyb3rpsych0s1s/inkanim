@@ -1,3 +1,4 @@
+use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 
 use crate::DepotPath;
@@ -13,7 +14,7 @@ pub struct inkTextureAtlas {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Reds)]
 pub enum inkBrushMirrorType {
     NoMirror = 0,
     Horizontal = 1,
@@ -22,7 +23,7 @@ pub enum inkBrushMirrorType {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Reds)]
 pub enum inkBrushTileType {
     NoTile = 0,
     Horizontal = 1,

@@ -1,5 +1,5 @@
-extern crate proc_macro;
 use proc_macro::TokenStream;
+use quote::quote;
 use syn::{DeriveInput, Error, parse_macro_input, spanned::Spanned};
 
 #[proc_macro_derive(Reds)]
@@ -24,7 +24,7 @@ pub fn derive_reds(input: TokenStream) -> TokenStream {
         }
     };
 
-    todo!()
+    TokenStream::from(tokens)
 }
 
 fn is_class(input: &DeriveInput) -> Result<bool, Error> {
@@ -51,12 +51,32 @@ fn is_class(input: &DeriveInput) -> Result<bool, Error> {
 }
 
 fn derive_reds_enum(input: &DeriveInput) -> proc_macro2::TokenStream {
+    match &input.data {
+        syn::Data::Enum(data_enum) => {
+            let ty = &input.ident;
+            let variants = &data_enum
+                .variants
+                .iter()
+                .cloned()
+                .map(|x| x.ident)
+                .collect::<Vec<_>>();
+            quote! {
+                impl crate::reds::Value for #ty {
+                    fn value(&self) -> std::borrow::Cow<'_, str> {
+                        std::borrow::Cow::Borrowed(match self {
+                            #(Self::#variants => concat!(stringify!(#ty), ".", stringify!(#variants)),)*
+                        })
+                    }
+                }
+            }
+        }
+        _ => unreachable!(),
+    }
+}
+fn derive_reds_class(_input: &DeriveInput) -> proc_macro2::TokenStream {
     todo!()
 }
-fn derive_reds_class(input: &DeriveInput) -> proc_macro2::TokenStream {
-    todo!()
-}
-fn derive_reds_struct(input: &DeriveInput) -> proc_macro2::TokenStream {
+fn derive_reds_struct(_input: &DeriveInput) -> proc_macro2::TokenStream {
     todo!()
 }
 
