@@ -381,6 +381,12 @@ impl ByIndex for &dyn InkCompoundWidget {
     }
 }
 
+impl ByName for Widget {
+    fn by_name(&self, name: &str) -> Option<(usize, Widget)> {
+        self.as_compound().and_then(|x| x.by_name(name))
+    }
+}
+
 impl ByIndex for Widget {
     fn by_index(&self, idx: usize) -> Option<Widget> {
         if let Widget::inkMultiChildren(node) = self {

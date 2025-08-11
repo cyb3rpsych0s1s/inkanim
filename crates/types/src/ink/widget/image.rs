@@ -5,7 +5,7 @@ use crate::DepotPath;
 use super::Flags;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Clone, Deserialize)]
+#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub struct inkTextureAtlas {
     depot_path: DepotPath,
@@ -13,8 +13,9 @@ pub struct inkTextureAtlas {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum inkBrushMirrorType {
+    #[default]
     NoMirror = 0,
     Horizontal = 1,
     Vertical = 2,
@@ -22,8 +23,9 @@ pub enum inkBrushMirrorType {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum inkBrushTileType {
+    #[default]
     NoTile = 0,
     Horizontal = 1,
     Vertical = 2,

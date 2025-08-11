@@ -5,12 +5,14 @@ mod args;
 mod cli;
 mod list;
 mod read;
+mod show;
 mod tree;
 mod whereis;
 mod whois;
 
 use list::list;
 use read::read;
+use show::show;
 use tree::tree;
 use whereis::whereis;
 use whois::whois;
@@ -22,6 +24,7 @@ fn main() {
         CLI::Tree(tree::Args { ref files, .. }) => files,
         CLI::WhoIs(whois::Args { ref files, .. }) => files,
         CLI::WhereIs(whereis::Args { ref files, .. }) => files,
+        CLI::Show(show::Args { ref files, .. }) => files,
     };
     let (widget, anim) = read(files);
     match args {
@@ -29,5 +32,6 @@ fn main() {
         CLI::Tree(args) => tree(args, widget),
         CLI::WhoIs(args) => whois(args, widget.resource(), anim.resource()),
         CLI::WhereIs(args) => whereis(args, widget.resource(), anim.resource()),
+        CLI::Show(args) => show(args, widget.resource()),
     };
 }
