@@ -52,6 +52,12 @@ available commands:
   inkanim whereis --help
   ```
 
+- show: get trimmed json for widget by names path
+
+  ```sh
+  inkanim show --help
+  ```
+
 ## development
 
 Quickly try out methods with:

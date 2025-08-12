@@ -24,7 +24,7 @@ available commands:
   inkanim list --help
   ```
 
-- tree: display widgets tree
+- tree: quickly display .inkwidget UI tree
 
   ```sh
   inkanim tree --help
