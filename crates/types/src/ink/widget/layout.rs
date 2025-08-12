@@ -48,9 +48,18 @@ pub enum inkEVerticalAlign {
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct inkUITransform {
     pub translation: Vector2,
-    pub scale: Vector2,
+    pub scale: Scale,
     pub shear: Vector2,
     pub rotation: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(transparent)]
+pub struct Scale(Vector2);
+impl Default for Scale {
+    fn default() -> Self {
+        Self(Vector2 { x: 1., y: 1. })
+    }
 }
 
 #[allow(non_camel_case_types)]

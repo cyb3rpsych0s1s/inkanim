@@ -228,6 +228,12 @@ pub enum LocKey {
     Value(String),
 }
 
+impl Default for LocKey {
+    fn default() -> Self {
+        LocKey::ID(0)
+    }
+}
+
 impl Serialize for LocKey {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -252,7 +258,7 @@ impl PartialEq for LocKey {
 }
 
 /// specific translation ID
-#[derive(Debug, Default, Clone, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Default)]
 pub struct LocalizationString {
     #[serde(deserialize_with = "deserialize_lockey_from_anything")]
     value: Option<LocKey>,
@@ -264,9 +270,26 @@ impl Serialize for LocalizationString {
         S: serde::Serializer,
     {
         match &self.value {
-            Some(x) => x.serialize(serializer),
-            None => serializer.serialize_str(""),
+            Some(x)
+                if *x != LocKey::default()
+                    && *x != LocKey::Value("".into())
+                    && *x != LocKey::ID(0) =>
+            {
+                serializer.serialize_some(x)
+            }
+            _ => serializer.serialize_none(),
         }
+    }
+}
+
+pub fn is_any_default_localization_string(
+    LocalizationString { value }: &LocalizationString,
+) -> bool {
+    match value {
+        None => true,
+        Some(LocKey::ID(0)) => true,
+        Some(LocKey::Value(x)) if x.is_empty() => true,
+        _ => false,
     }
 }
 

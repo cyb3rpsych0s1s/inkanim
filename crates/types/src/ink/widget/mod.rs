@@ -13,7 +13,7 @@ pub use implementation::*;
 use serde::{Deserialize, Serialize, ser::SerializeSeq};
 use serde_aux::prelude::deserialize_bool_from_anything;
 
-use crate::{DepotPath, Name};
+use crate::{DepotPath, Name, Vector2, is_any_default_localization_string};
 
 use self::{
     font::{
@@ -38,6 +38,15 @@ pub enum Flags {
     Default,
     Soft,
     Hard,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Pivot(Vector2);
+
+impl Default for Pivot {
+    fn default() -> Self {
+        Self(Vector2 { x: 0.5, y: 0.5 })
+    }
 }
 
 fn is_default<T: Default + PartialEq>(value: &T) -> bool {
@@ -77,7 +86,7 @@ macro_rules! native_leaf_widget {
             #[serde(default, skip_serializing_if = "is_default")]
             pub property_manager: Option<self::properties::PropertyManager>,
             #[serde(default, skip_serializing_if = "is_default")]
-            pub render_transform_pivot: crate::Vector2,
+            pub render_transform_pivot: self::Pivot,
             #[serde(default, skip_serializing_if = "is_default")]
             pub render_transform: self::layout::inkUITransform,
             #[serde(default, skip_serializing_if = "is_default")]
@@ -119,8 +128,28 @@ impl Serialize for inkMultiChildren {
     }
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(transparent)]
+pub struct ScrollDelay(u16);
+
+impl Default for ScrollDelay {
+    fn default() -> Self {
+        Self(30)
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[serde(transparent)]
+pub struct ScrollTextSpeed(f32);
+
+impl Default for ScrollTextSpeed {
+    fn default() -> Self {
+        Self(0.2)
+    }
+}
+
 native_leaf_widget!(inkTextWidget {
-  #[serde(default, skip_serializing_if = "is_default")]
+  #[serde(default, skip_serializing_if = "is_any_default_localization_string",)]
   pub localization_string: LocalizationString,
   #[serde(default, skip_serializing_if = "is_default")]
   pub text: String,
@@ -145,9 +174,9 @@ native_leaf_widget!(inkTextWidget {
   #[serde(default, skip_serializing_if = "is_default")]
   pub content_v_align: inkEVerticalAlign,
   #[serde(default, skip_serializing_if = "is_default")]
-  pub scroll_delay: u16,
+  pub scroll_delay: self::ScrollDelay,
   #[serde(default, skip_serializing_if = "is_default")]
-  pub scroll_text_speed: f32,
+  pub scroll_text_speed: self::ScrollTextSpeed,
 });
 native_leaf_widget!(inkImageWidget {
     #[serde(deserialize_with = "deserialize_bool_from_anything")]

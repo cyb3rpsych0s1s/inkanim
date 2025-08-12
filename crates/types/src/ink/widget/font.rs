@@ -37,8 +37,8 @@ pub enum textHorizontalAlignment {
 #[allow(non_camel_case_types)]
 #[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum textVerticalAlignment {
-    #[default]
     Top = 0,
+    #[default]
     Center = 1,
     Bottom = 2,
 }
