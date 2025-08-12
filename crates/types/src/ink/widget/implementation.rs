@@ -254,6 +254,10 @@ pub trait WidgetTree {
     fn get_path_names(&self, path: &[usize]) -> Option<Vec<String>>;
     /// return the full path indexes to the widget
     fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>>;
+    /// return the full path indexes to the widget
+    /// (or the partial path indexes until where it failed)
+    /// alongside the last name searched.
+    fn get_partial_path_indexes(&self, path: &[&str]) -> (Vec<usize>, String);
 }
 
 pub trait ByIndex {
@@ -463,20 +467,24 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
     }
 
     fn get_path_indexes(&self, path: &[&str]) -> Option<Vec<usize>> {
+        let (found, _) = self.get_partial_path_indexes(path);
+        if path.len() != found.len() {
+            return None;
+        }
+        Some(found)
+    }
+
+    fn get_partial_path_indexes(&self, path: &[&str]) -> (Vec<usize>, String) {
+        if path.is_empty() {
+            return (Vec::with_capacity(0), "".to_string());
+        }
         let mut indexes: Vec<usize> = vec![];
         let depth = path.len() - 1;
         let mut parent: Option<Widget> =
             Some(Widget::inkCanvasWidget(self.root_widget.data.clone()));
         for (i, name) in path.iter().enumerate() {
-            if parent.is_none() {
-                break;
-            }
-
-            if parent.as_ref().unwrap().is_leaf() {
-                if i < depth {
-                    return None;
-                }
-                break;
+            if parent.is_none() || (parent.as_ref().unwrap().is_leaf() && i < depth) {
+                return (indexes, name.to_string());
             }
 
             if let Some(compound) = parent.as_ref().unwrap().as_compound()
@@ -486,9 +494,8 @@ impl WidgetTree for inkWidgetLibraryItemInstance {
                 parent = Some(widget);
                 continue;
             }
-            return None;
         }
-        Some(indexes)
+        (indexes, path.last().unwrap().to_string())
     }
 }
 
@@ -512,5 +519,9 @@ impl WidgetTree for inkWidgetLibraryResource {
 
     fn get_path_indexes(&self, names: &[&str]) -> Option<Vec<usize>> {
         self.root_chunk().get_path_indexes(names)
+    }
+
+    fn get_partial_path_indexes(&self, names: &[&str]) -> (Vec<usize>, String) {
+        self.root_chunk().get_partial_path_indexes(names)
     }
 }

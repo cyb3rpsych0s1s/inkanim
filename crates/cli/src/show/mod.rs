@@ -1,7 +1,7 @@
 mod args;
 pub(crate) use args::Args;
 
-use inkanim_types::widget::{ByName, Widget, inkWidgetLibraryResource};
+use inkanim_types::widget::{ByName, Widget, WidgetTree, inkWidgetLibraryResource};
 
 pub(crate) fn show(args: Args, widget: inkWidgetLibraryResource) {
     let names = args
@@ -13,21 +13,23 @@ pub(crate) fn show(args: Args, widget: inkWidgetLibraryResource) {
     if names.is_empty() {
         panic!("please specify widget path names");
     }
+    let (found, name) = widget.get_partial_path_indexes(&names);
+    if found.len() != names.len() {
+        panic!(
+            "could not find {name} at {}",
+            found
+                .iter()
+                .cloned()
+                .map(|x| x.to_string())
+                .collect::<Vec<_>>()
+                .join(" . ")
+        )
+    }
     let mut widget = Widget::inkCanvasWidget(widget.root_chunk().root_widget.data.clone());
     let mut indexes = Vec::with_capacity(names.len());
     for (idx, name) in names.iter().enumerate() {
         indexes.push(idx);
-        (_, widget) = widget.by_name(name).unwrap_or_else(|| {
-            panic!(
-                "could not find {name} at {}",
-                indexes
-                    .iter()
-                    .cloned()
-                    .map(|x| x.to_string())
-                    .collect::<Vec<_>>()
-                    .join(" . ")
-            )
-        });
+        (_, widget) = widget.by_name(name).expect("already validated above");
     }
     println!(
         "{}",
