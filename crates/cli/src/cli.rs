@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use crate::{list, tree, whereis, whois};
+use crate::{list, show, tree, whereis, whois};
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Parser)] // requires `derive` feature
@@ -17,4 +17,7 @@ pub enum CLI {
     /// get full path indexes from path names
     #[command(name = "whereis")]
     WhereIs(whereis::Args),
+    /// show json from widget name
+    #[command(name = "show")]
+    Show(show::Args),
 }

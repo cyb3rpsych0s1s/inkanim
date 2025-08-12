@@ -61,7 +61,7 @@ pub(crate) fn whereis(
     let sequences: Vec<&str> = anim.sequences.iter().map(|x| x.name()).collect();
     let found = widget.get_path_indexes(&names);
     if let Some(indexes) = found {
-        assert_eq!(depth, names.len());
+        assert_eq!(depth, indexes.len());
         match args.mode.output {
             crate::args::Output::Table => {
                 table(names.as_slice(), indexes.as_slice());

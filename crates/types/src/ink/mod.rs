@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, ser::SerializeStruct};
 use serde_aux::prelude::*;
 
 use self::{
@@ -15,7 +15,7 @@ pub mod anim;
 /// everything related to *.inkwidget*
 pub mod widget;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, PartialEq)]
 pub struct Name {
     #[serde(rename = "$type")]
     r#type: String,
@@ -25,19 +25,29 @@ pub struct Name {
     value: String,
 }
 
+impl Serialize for Name {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.value)
+    }
+}
+
 impl Name {
     pub fn as_str(&self) -> &str {
         self.value.as_str()
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum Storage {
+    #[default]
     String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ResourcePath {
     #[serde(rename = "$storage")]
     storage: Storage,
@@ -45,10 +55,29 @@ pub struct ResourcePath {
     value: PathBuf,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize, PartialEq)]
 #[serde(tag = "$type")]
 pub enum DepotPath {
     ResourcePath(ResourcePath),
+}
+
+impl Serialize for DepotPath {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            Self::ResourcePath(x) => {
+                serializer.serialize_str(x.value.as_path().as_os_str().to_str().unwrap_or_default())
+            }
+        }
+    }
+}
+
+impl Default for DepotPath {
+    fn default() -> Self {
+        Self::ResourcePath(ResourcePath::default())
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -96,7 +125,7 @@ impl<T> File<T> {
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/Vector2)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Clone, Deserialize, PartialEq, PartialOrd)]
 #[serde(tag = "$type")]
 #[serde(rename_all = "PascalCase")]
 pub struct Vector2 {
@@ -104,8 +133,20 @@ pub struct Vector2 {
     pub y: f32,
 }
 
+impl Serialize for Vector2 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut s = serializer.serialize_struct("Vector2", 2)?;
+        s.serialize_field("X", &self.x)?;
+        s.serialize_field("Y", &self.y)?;
+        s.end()
+    }
+}
+
 /// see [NativeDB](https://nativedb.red4ext.com/HDRColor)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Clone, Deserialize, PartialEq, PartialOrd)]
 #[serde(tag = "$type")]
 #[serde(rename_all = "PascalCase")]
 pub struct HDRColor {
@@ -115,36 +156,118 @@ pub struct HDRColor {
     pub red: f32,
 }
 
+impl Serialize for HDRColor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut s = serializer.serialize_struct("HDRColor", 4)?;
+        s.serialize_field("alpha", &self.alpha)?;
+        s.serialize_field("blue", &self.blue)?;
+        s.serialize_field("green", &self.green)?;
+        s.serialize_field("red", &self.red)?;
+        s.end()
+    }
+}
+
 /// asset handle ID
 ///
 /// identifies the index in the graph.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq)]
 #[serde(transparent)]
 pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")] u32);
 
 /// wrapper with handle ID
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct InkWrapper<T> {
     pub handle_id: HandleId,
     pub data: T,
 }
 
+impl<T> Serialize for InkWrapper<T>
+where
+    T: Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.data.serialize(serializer)
+    }
+}
+
+impl<T> Default for InkWrapper<T>
+where
+    T: Default,
+{
+    fn default() -> Self {
+        Self {
+            handle_id: Default::default(),
+            data: Default::default(),
+        }
+    }
+}
+
+impl<T> PartialEq for InkWrapper<T>
+where
+    T: PartialEq<T>,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.handle_id == other.handle_id && self.data == other.data
+    }
+}
+
 /// specific resource ID
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CName(String);
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub enum LocKey {
     ID(u32),
     Value(String),
 }
 
+impl Serialize for LocKey {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            Self::ID(x) => serializer.serialize_u32(*x),
+            Self::Value(x) => serializer.serialize_str(x.as_str()),
+        }
+    }
+}
+
+impl PartialEq for LocKey {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Self::ID(lhs), Self::ID(rhs)) => lhs == rhs,
+            (Self::Value(lhs), Self::Value(rhs)) => lhs == rhs,
+            (Self::ID(lhs), Self::Value(rhs)) => &lhs.to_string() == rhs,
+            (Self::Value(lhs), Self::ID(rhs)) => lhs == &rhs.to_string(),
+        }
+    }
+}
+
 /// specific translation ID
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, PartialEq)]
 pub struct LocalizationString {
     #[serde(deserialize_with = "deserialize_lockey_from_anything")]
     value: Option<LocKey>,
+}
+
+impl Serialize for LocalizationString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match &self.value {
+            Some(x) => x.serialize(serializer),
+            None => serializer.serialize_str(""),
+        }
+    }
 }
 
 impl<T> std::fmt::Display for InkWrapper<T>

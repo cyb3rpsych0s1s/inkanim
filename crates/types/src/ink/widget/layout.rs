@@ -3,8 +3,9 @@ use serde::{Deserialize, Serialize};
 use crate::Vector2;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum inkEAnchor {
+    #[default]
     TopLeft = 0,
     TopCenter = 1,
     TopRight = 2,
@@ -24,8 +25,9 @@ pub enum inkEAnchor {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum inkEHorizontalAlign {
+    #[default]
     Fill = 0,
     Left = 1,
     Center = 2,
@@ -33,8 +35,9 @@ pub enum inkEHorizontalAlign {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum inkEVerticalAlign {
+    #[default]
     Fill = 0,
     Top = 1,
     Center = 2,
@@ -42,7 +45,7 @@ pub enum inkEVerticalAlign {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct inkUITransform {
     pub translation: Vector2,
     pub scale: Vector2,
@@ -51,15 +54,16 @@ pub struct inkUITransform {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum textJustificationType {
+    #[default]
     Left = 0,
     Center = 1,
     Right = 2,
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(tag = "$type")]
 pub struct inkMargin {
     pub left: f32,
@@ -69,7 +73,7 @@ pub struct inkMargin {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(tag = "$type", rename_all = "camelCase")]
 pub struct inkWidgetLayout {
     pub anchor: inkEAnchor,
@@ -81,8 +85,9 @@ pub struct inkWidgetLayout {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum inkEChildOrder {
+    #[default]
     Forward = 0,
     Backward = 1,
 }

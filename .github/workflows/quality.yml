@@ -56,3 +56,5 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: ubuntu-latest
+      - name: ✅ run just demo
+        run: just demo
