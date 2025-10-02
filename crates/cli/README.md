@@ -24,6 +24,12 @@ available commands:
   inkanim list --help
   ```
 
+- tree: quickly display .inkwidget UI tree
+
+  ```sh
+  inkanim tree --help
+  ```
+
 - whois: quickly get widget names path from indexes path
 
   ```sh
@@ -34,6 +40,12 @@ available commands:
 
   ```sh
   inkanim whereis --help
+  ```
+
+- show: get trimmed json for widget by names path
+
+  ```sh
+  inkanim show --help
   ```
 
 ### samples output

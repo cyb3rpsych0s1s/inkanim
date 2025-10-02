@@ -17,6 +17,9 @@ demo:
     --widget ./inkwidget_connect_to_girl.json
   cargo run tree \
     --widget ./inkwidget_connect_to_girl.json
+  cargo run show \
+    --path "main_canvas.Booting_Info_Critica_Mask_Canvas.Booting_Info_Critical_Canvas.Info_Screen.Info_MainScreen_Mask_Canvas.Info_MainScreen_Canvas.Critical_Screen_Text_Canvas.inkVerticalPanelWidget7.inkHorizontalPanelWidget2.Critical_Vertical_Warning.warning_Flex1.warning1" \
+    --widget ./inkwidget_connect_to_girl.json
 
 # 🎨 format code
 format:

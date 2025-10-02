@@ -10,10 +10,10 @@ pub mod properties;
 use enum_dispatch::enum_dispatch;
 pub use implementation::*;
 
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, ser::SerializeSeq};
 use serde_aux::prelude::deserialize_bool_from_anything;
 
-use crate::{DepotPath, Name};
+use crate::{DepotPath, Name, Vector2, is_any_default_localization_string};
 
 use self::{
     font::{
@@ -31,24 +31,42 @@ pub trait SiblingOrNested {
     fn sibling_or_nested(&self, searched: &[usize]) -> bool;
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 #[non_exhaustive]
 pub enum Flags {
+    #[default]
     Default,
     Soft,
     Hard,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Pivot(Vector2);
+
+impl Default for Pivot {
+    fn default() -> Self {
+        Self(Vector2 { x: 0.5, y: 0.5 })
+    }
+}
+
+fn is_default<T: Default + PartialEq>(value: &T) -> bool {
+    *value == T::default()
 }
 
 macro_rules! native_compound_widget {
     ($ty:ident) => {
         #[doc=concat!("see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
-        #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
+            #[serde(default, skip_serializing_if = "is_default")]
             pub children: InkWrapper<inkMultiChildren>,
+            #[serde(default, skip_serializing_if = "is_default")]
             pub name: $crate::Name,
+            #[serde(default, skip_serializing_if = "is_default")]
             pub child_order: self::layout::inkEChildOrder,
+            #[serde(default, skip_serializing_if = "is_default")]
             pub child_margin: self::layout::inkMargin,
         }
     };
@@ -58,14 +76,20 @@ macro_rules! native_leaf_widget {
     ($ty:ident { $($tt:tt)* }) => {
         #[doc=concat!("🌿 see [NativeDB](https://nativedb.red4ext.com/", stringify!($ty), ")")]
         #[allow(non_camel_case_types)]
-        #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
         #[serde(rename_all = "camelCase")]
         pub struct $ty {
+            #[serde(default, skip_serializing_if = "is_default")]
             pub name: $crate::Name,
+            #[serde(default, skip_serializing_if = "is_default")]
             pub layout: self::layout::inkWidgetLayout,
+            #[serde(default, skip_serializing_if = "is_default")]
             pub property_manager: Option<self::properties::PropertyManager>,
-            pub render_transform_pivot: crate::Vector2,
+            #[serde(default, skip_serializing_if = "is_default")]
+            pub render_transform_pivot: self::Pivot,
+            #[serde(default, skip_serializing_if = "is_default")]
             pub render_transform: self::layout::inkUITransform,
+            #[serde(default, skip_serializing_if = "is_default")]
             pub size: crate::Vector2,
             $($tt)*
         }
@@ -86,26 +110,73 @@ native_compound_widget!(inkCacheWidget);
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkMultiChildren)
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, PartialEq)]
 pub struct inkMultiChildren {
     pub children: Vec<InkWrapper<Widget>>,
 }
 
+impl Serialize for inkMultiChildren {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut seq = serializer.serialize_seq(Some(self.children.len()))?;
+        for elem in self.children.iter() {
+            seq.serialize_element(elem)?;
+        }
+        seq.end()
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(transparent)]
+pub struct ScrollDelay(u16);
+
+impl Default for ScrollDelay {
+    fn default() -> Self {
+        Self(30)
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[serde(transparent)]
+pub struct ScrollTextSpeed(f32);
+
+impl Default for ScrollTextSpeed {
+    fn default() -> Self {
+        Self(0.2)
+    }
+}
+
 native_leaf_widget!(inkTextWidget {
+  #[serde(default, skip_serializing_if = "is_any_default_localization_string",)]
   pub localization_string: LocalizationString,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub text: String,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub font_family: inkFontFamilyResource,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub font_style: fontStyle,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub justification: textJustificationType,
-  pub letter_case: Option<textLetterCase>,
+  #[serde(default, skip_serializing_if = "is_default")]
+  pub text_letter_case: Option<textLetterCase>,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub line_height_percentage: f32,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub text_horizontal_alignment: textHorizontalAlignment,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub text_vertical_alignment: textVerticalAlignment,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub text_overflow_policy: textOverflowPolicy,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub content_h_align: inkEHorizontalAlign,
+  #[serde(default, skip_serializing_if = "is_default")]
   pub content_v_align: inkEVerticalAlign,
-  pub scroll_delay: u16,
-  pub scroll_text_speed: f32,
+  #[serde(default, skip_serializing_if = "is_default")]
+  pub scroll_delay: self::ScrollDelay,
+  #[serde(default, skip_serializing_if = "is_default")]
+  pub scroll_text_speed: self::ScrollTextSpeed,
 });
 native_leaf_widget!(inkImageWidget {
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
@@ -137,7 +208,7 @@ native_leaf_widget!(inkVectorGraphicWidget);
 #[allow(clippy::enum_variant_names)]
 #[allow(non_camel_case_types)]
 #[non_exhaustive]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[enum_dispatch(Classname)]
 #[serde(tag = "$type")]
 pub enum Widget {
