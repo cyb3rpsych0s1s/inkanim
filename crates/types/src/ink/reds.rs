@@ -20,7 +20,7 @@ pub trait Setter {
 impl Value for f32 {
     fn value(&self) -> Cow<'_, str> {
         if self.fract() == 0.0 {
-            return Cow::Owned(format!("{}.0", self.to_string()));
+            return Cow::Owned(format!("{}.0", self));
         }
         self.to_string().into()
     }

@@ -14,7 +14,9 @@ pub struct inkTextureAtlas {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
+#[derive(
+    Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds,
+)]
 pub enum inkBrushMirrorType {
     #[default]
     NoMirror = 0,
@@ -24,7 +26,9 @@ pub enum inkBrushMirrorType {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
+#[derive(
+    Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds,
+)]
 pub enum inkBrushTileType {
     #[default]
     NoTile = 0,
