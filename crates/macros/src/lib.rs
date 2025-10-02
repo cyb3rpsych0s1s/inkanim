@@ -91,7 +91,7 @@ fn derive_reds_struct(input: &DeriveInput) -> proc_macro2::TokenStream {
                     fn instantiate(&self, name: &str) -> std::borrow::Cow<'_, str> {
                         use crate::reds::Setter;
                         use crate::reds::Value;
-                        let mut me = format!("{}{}{}{}{}", "let ", name, ": ", stringify!(#ty), ";");
+                        let mut me = format!("let {name}:{};", stringify!(#ty));
                         let mut acc: std::borrow::Cow<'_, str>;
                         #(
                             me.push_str("\n");
@@ -103,7 +103,7 @@ fn derive_reds_struct(input: &DeriveInput) -> proc_macro2::TokenStream {
                 }
                 impl crate::reds::Setter for #ty {
                     fn setter(&self, name: &str, field: &str, value: &str) -> std::borrow::Cow<'_, str> {
-                        std::borrow::Cow::Owned(format!("{}{}{}{}{}{}", name, ".", field, " = ", value, ";" ))
+                        std::borrow::Cow::Owned(format!("{name}.{field} = {value};"))
                     }
                 }
             }
