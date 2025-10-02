@@ -1,11 +1,11 @@
 {
   "Header": {
-    "WolvenKitVersion": "8.16.2-nightly.2025-07-21",
+    "WolvenKitVersion": "8.17.1-nightly.2025-10-01",
     "WKitJsonVersion": "0.0.9",
-    "GameVersion": 2300,
-    "ExportedDateTime": "2025-08-01T09:51:19.2531390Z",
+    "GameVersion": 2310,
+    "ExportedDateTime": "2025-10-02T03:59:08.7453080Z",
     "DataType": "CR2W",
-    "ArchiveFileName": "C:\\Users\\Asus\\Desktop\\cp2077\\Archives\\InkAnimFollowUp\\InkAnimFollowUp\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_mission0_connect_to_girl_animations.inkanim"
+    "ArchiveFileName": "D:\\development\\inkanim\\community\\inkanim\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_mission0_connect_to_girl_animations.inkanim"
   },
   "Data": {
     "Version": 195,
