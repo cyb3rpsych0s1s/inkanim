@@ -22,8 +22,8 @@ demo:
     --widget ./inkwidget_connect_to_girl.json
 
 # 🎨 format code
-format:
-  @cargo fmt --all
+@format:
+  cargo fmt --all
 
 # 🎨 lint code
 @lint:
