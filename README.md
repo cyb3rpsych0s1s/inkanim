@@ -1,6 +1,6 @@
 # InkAnim
 
-![build](https://github.com/cyb3rpsych0s1s/inkanim/actions/workflows/quality.yml/badge.svg) [![crates.io](https://img.shields.io/crates/v/inkanim.svg)](https://crates.io/crates/inkanim) ![Cyberpunk 2077 version compatibility](https://img.shields.io/badge/Cyberpunk_2077-patch_2.3-yellow) ![WolvenKit](https://img.shields.io/badge/8.16.2-red?label=WolvenKit&color=red&link=https%3A%2F%2Fwiki.redmodding.org%2Fwolvenkit) ![WKitJsonVersion](https://img.shields.io/badge/0.0.9-yellow?label=WKitJsonVersion&link=https%3A%2F%2Fwiki.redmodding.org%2Fwolvenkit)
+![build](https://github.com/cyb3rpsych0s1s/inkanim/actions/workflows/quality.yml/badge.svg) [![crates.io](https://img.shields.io/crates/v/inkanim.svg)](https://crates.io/crates/inkanim) ![Cyberpunk 2077 version compatibility](https://img.shields.io/badge/Cyberpunk_2077-patch_2.31-yellow) ![WolvenKit](https://img.shields.io/badge/8.17.1-red?label=WolvenKit&color=red&link=https%3A%2F%2Fwiki.redmodding.org%2Fwolvenkit) ![WKitJsonVersion](https://img.shields.io/badge/0.0.9-yellow?label=WKitJsonVersion&link=https%3A%2F%2Fwiki.redmodding.org%2Fwolvenkit)
 
 
 

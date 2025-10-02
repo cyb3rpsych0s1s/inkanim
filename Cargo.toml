@@ -16,7 +16,7 @@ keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
 clap = { version = "4.5" }
 enum_dispatch = "0.3"
 inkanim-macros = { path = "crates/macros" }
-inkanim-types = { path = "crates/types" }
+inkanim-types = { path = "crates/types", version = "0.8.0" }
 serde = { version = "1.0" }
 serde-aux = "4.7"
 serde_json = "1.0"

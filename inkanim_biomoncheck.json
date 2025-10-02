@@ -1,11 +1,11 @@
 {
   "Header": {
-    "WolvenKitVersion": "8.16.2-nightly.2025-07-31",
+    "WolvenKitVersion": "8.17.1-nightly.2025-10-01",
     "WKitJsonVersion": "0.0.9",
-    "GameVersion": 2300,
-    "ExportedDateTime": "2025-08-01T10:08:05.9103593Z",
+    "GameVersion": 2310,
+    "ExportedDateTime": "2025-10-02T03:59:12.9916099Z",
     "DataType": "CR2W",
-    "ArchiveFileName": "C:\\Users\\Asus\\Desktop\\cp2077\\Archives\\InkAnimFollowUp\\InkAnimFollowUp\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck_animations.inkanim"
+    "ArchiveFileName": "D:\\development\\inkanim\\community\\inkanim\\source\\archive\\base\\gameplay\\gui\\quests\\q001\\q001_wakeup_biomoncheck_animations.inkanim"
   },
   "Data": {
     "Version": 195,
