@@ -27,6 +27,12 @@ pub struct Name {
     value: String,
 }
 
+impl reds::Value for Name {
+    fn value(&self) -> std::borrow::Cow<'_, str> {
+        std::borrow::Cow::Owned(format!("n\"{}\"", self.value))
+    }
+}
+
 impl Serialize for Name {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -39,6 +45,15 @@ impl Serialize for Name {
 impl Name {
     pub fn as_str(&self) -> &str {
         self.value.as_str()
+    }
+}
+
+impl<T: reds::Value> reds::Value for Option<T> {
+    fn value(&self) -> std::borrow::Cow<'_, str> {
+        match self {
+            Some(x) => x.value(),
+            None => "".into(),
+        }
     }
 }
 
@@ -135,6 +150,16 @@ pub struct Vector2 {
     pub y: f32,
 }
 
+impl reds::Type for Vector2 {
+    const NAME: &str = "Vector2";
+}
+
+impl reds::Value for Vector2 {
+    fn value(&self) -> std::borrow::Cow<'_, str> {
+        "".into()
+    }
+}
+
 impl Serialize for Vector2 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -156,6 +181,20 @@ pub struct HDRColor {
     pub blue: f32,
     pub green: f32,
     pub red: f32,
+}
+
+impl reds::Instantiate for HDRColor {
+    fn instantiate(&self, instance: &str) -> std::borrow::Cow<'_, str> {
+        format!("let {instance}: HDRColor;").into()
+    }
+}
+
+impl reds::Type for HDRColor {
+    const NAME: &str = "HDRColor";
+}
+
+impl reds::Setter for HDRColor {
+    const FIELDS: &[&'static str] = &["alpha", "blue", "green", "red"];
 }
 
 impl Serialize for HDRColor {
@@ -185,6 +224,39 @@ pub struct HandleId(#[serde(deserialize_with = "deserialize_number_from_string")
 pub struct InkWrapper<T> {
     pub handle_id: HandleId,
     pub data: T,
+}
+
+impl<T> reds::Value for InkWrapper<T>
+where
+    T: reds::Value,
+{
+    fn value(&self) -> std::borrow::Cow<'_, str> {
+        self.data.value()
+    }
+}
+
+impl<T> reds::Instantiate for InkWrapper<T>
+where
+    T: reds::Instantiate,
+{
+    fn instantiate(&self, name: &str) -> std::borrow::Cow<'_, str> {
+        self.data.instantiate(name)
+    }
+}
+
+impl<T> reds::Setter for InkWrapper<T>
+where
+    T: reds::Setter,
+{
+    const FIELDS: &[&'static str] = T::FIELDS;
+    fn setter(
+        &self,
+        name: &str,
+        field: &str,
+        value: &impl reds::Value,
+    ) -> std::borrow::Cow<'_, str> {
+        self.data.setter(name, field, value)
+    }
 }
 
 impl<T> Serialize for InkWrapper<T>

@@ -1,7 +1,7 @@
 use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 
-use crate::DepotPath;
+use crate::{DepotPath, reds};
 
 use super::Flags;
 
@@ -11,6 +11,12 @@ use super::Flags;
 pub struct inkTextureAtlas {
     depot_path: DepotPath,
     flags: Flags,
+}
+
+impl reds::Value for inkTextureAtlas {
+    fn value(&self) -> std::borrow::Cow<'_, str> {
+        std::borrow::Cow::Owned("".into())
+    }
 }
 
 #[allow(non_camel_case_types)]

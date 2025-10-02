@@ -1,20 +1,39 @@
 use std::borrow::Cow;
 
-// use crate::widget::{
-//     font::{textHorizontalAlignment, textVerticalAlignment},
-//     inkTextWidget,
-// };
+pub trait Type {
+    const NAME: &str;
+}
 
 pub trait Value {
     fn value(&self) -> Cow<'_, str>;
 }
 
 pub trait Instantiate {
-    fn instantiate(&self, name: &str) -> Cow<'_, str>;
+    fn instantiate(&self, instance: &str) -> Cow<'_, str>;
 }
 
 pub trait Setter {
-    fn setter(&self, name: &str, field: &str, value: &str) -> Cow<'_, str>;
+    const FIELDS: &[&'static str];
+    fn setter(&self, instance: &str, field: &str, value: &impl self::Value) -> Cow<'_, str> {
+        if !Self::FIELDS.contains(&field) {
+            panic!("unknown field {field} for {instance}")
+        }
+        std::borrow::Cow::Owned(format!("{instance}.{field} = {};", value.value()))
+    }
+}
+
+impl Type for u32 {
+    const NAME: &str = "Uint32";
+}
+
+impl Value for u32 {
+    fn value(&self) -> Cow<'_, str> {
+        std::borrow::Cow::Owned(format!("{self}u"))
+    }
+}
+
+impl Type for f32 {
+    const NAME: &str = "Float";
 }
 
 impl Value for f32 {
@@ -23,6 +42,16 @@ impl Value for f32 {
             return Cow::Owned(format!("{}.0", self));
         }
         self.to_string().into()
+    }
+}
+
+impl Type for String {
+    const NAME: &str = "String";
+}
+
+impl Value for String {
+    fn value(&self) -> Cow<'_, str> {
+        self.into()
     }
 }
 
@@ -126,8 +155,8 @@ mod tests {
             margin.instantiate("margin"),
             r#"let margin: inkMargin;
 margin.left = 2.0;
-margin.right = 10.0;
 margin.top = 200.0;
+margin.right = 10.0;
 margin.bottom = 0.0;"#
         );
     }

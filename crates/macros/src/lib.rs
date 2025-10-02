@@ -61,6 +61,9 @@ fn derive_reds_enum(input: &DeriveInput) -> proc_macro2::TokenStream {
                 .map(|x| x.ident)
                 .collect::<Vec<_>>();
             quote! {
+                impl crate::reds::Type for #ty {
+                  const NAME: &str = stringify!(#ty);
+                }
                 impl crate::reds::Value for #ty {
                     fn value(&self) -> std::borrow::Cow<'_, str> {
                         std::borrow::Cow::Borrowed(match self {
@@ -73,8 +76,43 @@ fn derive_reds_enum(input: &DeriveInput) -> proc_macro2::TokenStream {
         _ => unreachable!(),
     }
 }
-fn derive_reds_class(_input: &DeriveInput) -> proc_macro2::TokenStream {
-    todo!()
+fn derive_reds_class(input: &DeriveInput) -> proc_macro2::TokenStream {
+    match &input.data {
+        syn::Data::Struct(data_struct) => {
+            let ty = &input.ident;
+            let fields = &data_struct
+                .fields
+                .iter()
+                .cloned()
+                .map(|x| x.ident.expect("named fields"))
+                .collect::<Vec<_>>();
+            quote! {
+                impl crate::reds::Instantiate for #ty {
+                    fn instantiate(&self, name: &str) -> std::borrow::Cow<'_, str> {
+                        use crate::reds::Setter;
+                        use crate::reds::Value;
+                        let mut me = format!("let {name}: {0} = new {0}();", stringify!(#ty));
+                        let mut acc: String;
+                        #(
+                            me.push_str("\n");
+                            acc = self.setter(name, stringify!(#fields), &self.#fields).into();
+                            me.push_str(&acc);
+                        )*
+                        std::borrow::Cow::Owned(me)
+                    }
+                }
+                impl crate::reds::Type for #ty {
+                  const NAME: &str = stringify!(#ty);
+                }
+                impl crate::reds::Setter for #ty {
+                    const FIELDS: &[&'static str] = &[
+                      #(stringify!(#fields),)*
+                    ];
+                }
+            }
+        }
+        _ => unreachable!(),
+    }
 }
 fn derive_reds_struct(input: &DeriveInput) -> proc_macro2::TokenStream {
     match &input.data {
@@ -91,20 +129,23 @@ fn derive_reds_struct(input: &DeriveInput) -> proc_macro2::TokenStream {
                     fn instantiate(&self, name: &str) -> std::borrow::Cow<'_, str> {
                         use crate::reds::Setter;
                         use crate::reds::Value;
-                        let mut me = format!("let {name}:{};", stringify!(#ty));
+                        let mut me = format!("let {name}: {};", stringify!(#ty));
                         let mut acc: std::borrow::Cow<'_, str>;
                         #(
                             me.push_str("\n");
-                            acc = self.setter(name, stringify!(#fields), &self.#fields.value());
+                            acc = self.setter(name, stringify!(#fields), &self.#fields);
                             me.push_str(&acc);
                         )*
                         std::borrow::Cow::Owned(me)
                     }
                 }
+                impl crate::reds::Type for #ty {
+                  const NAME: &str = stringify!(#ty);
+                }
                 impl crate::reds::Setter for #ty {
-                    fn setter(&self, name: &str, field: &str, value: &str) -> std::borrow::Cow<'_, str> {
-                        std::borrow::Cow::Owned(format!("{name}.{field} = {value};"))
-                    }
+                    const FIELDS: &[&'static str] = &[
+                      #(stringify!(#fields),)*
+                    ];
                 }
             }
         }
