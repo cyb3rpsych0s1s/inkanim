@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use crate::{list, show, tree, whereis, whois};
+use crate::{generate, list, show, tree, whereis, whois};
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Parser)] // requires `derive` feature
@@ -20,4 +20,7 @@ pub enum CLI {
     /// show json from widget name
     #[command(name = "show")]
     Show(show::Args),
+    /// generate reds from widget name
+    #[command(name = "generate")]
+    Generate(generate::Args),
 }
