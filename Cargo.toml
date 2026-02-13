@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/types", "crates/cli"]
+members = ["crates/macros", "crates/types", "crates/cli"]
 default-members = ["crates/cli"]
 resolver = "2"
 
@@ -15,6 +15,7 @@ keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
 [workspace.dependencies]
 clap = { version = "4.5" }
 enum_dispatch = "0.3"
+inkanim-macros = { path = "crates/macros" }
 inkanim-types = { path = "crates/types", version = "0.8.0" }
 serde = { version = "1.0" }
 serde-aux = "4.7"

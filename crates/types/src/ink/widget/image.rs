@@ -1,6 +1,7 @@
+use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 
-use crate::DepotPath;
+use crate::{DepotPath, reds};
 
 use super::Flags;
 
@@ -12,8 +13,16 @@ pub struct inkTextureAtlas {
     flags: Flags,
 }
 
+impl reds::Value for inkTextureAtlas {
+    fn value(&self) -> std::borrow::Cow<'_, str> {
+        std::borrow::Cow::Owned("".into())
+    }
+}
+
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+    Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds,
+)]
 pub enum inkBrushMirrorType {
     #[default]
     NoMirror = 0,
@@ -23,7 +32,9 @@ pub enum inkBrushMirrorType {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+    Debug, Default, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds,
+)]
 pub enum inkBrushTileType {
     #[default]
     NoTile = 0,
