@@ -13,7 +13,7 @@ repository = "https://github.com/cyb3rpsych0s1s/inkanim"
 keywords = ["cli", "utils", "wolvenkit", "inkanim", "inkwidget"]
 
 [workspace.dependencies]
-clap = { version = "4.5" }
+clap = { version = "4.6" }
 enum_dispatch = "0.3"
 inkanim-types = { path = "crates/types", version = "0.8.0" }
 serde = { version = "1.0" }
