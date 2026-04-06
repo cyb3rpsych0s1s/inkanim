@@ -3,6 +3,7 @@
 
 mod display;
 
+use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
@@ -26,7 +27,7 @@ pub struct OrphanInkAnimInterpolator {
 }
 
 /// transparency interpolation direction
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Reds)]
 pub enum Fade {
     /// transparency interpolates toward `1.`
     In,
@@ -55,7 +56,7 @@ pub enum InkAnimInterpolatorType {
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkanimInterpolationDirection)
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Reds)]
 pub enum Direction {
     To = 0,
     From = 1,
@@ -64,7 +65,7 @@ pub enum Direction {
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkanimInterpolationMode)
 #[allow(clippy::enum_variant_names)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Reds)]
 pub enum Mode {
     EasyIn = 0,
     EasyOut = 1,
@@ -72,7 +73,7 @@ pub enum Mode {
 }
 
 /// see [NativeDB](https://nativedb.red4ext.com/inkanimInterpolationType)
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Reds)]
 pub enum Type {
     Linear = 0,
     Quadratic = 1,
@@ -135,7 +136,7 @@ pub struct EffectInterpolator {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Reds)]
 pub enum inkEffectType {
     ScanlineWipe = 0,
     LinearWipe = 1,
