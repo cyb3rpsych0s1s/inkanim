@@ -1,3 +1,4 @@
+use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 
 use crate::{DepotPath, Name};
@@ -17,7 +18,7 @@ pub struct inkFontFamilyResource {
 pub struct fontStyle(Name);
 
 #[allow(non_camel_case_types, clippy::enum_variant_names)]
-#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum textLetterCase {
     #[default]
     OriginalCase = 0,
@@ -26,7 +27,7 @@ pub enum textLetterCase {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum textHorizontalAlignment {
     #[default]
     Left = 0,
@@ -35,7 +36,7 @@ pub enum textHorizontalAlignment {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum textVerticalAlignment {
     Top = 0,
     #[default]
@@ -44,7 +45,7 @@ pub enum textVerticalAlignment {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Serialize, Clone, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum textOverflowPolicy {
     #[default]
     None = 0,
