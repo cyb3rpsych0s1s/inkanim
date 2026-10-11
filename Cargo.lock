@@ -214,12 +214,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "inkanim-macros"
+version = "0.8.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "inkanim-types"
 version = "0.8.0"
 dependencies = [
  "chrono",
  "clap",
  "enum_dispatch",
+ "inkanim-macros",
  "serde",
  "serde-aux",
 ]

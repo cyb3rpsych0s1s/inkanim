@@ -1,9 +1,10 @@
+use inkanim_macros::Reds;
 use serde::{Deserialize, Serialize};
 
 use crate::Vector2;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum inkEAnchor {
     #[default]
     TopLeft = 0,
@@ -25,7 +26,7 @@ pub enum inkEAnchor {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum inkEHorizontalAlign {
     #[default]
     Fill = 0,
@@ -35,7 +36,7 @@ pub enum inkEHorizontalAlign {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum inkEVerticalAlign {
     #[default]
     Fill = 0,
@@ -63,7 +64,7 @@ impl Default for Scale {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum textJustificationType {
     #[default]
     Left = 0,
@@ -72,8 +73,9 @@ pub enum textJustificationType {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Reds)]
 #[serde(tag = "$type")]
+#[reds(struct)]
 pub struct inkMargin {
     pub left: f32,
     pub top: f32,
@@ -94,7 +96,7 @@ pub struct inkWidgetLayout {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Reds)]
 pub enum inkEChildOrder {
     #[default]
     Forward = 0,

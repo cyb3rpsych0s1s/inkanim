@@ -69,6 +69,15 @@ macro_rules! native_compound_widget {
             #[serde(default, skip_serializing_if = "is_default")]
             pub child_margin: self::layout::inkMargin,
         }
+
+        impl crate::reds::Value for $ty {
+            fn value(&self) -> std::borrow::Cow<'_, str> {
+                let mut me = String::new();
+                me.push_str(&self.child_order.value());
+                // me.push_str(&self.child_margin.value());
+                std::borrow::Cow::Owned(me)
+            }
+        }
     };
 }
 
@@ -209,7 +218,7 @@ native_leaf_widget!(inkVectorGraphicWidget);
 #[allow(non_camel_case_types)]
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[enum_dispatch(Classname)]
+#[enum_dispatch(Classname, Value)]
 #[serde(tag = "$type")]
 pub enum Widget {
     inkMultiChildren(inkMultiChildren),
